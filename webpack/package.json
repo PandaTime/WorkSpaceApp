@@ -1,0 +1,50 @@
+{
+  "name": "MewMewClient",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack --watch"
+  },
+  "author": "MewMewPizza",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-core": "^6.0.20",
+    "babel-eslint": "^4.1.3",
+    "babel-loader": "^6.0.1",
+    "babel-preset-es2015": "^6.0.15",
+    "babel-preset-react": "^6.0.15",
+    "babel-preset-stage-0": "^6.0.15",
+    "browser-sync": "^2.15.0",
+    "browser-sync-webpack-plugin": "^1.1.3",
+    "copy-webpack-plugin": "^3.0.1",
+    "css-loader": "^0.25.0",
+    "eslint": "^1.10.3",
+    "eslint-plugin-react": "^3.6.2",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "file-loader": "^0.9.0",
+    "html-webpack-plugin": "^2.22.0",
+    "node-sass": "^3.10.1",
+    "raw-loader": "^0.5.1",
+    "react-hot-loader": "^1.3.0",
+    "remote-redux-devtools": "^0.5.0",
+    "sass-loader": "^4.0.2",
+    "style-loader": "^0.13.1",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.12.2"
+  },
+  "dependencies": {
+    "babel-polyfill": "^6.16.0",
+    "bootstrap": "^3.3.7",
+    "classnames": "^2.2.5",
+    "isomorphic-fetch": "^2.2.1",
+    "react": "^0.14.6",
+    "react-bootstrap": "^0.30.5",
+    "react-dom": "^0.14.6",
+    "react-redux": "^4.4.5",
+    "react-router": "^2.8.1",
+    "redux": "^3.6.0",
+    "redux-thunk": "^2.1.0"
+  }
+}
