@@ -46509,33 +46509,189 @@
 	    value: true
 	});
 
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 	var _react = __webpack_require__(298);
 
 	var _react2 = _interopRequireDefault(_react);
 
 	var _reactRouter = __webpack_require__(455);
 
+	var _classnames = __webpack_require__(730);
+
+	var _classnames2 = _interopRequireDefault(_classnames);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	//import LoadingDots from './LoadingDots';
-	//{loading && <LoadingDots interval={100} dots={20}/>}
-	var Header = function Header() {
-	    return _react2.default.createElement(
-	        'nav',
-	        null,
-	        _react2.default.createElement(
-	            _reactRouter.IndexLink,
-	            { to: '/pokemons', activeClassName: 'active' },
-	            'Home'
-	        ),
-	        " | ",
-	        _react2.default.createElement(
-	            _reactRouter.Link,
-	            { to: '/pokemons/favorite', activeClassName: 'active' },
-	            'Favorite'
-	        )
-	    );
-	};
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Header = function (_React$Component) {
+	    _inherits(Header, _React$Component);
+
+	    function Header(props) {
+	        _classCallCheck(this, Header);
+
+	        var _this = _possibleConstructorReturn(this, (Header.__proto__ || Object.getPrototypeOf(Header)).call(this, props));
+
+	        _this.state = { showDropDown: false };
+	        _this.onClick = _this.onClick.bind(_this);
+	        return _this;
+	    }
+
+	    _createClass(Header, [{
+	        key: 'onClick',
+	        value: function onClick() {
+	            console.log(this.state.showDropDown);
+	            this.setState({ showDropDown: !this.state.showDropDown });
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            return _react2.default.createElement(
+	                'nav',
+	                { className: 'navbar navbar-default' },
+	                _react2.default.createElement(
+	                    'div',
+	                    { className: 'container-fluid' },
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'navbar-header' },
+	                        _react2.default.createElement(
+	                            _reactRouter.IndexLink,
+	                            { to: '/', className: 'navbar-brand' },
+	                            'Yaroslav Stasiuk'
+	                        ),
+	                        _react2.default.createElement(
+	                            'button',
+	                            { 'data-toggle': 'collapse', 'data-target': '.navbar-collapse', className: 'navbar-toggle' },
+	                            _react2.default.createElement(
+	                                'span',
+	                                { className: 'sr-only' },
+	                                'Toggle Navigation'
+	                            ),
+	                            _react2.default.createElement('span', { className: 'icon-bar' }),
+	                            _react2.default.createElement('span', { className: 'icon-bar' }),
+	                            _react2.default.createElement('span', { className: 'icon-bar' })
+	                        )
+	                    ),
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'navbar-collapse collapse' },
+	                        _react2.default.createElement(
+	                            'div',
+	                            { className: 'nav navbar-nav' },
+	                            _react2.default.createElement(
+	                                'li',
+	                                null,
+	                                _react2.default.createElement(
+	                                    _reactRouter.Link,
+	                                    { to: '/', id: 'home', className: 'nav-elements' },
+	                                    _react2.default.createElement(
+	                                        'span',
+	                                        null,
+	                                        'Home'
+	                                    )
+	                                )
+	                            ),
+	                            _react2.default.createElement(
+	                                'li',
+	                                { className: 'dropdown nav-elements' },
+	                                _react2.default.createElement(
+	                                    'div',
+	                                    { id: 'projects', className: 'dropdown-toggle', onClick: this.onClick },
+	                                    _react2.default.createElement(
+	                                        'span',
+	                                        null,
+	                                        'Projects'
+	                                    ),
+	                                    _react2.default.createElement('span', { className: 'caret' })
+	                                ),
+	                                _react2.default.createElement(
+	                                    'ul',
+	                                    { className: (0, _classnames2.default)('dropdown-menu', this.state.showDropDown ? '' : 'hidden') },
+	                                    _react2.default.createElement(
+	                                        'li',
+	                                        null,
+	                                        _react2.default.createElement(
+	                                            _reactRouter.Link,
+	                                            { to: '/projects' },
+	                                            'All Projects'
+	                                        )
+	                                    ),
+	                                    _react2.default.createElement(
+	                                        'li',
+	                                        null,
+	                                        _react2.default.createElement(
+	                                            _reactRouter.Link,
+	                                            { to: '/projects' },
+	                                            'Kaggle(Data Science)'
+	                                        )
+	                                    ),
+	                                    _react2.default.createElement(
+	                                        'li',
+	                                        null,
+	                                        _react2.default.createElement(
+	                                            _reactRouter.Link,
+	                                            { to: '/xna' },
+	                                            'C#(Unity/XNA)'
+	                                        )
+	                                    ),
+	                                    _react2.default.createElement(
+	                                        'li',
+	                                        null,
+	                                        _react2.default.createElement(
+	                                            _reactRouter.Link,
+	                                            { to: '/WebGL' },
+	                                            'WebGL'
+	                                        )
+	                                    )
+	                                )
+	                            ),
+	                            _react2.default.createElement(
+	                                'li',
+	                                null,
+	                                _react2.default.createElement(
+	                                    _reactRouter.Link,
+	                                    { to: '/cv', id: 'cv', className: 'nav-elements' },
+	                                    _react2.default.createElement(
+	                                        'span',
+	                                        null,
+	                                        'CV'
+	                                    )
+	                                )
+	                            )
+	                        ),
+	                        _react2.default.createElement(
+	                            'div',
+	                            { className: 'nav navbar-nav navbar-right' },
+	                            _react2.default.createElement(
+	                                'li',
+	                                null,
+	                                _react2.default.createElement(
+	                                    _reactRouter.Link,
+	                                    { to: '/contacts', id: 'contact' },
+	                                    _react2.default.createElement(
+	                                        'span',
+	                                        null,
+	                                        'Contact'
+	                                    )
+	                                )
+	                            )
+	                        )
+	                    )
+	                )
+	            );
+	        }
+	    }]);
+
+	    return Header;
+	}(_react2.default.Component);
+
+	;
 
 	exports.default = Header;
 

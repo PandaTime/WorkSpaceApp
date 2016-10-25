@@ -8,6 +8,7 @@ import routes from './routes';
 import './styles/styles.scss';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
+
 const store = configureStore();
 
 ReactDOM.render(
