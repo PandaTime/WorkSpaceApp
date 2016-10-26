@@ -6,6 +6,7 @@ import { Provider } from 'react-redux';
 import configureStore from './store/configureStore';
 import routes from './routes';
 import './styles/styles.scss';
+import './styles/navbar.scss';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
 

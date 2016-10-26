@@ -43,6 +43,11 @@
       background-color: #b8b8d0; }
     .pokemon .pokemon-type-list .fairy {
       background-color: #e898e8; }
+.dropdown-menu.react-toggle {
+  display: inherit; }
+
+.input-group {
+  padding-top: 0.8rem; }
 /*!
  * Bootstrap v3.3.7 (http://getbootstrap.com)
  * Copyright 2011-2016 Twitter, Inc.

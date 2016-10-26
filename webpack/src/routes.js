@@ -9,3 +9,4 @@ export default (
 		<Route path="pokemons" component={HomePage} />
     </Route>
 );
+// <IndexRoute component={HomePage} />

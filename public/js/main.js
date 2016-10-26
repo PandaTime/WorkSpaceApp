@@ -70,6 +70,8 @@
 
 	__webpack_require__(737);
 
+	__webpack_require__(748);
+
 	__webpack_require__(741);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -46429,7 +46431,7 @@
 
 	var _App2 = _interopRequireDefault(_App);
 
-	var _HomePage = __webpack_require__(728);
+	var _HomePage = __webpack_require__(729);
 
 	var _HomePage2 = _interopRequireDefault(_HomePage);
 
@@ -46441,6 +46443,7 @@
 	    _react2.default.createElement(_reactRouter.IndexRoute, { component: _HomePage2.default }),
 	    _react2.default.createElement(_reactRouter.Route, { path: 'pokemons', component: _HomePage2.default })
 	);
+	// <IndexRoute component={HomePage} />
 
 /***/ },
 /* 726 */
@@ -46517,7 +46520,7 @@
 
 	var _reactRouter = __webpack_require__(455);
 
-	var _classnames = __webpack_require__(730);
+	var _classnames = __webpack_require__(728);
 
 	var _classnames2 = _interopRequireDefault(_classnames);
 
@@ -46537,20 +46540,47 @@
 
 	        var _this = _possibleConstructorReturn(this, (Header.__proto__ || Object.getPrototypeOf(Header)).call(this, props));
 
-	        _this.state = { showDropDown: false };
-	        _this.onClick = _this.onClick.bind(_this);
+	        _this.state = { showDropDown: [false, false, false, false], // search bar DropDown = 0;
+	            searchByTypes: ['User', 'Seat', 'Floor'],
+	            searchBy: 'Users' };
+
 	        return _this;
 	    }
 
 	    _createClass(Header, [{
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
+	            document.body.addEventListener('click', this.onClick.bind(this, -1));
+	        }
+	    }, {
 	        key: 'onClick',
-	        value: function onClick() {
-	            console.log(this.state.showDropDown);
-	            this.setState({ showDropDown: !this.state.showDropDown });
+	        value: function onClick(id) {
+	            this.setState({ showDropDown: this.state.showDropDown.map(function (_, i) {
+	                    return i === id;
+	                }) });
+	        }
+	    }, {
+	        key: 'searchBySet',
+	        value: function searchBySet(type) {
+	            this.setState({ searchBy: type });
 	        }
 	    }, {
 	        key: 'render',
 	        value: function render() {
+	            var _this2 = this;
+
+	            var searchList = this.state.searchByTypes.map(function (v, i) {
+	                return _react2.default.createElement(
+	                    'li',
+	                    { key: i },
+	                    _react2.default.createElement(
+	                        'a',
+	                        { onClick: _this2.searchBySet.bind(_this2, v) },
+	                        'By ',
+	                        v
+	                    )
+	                );
+	            });
 	            return _react2.default.createElement(
 	                'nav',
 	                { className: 'navbar navbar-default' },
@@ -46586,14 +46616,37 @@
 	                            { className: 'nav navbar-nav' },
 	                            _react2.default.createElement(
 	                                'li',
-	                                null,
+	                                { className: 'dropdown nav-elements' },
 	                                _react2.default.createElement(
-	                                    _reactRouter.Link,
-	                                    { to: '/', id: 'home', className: 'nav-elements' },
+	                                    'a',
+	                                    { id: 'projects', onClick: this.onClick.bind(this, 1) },
 	                                    _react2.default.createElement(
 	                                        'span',
 	                                        null,
-	                                        'Home'
+	                                        'Floor'
+	                                    ),
+	                                    _react2.default.createElement('span', { className: 'caret' })
+	                                ),
+	                                _react2.default.createElement(
+	                                    'ul',
+	                                    { className: (0, _classnames2.default)('dropdown-menu react-toggle', this.state.showDropDown[1] ? '' : 'hidden') },
+	                                    _react2.default.createElement(
+	                                        'li',
+	                                        null,
+	                                        _react2.default.createElement(
+	                                            _reactRouter.Link,
+	                                            { to: '#' },
+	                                            'Null'
+	                                        )
+	                                    ),
+	                                    _react2.default.createElement(
+	                                        'li',
+	                                        null,
+	                                        _react2.default.createElement(
+	                                            _reactRouter.Link,
+	                                            { to: '#' },
+	                                            'Null'
+	                                        )
 	                                    )
 	                                )
 	                            ),
@@ -46601,25 +46654,25 @@
 	                                'li',
 	                                { className: 'dropdown nav-elements' },
 	                                _react2.default.createElement(
-	                                    'div',
-	                                    { id: 'projects', className: 'dropdown-toggle', onClick: this.onClick },
+	                                    'a',
+	                                    { id: 'projects', onClick: this.onClick.bind(this, 2) },
 	                                    _react2.default.createElement(
 	                                        'span',
 	                                        null,
-	                                        'Projects'
+	                                        'Seats'
 	                                    ),
 	                                    _react2.default.createElement('span', { className: 'caret' })
 	                                ),
 	                                _react2.default.createElement(
 	                                    'ul',
-	                                    { className: (0, _classnames2.default)('dropdown-menu', this.state.showDropDown ? '' : 'hidden') },
+	                                    { className: (0, _classnames2.default)('dropdown-menu react-toggle', this.state.showDropDown[2] ? '' : 'hidden') },
 	                                    _react2.default.createElement(
 	                                        'li',
 	                                        null,
 	                                        _react2.default.createElement(
 	                                            _reactRouter.Link,
 	                                            { to: '/projects' },
-	                                            'All Projects'
+	                                            'Add Seat'
 	                                        )
 	                                    ),
 	                                    _react2.default.createElement(
@@ -46628,39 +46681,44 @@
 	                                        _react2.default.createElement(
 	                                            _reactRouter.Link,
 	                                            { to: '/projects' },
-	                                            'Kaggle(Data Science)'
-	                                        )
-	                                    ),
-	                                    _react2.default.createElement(
-	                                        'li',
-	                                        null,
-	                                        _react2.default.createElement(
-	                                            _reactRouter.Link,
-	                                            { to: '/xna' },
-	                                            'C#(Unity/XNA)'
-	                                        )
-	                                    ),
-	                                    _react2.default.createElement(
-	                                        'li',
-	                                        null,
-	                                        _react2.default.createElement(
-	                                            _reactRouter.Link,
-	                                            { to: '/WebGL' },
-	                                            'WebGL'
+	                                            'Search Seat'
 	                                        )
 	                                    )
 	                                )
 	                            ),
 	                            _react2.default.createElement(
 	                                'li',
-	                                null,
+	                                { className: 'dropdown nav-elements' },
 	                                _react2.default.createElement(
-	                                    _reactRouter.Link,
-	                                    { to: '/cv', id: 'cv', className: 'nav-elements' },
+	                                    'a',
+	                                    { id: 'projects', onClick: this.onClick.bind(this, 3) },
 	                                    _react2.default.createElement(
 	                                        'span',
 	                                        null,
-	                                        'CV'
+	                                        'Users'
+	                                    ),
+	                                    _react2.default.createElement('span', { className: 'caret' })
+	                                ),
+	                                _react2.default.createElement(
+	                                    'ul',
+	                                    { className: (0, _classnames2.default)('dropdown-menu react-toggle', this.state.showDropDown[3] ? '' : 'hidden') },
+	                                    _react2.default.createElement(
+	                                        'li',
+	                                        null,
+	                                        _react2.default.createElement(
+	                                            _reactRouter.Link,
+	                                            { to: '/projects' },
+	                                            'Add User'
+	                                        )
+	                                    ),
+	                                    _react2.default.createElement(
+	                                        'li',
+	                                        null,
+	                                        _react2.default.createElement(
+	                                            _reactRouter.Link,
+	                                            { to: '/projects' },
+	                                            'Search User'
+	                                        )
 	                                    )
 	                                )
 	                            )
@@ -46681,6 +46739,50 @@
 	                                    )
 	                                )
 	                            )
+	                        ),
+	                        _react2.default.createElement(
+	                            'div',
+	                            { className: 'col-lg-6 navbar-nav navbar-right ' },
+	                            _react2.default.createElement(
+	                                'div',
+	                                { className: 'input-group ' },
+	                                _react2.default.createElement('input', { type: 'text', className: 'form-control', 'aria-label': '...' }),
+	                                _react2.default.createElement(
+	                                    'div',
+	                                    { className: 'input-group-btn' },
+	                                    _react2.default.createElement(
+	                                        'button',
+	                                        { type: 'button', className: 'btn btn-default', onClick: this.onClick.bind(this, 0) },
+	                                        'By ',
+	                                        this.state.searchBy,
+	                                        _react2.default.createElement('span', { className: 'caret' })
+	                                    ),
+	                                    _react2.default.createElement(
+	                                        'ul',
+	                                        { className: (0, _classnames2.default)('dropdown-menu react-toggle', this.state.showDropDown[0] ? '' : 'hidden') },
+	                                        searchList,
+	                                        _react2.default.createElement('li', { role: 'separator', className: 'divider' }),
+	                                        _react2.default.createElement(
+	                                            'li',
+	                                            null,
+	                                            _react2.default.createElement(
+	                                                'a',
+	                                                { href: '#' },
+	                                                'Lonely Users'
+	                                            )
+	                                        ),
+	                                        _react2.default.createElement(
+	                                            'li',
+	                                            null,
+	                                            _react2.default.createElement(
+	                                                'a',
+	                                                { href: '#' },
+	                                                'Empty Seats'
+	                                            )
+	                                        )
+	                                    )
+	                                )
+	                            )
 	                        )
 	                    )
 	                )
@@ -46697,226 +46799,6 @@
 
 /***/ },
 /* 728 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _react = __webpack_require__(298);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _reactRedux = __webpack_require__(518);
-
-	var _ItemElement = __webpack_require__(729);
-
-	var _ItemElement2 = _interopRequireDefault(_ItemElement);
-
-	var _loadPokemonsActions = __webpack_require__(732);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	//import {Link} from 'react-router';
-
-
-	var HomePage = function (_React$Component) {
-	    _inherits(HomePage, _React$Component);
-
-	    function HomePage(props) {
-	        _classCallCheck(this, HomePage);
-
-	        var _this = _possibleConstructorReturn(this, (HomePage.__proto__ || Object.getPrototypeOf(HomePage)).call(this, props));
-
-	        _this.loadMoar = _this.loadMoar.bind(_this);
-	        return _this;
-	    }
-
-	    _createClass(HomePage, [{
-	        key: 'componentDidMount',
-	        value: function componentDidMount() {
-	            console.log(this.props.pokemons);
-	            if (!this.props.pokemons[0]) this.loadPokemons(this.props.nextPokeList);
-	        }
-	    }, {
-	        key: 'componentWillReceiveProps',
-	        value: function componentWillReceiveProps(nextProps) {}
-	    }, {
-	        key: 'loadMoar',
-	        value: function loadMoar() {
-	            this.loadPokemons(this.props.nextPokeList);
-	            console.log("MOAARRR!");
-	        }
-	    }, {
-	        key: 'loadPokemons',
-	        value: function loadPokemons(url) {
-	            this.props.loadPokemons(url);
-	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
-	            var favorites = Object.keys(this.props.favoriteList || {}) || [];
-	            var pokemons = (this.props.pokemons || []).map(function (v, i) {
-	                return _react2.default.createElement(_ItemElement2.default, { key: i, data: v, isFavorite: favorites.indexOf(v.url) != -1 });
-	            });
-	            return _react2.default.createElement(
-	                'div',
-	                { className: 'jumbotron' },
-	                pokemons,
-	                _react2.default.createElement(
-	                    'div',
-	                    { className: 'btn btn-primary btn-lg', onClick: this.loadMoar },
-	                    'MOAR'
-	                )
-	            );
-	        }
-	    }]);
-
-	    return HomePage;
-	}(_react2.default.Component);
-
-	function mapStateToProps(state, ownProps) {
-	    return {
-	        pokemons: state.pokemonsReducer,
-	        nextPokeList: state.pokemonsNextGetReducer,
-	        favoriteList: state.toggleFavoriteReducer
-	    };
-	}
-
-	exports.default = (0, _reactRedux.connect)(mapStateToProps, { loadPokemons: _loadPokemonsActions.loadPokemons })(HomePage);
-
-	//export default HomePage;
-
-/***/ },
-/* 729 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _react = __webpack_require__(298);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _reactRedux = __webpack_require__(518);
-
-	var _classnames = __webpack_require__(730);
-
-	var _classnames2 = _interopRequireDefault(_classnames);
-
-	var _config = __webpack_require__(546);
-
-	var _config2 = _interopRequireDefault(_config);
-
-	var _toggleFavoriteActions = __webpack_require__(731);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var ItemElement = function (_React$Component) {
-	    _inherits(ItemElement, _React$Component);
-
-	    function ItemElement(props) {
-	        _classCallCheck(this, ItemElement);
-
-	        var _this = _possibleConstructorReturn(this, (ItemElement.__proto__ || Object.getPrototypeOf(ItemElement)).call(this, props));
-
-	        _this.toggleFavorite = _this.toggleFavorite.bind(_this);
-	        _this.state = { favorite: _this.props.isFavorite };
-	        return _this;
-	    }
-
-	    _createClass(ItemElement, [{
-	        key: 'componentDidMount',
-	        value: function componentDidMount() {
-	            //this.props.loadPokemons();
-	        }
-	    }, {
-	        key: 'componentWillReceiveProps',
-	        value: function componentWillReceiveProps(nextProps) {
-	            //console.log(123, nextProps);
-	        }
-	    }, {
-	        key: 'toggleFavorite',
-	        value: function toggleFavorite() {
-	            var x = {};
-	            x[this.props.data.url] = this.props.data;
-	            this.state.favorite ? this.props.delFromFavorite(this.props.data.url) : this.props.addToFavorite(x);
-	            this.setState({ favorite: !this.state.favorite });
-	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
-	            var id = this.props.data.url;
-	            var pokData = this.props.dataList[id] || {};
-	            var types = (pokData.types || []).map(function (v) {
-	                return _react2.default.createElement(
-	                    'span',
-	                    { key: v.type.url, className: (0, _classnames2.default)('label', v.type.name) },
-	                    v.type.name
-	                );
-	            });
-	            var imgStyle = pokData.id ? {
-	                backgroundImage: 'url(' + _config2.default.imgUrl + pokData.id + '.png)',
-	                backgroundRepeat: 'no-repeat',
-	                backgroundPosition: 'center',
-	                backgroundSize: 'cover'
-	            } : {};
-	            return _react2.default.createElement(
-	                'div',
-	                { className: 'col-md-3 pokemon' },
-	                _react2.default.createElement('div', { style: imgStyle, className: 'pokemon-image' }),
-	                _react2.default.createElement(
-	                    'h2',
-	                    null,
-	                    this.props.data.name
-	                ),
-	                _react2.default.createElement(
-	                    'div',
-	                    { className: 'pokemon-type-list' },
-	                    types
-	                ),
-	                _react2.default.createElement(
-	                    'div',
-	                    { className: 'btn btn-warning', onClick: this.toggleFavorite },
-	                    this.state.favorite ? 'Del from favorite' : 'Add to favorite'
-	                )
-	            );
-	        }
-	    }]);
-
-	    return ItemElement;
-	}(_react2.default.Component);
-
-	function mapStateToProps(state, ownProps) {
-	    return {
-	        dataList: state.pokemonsDataReducer
-	    };
-	}
-
-	exports.default = (0, _reactRedux.connect)(mapStateToProps, { addToFavorite: _toggleFavoriteActions.addToFavorite, delFromFavorite: _toggleFavoriteActions.delFromFavorite })(ItemElement);
-
-/***/ },
-/* 730 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -46970,7 +46852,7 @@
 
 
 /***/ },
-/* 731 */
+/* 729 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -46978,36 +46860,69 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	exports.addToFavoriteSuccess = addToFavoriteSuccess;
-	exports.delFromFavoriteSuccess = delFromFavoriteSuccess;
-	exports.addToFavorite = addToFavorite;
-	exports.delFromFavorite = delFromFavorite;
 
-	var _actionTypes = __webpack_require__(544);
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var types = _interopRequireWildcard(_actionTypes);
+	var _react = __webpack_require__(298);
 
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	var _react2 = _interopRequireDefault(_react);
 
-	function addToFavoriteSuccess(pokemon) {
-	    return { type: types.ADD_FAVORITE, pokemon: pokemon };
-	}
-	function delFromFavoriteSuccess(pokemonID) {
-	    return { type: types.DEL_FAVORITE, pokemonID: pokemonID };
-	}
+	var _reactRedux = __webpack_require__(518);
 
-	function addToFavorite(pokemon) {
-	    return function (dispatch) {
-	        dispatch(addToFavoriteSuccess(pokemon));
+	var _loadPokemonsActions = __webpack_require__(732);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	//import {Link} from 'react-router';
+
+
+	var HomePage = function (_React$Component) {
+	    _inherits(HomePage, _React$Component);
+
+	    function HomePage(props) {
+	        _classCallCheck(this, HomePage);
+
+	        return _possibleConstructorReturn(this, (HomePage.__proto__ || Object.getPrototypeOf(HomePage)).call(this, props));
+	    }
+
+	    _createClass(HomePage, [{
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(nextProps) {}
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            console.log(Header);
+	            return _react2.default.createElement(
+	                'div',
+	                null,
+	                '123'
+	            );
+	        }
+	    }]);
+
+	    return HomePage;
+	}(_react2.default.Component);
+
+	function mapStateToProps(state, ownProps) {
+	    return {
+	        pokemons: state.pokemonsReducer,
+	        nextPokeList: state.pokemonsNextGetReducer,
+	        favoriteList: state.toggleFavoriteReducer
 	    };
 	}
-	function delFromFavorite(pokemonID) {
-	    return function (dispatch) {
-	        dispatch(delFromFavoriteSuccess(pokemonID));
-	    };
-	}
+
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, { loadPokemons: _loadPokemonsActions.loadPokemons })(HomePage);
+
+	//export default HomePage;
 
 /***/ },
+/* 730 */,
+/* 731 */,
 /* 732 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -47607,6 +47522,18 @@
 /* 739 */,
 /* 740 */,
 /* 741 */
+/***/ function(module, exports) {
+
+	// removed by extract-text-webpack-plugin
+
+/***/ },
+/* 742 */,
+/* 743 */,
+/* 744 */,
+/* 745 */,
+/* 746 */,
+/* 747 */,
+/* 748 */
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin

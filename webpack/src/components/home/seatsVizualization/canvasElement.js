@@ -1,21 +1,18 @@
 import React from 'react';
-//import {Link} from 'react-router';
 import { connect } from 'react-redux';
-import {loadPokemons} from '../../actions/loadPokemonsActions';
+import {loadPokemons} from '../../../actions/loadPokemonsActions';
 
-class HomePage extends React.Component {
+
+class Canvas extends React.Component {
     constructor(props){
         super(props);
     }
-    componentWillReceiveProps(nextProps){
-        
-    }
-
     render() {
-		console.log(Header)
         return (
-			<div>123</div>
-        );
+			<div>
+				123
+			</div>
+		);
     }
 }
 
@@ -26,7 +23,7 @@ function mapStateToProps(state, ownProps){
         favoriteList: state.toggleFavoriteReducer
     };
 }
-
-export default connect(mapStateToProps, {loadPokemons})(HomePage);
+export default Canvas;
+//export default connect(mapStateToProps, {loadPokemons})(Canvas);
 
 //export default HomePage;
