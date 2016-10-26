@@ -6,7 +6,6 @@ import HomePage from './components/home/HomePage';
 export default (
     <Route path="/" component={App}>
         <IndexRoute component={HomePage} />
-		<Route path="pokemons" component={HomePage} />
     </Route>
 );
 // <IndexRoute component={HomePage} />

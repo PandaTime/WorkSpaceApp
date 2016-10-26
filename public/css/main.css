@@ -43,6 +43,24 @@
       background-color: #b8b8d0; }
     .pokemon .pokemon-type-list .fairy {
       background-color: #e898e8; }
+#canvas {
+  background: lightskyblue;
+  cursor: pointer;
+  -webkit-box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5); }
+.info-box, .search-box {
+  position: absolute;
+  right: 15px;
+  width: 500px;
+  height: 300px;
+  background-color: lightblue; }
+
+.info-box {
+  top: 72px; }
+
+.search-box {
+  top: 400px; }
 .dropdown-menu.react-toggle {
   display: inherit; }
 

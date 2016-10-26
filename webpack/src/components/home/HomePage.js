@@ -2,6 +2,9 @@ import React from 'react';
 //import {Link} from 'react-router';
 import { connect } from 'react-redux';
 import {loadPokemons} from '../../actions/loadPokemonsActions';
+import Canvas from './visualization/canvasElement';
+import Info from './InfoElement';
+import Search from './SearchElement';
 
 class HomePage extends React.Component {
     constructor(props){
@@ -10,11 +13,14 @@ class HomePage extends React.Component {
     componentWillReceiveProps(nextProps){
         
     }
-
+    
     render() {
-		console.log(Header)
         return (
-			<div>123</div>
+            <div>
+			    <Canvas />
+                <Info />
+                <Search />
+            </div>
         );
     }
 }
