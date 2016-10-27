@@ -57,7 +57,7 @@ class Shape {
 class Seat extends Shape{
 	constructor(seat){
 		super();
-		this.id = seat.id;
+		this.id = seat.newId ? seat.id() : seat.id; // that's the function for random generator!
 		this.x = seat.x;
 		this.y = seat.y;
 		this.radius = seat.radius;

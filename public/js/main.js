@@ -64,19 +64,19 @@
 
 	var _configureStore2 = _interopRequireDefault(_configureStore);
 
-	var _routes = __webpack_require__(725);
+	var _routes = __webpack_require__(727);
 
 	var _routes2 = _interopRequireDefault(_routes);
 
-	__webpack_require__(746);
+	__webpack_require__(749);
 
-	__webpack_require__(750);
+	__webpack_require__(753);
 
-	__webpack_require__(752);
+	__webpack_require__(755);
 
-	__webpack_require__(754);
+	__webpack_require__(757);
 
-	__webpack_require__(756);
+	__webpack_require__(759);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -34882,11 +34882,11 @@
 
 	var _reducers2 = _interopRequireDefault(_reducers);
 
-	var _reduxThunk = __webpack_require__(550);
+	var _reduxThunk = __webpack_require__(552);
 
 	var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
 
-	var _remoteReduxDevtools = __webpack_require__(551);
+	var _remoteReduxDevtools = __webpack_require__(553);
 
 	var _actionTypes = __webpack_require__(544);
 
@@ -34908,103 +34908,29 @@
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
-	   value: true
+		value: true
 	});
 
 	var _redux = __webpack_require__(525);
-
-	var _pokemonsReducer = __webpack_require__(543);
-
-	var _toggleFavoriteReducer = __webpack_require__(548);
 
 	var _ajaxStatusReducer = __webpack_require__(549);
 
 	var _ajaxStatusReducer2 = _interopRequireDefault(_ajaxStatusReducer);
 
-	var _seatsReducer = __webpack_require__(764);
+	var _seatsReducer = __webpack_require__(550);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var rootReducer = (0, _redux.combineReducers)({
-	   pokemonsReducer: _pokemonsReducer.pokemonsReducer,
-	   pokemonsDataReducer: _pokemonsReducer.pokemonsDataReducer,
-	   pokemonsNextGetReducer: _pokemonsReducer.pokemonsNextGetReducer,
-	   toggleFavoriteReducer: _toggleFavoriteReducer.toggleFavoriteReducer,
-	   arrSeatsReducer: _seatsReducer.arrSeatsReducer,
-	   selectSeatReducer: _seatsReducer.selectSeatReducer,
-	   ajaxCallsInProgress: _ajaxStatusReducer2.default
+		arrSeatsReducer: _seatsReducer.arrSeatsReducer,
+		selectSeatReducer: _seatsReducer.selectSeatReducer,
+		ajaxCallsInProgress: _ajaxStatusReducer2.default
 	});
 
 	exports.default = rootReducer;
 
 /***/ },
-/* 543 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.pokemonsReducer = pokemonsReducer;
-	exports.pokemonsDataReducer = pokemonsDataReducer;
-	exports.pokemonsNextGetReducer = pokemonsNextGetReducer;
-
-	var _actionTypes = __webpack_require__(544);
-
-	var types = _interopRequireWildcard(_actionTypes);
-
-	var _initialState = __webpack_require__(545);
-
-	var _initialState2 = _interopRequireDefault(_initialState);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-	function pokemonsReducer() {
-	    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _initialState2.default.pokemons;
-	    var action = arguments[1];
-
-	    switch (action.type) {
-	        case types.LOAD_POKEMONS_SUCCESS:
-	            return [].concat(_toConsumableArray(state), _toConsumableArray(action.pokemons.results.map(function (v) {
-	                return Object.assign({}, v);
-	            })));
-	        default:
-	            return state;
-	    }
-	}
-
-	function pokemonsDataReducer() {
-	    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _initialState2.default.pokemonsDataList;
-	    var action = arguments[1];
-
-	    switch (action.type) {
-	        case types.LOAD_POKEMONS_DATA_SUCCESS:
-	            var el = {};
-	            el[action.url] = action.data;
-	            return Object.assign(Object.assign({}, state), el);
-	        default:
-	            return state;
-	    }
-	}
-
-	function pokemonsNextGetReducer() {
-	    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _initialState2.default.nextPokeList;
-	    var action = arguments[1];
-
-	    switch (action.type) {
-	        case types.LOAD_POKEMONS_NEXT_LINK:
-	            return action.url;
-	        default:
-	            return state;
-	    }
-	}
-
-/***/ },
+/* 543 */,
 /* 544 */
 /***/ function(module, exports) {
 
@@ -35016,12 +34942,6 @@
 	var BEGIN_AJAX_CALL = exports.BEGIN_AJAX_CALL = 'BEGIN_AJAX_CALL';
 	var AJAX_CALL_ERROR = exports.AJAX_CALL_ERROR = 'AJAX_CALL_ERROR';
 
-	var LOAD_POKEMONS_NEXT_LINK = exports.LOAD_POKEMONS_NEXT_LINK = 'LOAD_POKEMONS_NEXT_LINK';
-	var LOAD_POKEMONS_SUCCESS = exports.LOAD_POKEMONS_SUCCESS = 'LOAD_POKEMONS_SUCCESS';
-	var LOAD_POKEMONS_DATA_SUCCESS = exports.LOAD_POKEMONS_DATA_SUCCESS = 'LOAD_POKEMONS_DATA_SUCCESS';
-	var ADD_FAVORITE = exports.ADD_FAVORITE = 'ADD_FAVORITE';
-	var DEL_FAVORITE = exports.DEL_FAVORITE = 'DEL_FAVORITE';
-
 	var NEW_USER = exports.NEW_USER = 'NEW_USER';
 	var ALLOCATE_USER = exports.ALLOCATE_USER = 'ALLOCATE_USER';
 	var DEALLOCATE_USER = exports.DEALLOCATE_USER = 'DEALLOCATE_USER';
@@ -35030,6 +34950,7 @@
 
 	var NEW_SEAT = exports.NEW_SEAT = 'NEW_SEAT';
 	var SELECT_SEAT = exports.SELECT_SEAT = 'SELECT_SEAT';
+	var UPDATE_SEAT_INFO = exports.UPDATE_SEAT_INFO = 'UPDATE_SEAT_INFO';
 	var UPDATE_SEAT_LOCATION = exports.UPDATE_SEAT_LOCATION = 'UPDATE_SEAT_LOCATION';
 	var DELETE_SEAT = exports.DELETE_SEAT = 'DELETE_SEAT';
 
@@ -35040,112 +34961,25 @@
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
-	   value: true
-	});
-
-	var _config = __webpack_require__(546);
-
-	var _config2 = _interopRequireDefault(_config);
-
-	var _localstorageAPI = __webpack_require__(547);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	exports.default = {
-	   favoritePokemons: (0, _localstorageAPI.getFavoritePokemons)(),
-	   seats: [],
-	   selected: {},
-	   pokemons: [],
-	   pokemonsDataList: {},
-	   nextPokeList: _config2.default.initialPokemons,
-	   ajaxCallsInProgress: 0
-	};
-
-/***/ },
-/* 546 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
+
+	var _initValues = __webpack_require__(774);
+
+	var _initValues2 = _interopRequireDefault(_initValues);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 	exports.default = {
-		imgUrl: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/',
-		initialPokemons: 'http:\/\/pokeapi.co\/api\/v2\/pokemon\/',
-		favoritePokStorage: 'favPokemonsReduxState'
+		seats: [],
+		selected: {},
+		ajaxCallsInProgress: 0
 	};
 
 /***/ },
-/* 547 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.getFavoritePokemons = getFavoritePokemons;
-	exports.saveFavoritePokemons = saveFavoritePokemons;
-
-	var _config = __webpack_require__(546);
-
-	var _config2 = _interopRequireDefault(_config);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function getFavoritePokemons() {
-	    return JSON.parse(localStorage.getItem(_config2.default.favoritePokStorage)) || {};
-	}
-	function saveFavoritePokemons(data) {
-	    localStorage.setItem(_config2.default.favoritePokStorage, JSON.stringify(data));
-	}
-
-/***/ },
-/* 548 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.toggleFavoriteReducer = toggleFavoriteReducer;
-
-	var _actionTypes = __webpack_require__(544);
-
-	var types = _interopRequireWildcard(_actionTypes);
-
-	var _initialState = __webpack_require__(545);
-
-	var _initialState2 = _interopRequireDefault(_initialState);
-
-	var _localstorageAPI = __webpack_require__(547);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	function toggleFavoriteReducer() {
-	    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _initialState2.default.favoritePokemons;
-	    var action = arguments[1];
-
-	    switch (action.type) {
-	        case types.ADD_FAVORITE:
-	            var res = Object.assign(Object.assign({}, state), action.pokemon);
-	            (0, _localstorageAPI.saveFavoritePokemons)(res);
-	            return res;
-	        case types.DEL_FAVORITE:
-	            var res = Object.assign({}, state);
-	            delete res[action.pokemonID];
-	            (0, _localstorageAPI.saveFavoritePokemons)(res);
-	            return res;
-	        default:
-	            return state;
-	    }
-	}
-
-/***/ },
+/* 546 */,
+/* 547 */,
+/* 548 */,
 /* 549 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -35186,6 +35020,100 @@
 
 /***/ },
 /* 550 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	exports.arrSeatsReducer = arrSeatsReducer;
+	exports.selectSeatReducer = selectSeatReducer;
+	exports.updateSeatInfoReducer = updateSeatInfoReducer;
+
+	var _actionTypes = __webpack_require__(544);
+
+	var types = _interopRequireWildcard(_actionTypes);
+
+	var _initialState = __webpack_require__(545);
+
+	var _initialState2 = _interopRequireDefault(_initialState);
+
+	var _shapes = __webpack_require__(771);
+
+	var _shapes2 = _interopRequireDefault(_shapes);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+	function arrSeatsReducer() {
+		var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _initialState2.default.seats;
+		var action = arguments[1];
+
+		switch (action.type) {
+			case types.NEW_SEAT:
+				return [].concat(_toConsumableArray(state), [new _shapes2.default(action.seat)]);
+			case types.UPDATE_SEAT_INFO:
+				return state;
+			case types.UPDATE_SEAT_LOCATION:
+				var i = getIndex(state, action);
+				if (i < 0) return state;
+				var el = state[i];
+				var newSeatOpt = {
+					id: el.id,
+					x: action.x,
+					y: action.y,
+					radius: el.radius,
+					floor: el.floor,
+					assignedTo: el.assignedTo
+				};
+				return [].concat(_toConsumableArray(state.slice(0, i)), [new _shapes2.default(newSeatOpt)], _toConsumableArray(state.slice(i + 1)));
+			default:
+				return state;
+		}
+	};
+
+	function selectSeatReducer() {
+		var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _initialState2.default.selected;
+		var action = arguments[1];
+
+		switch (action.type) {
+			case types.SELECT_SEAT:
+				return action.seat;
+			default:
+				return state;
+		}
+	}
+
+	function updateSeatInfoReducer() {
+		var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _initialState2.default.seats;
+		var action = arguments[1];
+
+		switch (action.type) {
+			case types.UPDATE_SEAT_INFO:
+				return state;
+			default:
+				return state;
+		}
+	}
+
+	function getIndex(state, action) {
+		var i = -1;
+		state.some(function (el, index) {
+			if (el.id == action.id) {
+				i = index;
+				return true;
+			}
+		});
+		return i;
+	}
+
+/***/ },
+/* 551 */,
+/* 552 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -35213,7 +35141,7 @@
 	exports['default'] = thunk;
 
 /***/ },
-/* 551 */
+/* 553 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -35221,7 +35149,7 @@
 	exports.__esModule = true;
 	exports.composeWithDevTools = exports.default = undefined;
 
-	var _devTools = __webpack_require__(552);
+	var _devTools = __webpack_require__(554);
 
 	Object.defineProperty(exports, 'composeWithDevTools', {
 	  enumerable: true,
@@ -35237,7 +35165,7 @@
 	exports.default = _devTools2.default;
 
 /***/ },
-/* 552 */
+/* 554 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -35252,27 +35180,27 @@
 	exports.preEnhancer = preEnhancer;
 	exports.composeWithDevTools = composeWithDevTools;
 
-	var _jsan = __webpack_require__(553);
+	var _jsan = __webpack_require__(555);
 
-	var _socketclusterClient = __webpack_require__(558);
+	var _socketclusterClient = __webpack_require__(560);
 
 	var _socketclusterClient2 = _interopRequireDefault(_socketclusterClient);
 
-	var _configureStore = __webpack_require__(582);
+	var _configureStore = __webpack_require__(584);
 
 	var _configureStore2 = _interopRequireDefault(_configureStore);
 
-	var _constants = __webpack_require__(659);
+	var _constants = __webpack_require__(661);
 
-	var _reactNative = __webpack_require__(660);
+	var _reactNative = __webpack_require__(662);
 
-	var _remotedevUtils = __webpack_require__(661);
+	var _remotedevUtils = __webpack_require__(663);
 
-	var _catchErrors = __webpack_require__(663);
+	var _catchErrors = __webpack_require__(665);
 
 	var _catchErrors2 = _interopRequireDefault(_catchErrors);
 
-	var _filters = __webpack_require__(664);
+	var _filters = __webpack_require__(666);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -35582,17 +35510,17 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294)))
 
 /***/ },
-/* 553 */
+/* 555 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(554);
+	module.exports = __webpack_require__(556);
 
 
 /***/ },
-/* 554 */
+/* 556 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var cycle = __webpack_require__(555);
+	var cycle = __webpack_require__(557);
 
 	exports.stringify = function stringify(value, replacer, space, _options) {
 
@@ -35642,11 +35570,11 @@
 
 
 /***/ },
-/* 555 */
+/* 557 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var pathGetter = __webpack_require__(556);
-	var utils = __webpack_require__(557);
+	var pathGetter = __webpack_require__(558);
+	var utils = __webpack_require__(559);
 
 	// Based on https://github.com/douglascrockford/JSON-js/blob/master/cycle.js
 
@@ -35789,7 +35717,7 @@
 
 
 /***/ },
-/* 556 */
+/* 558 */
 /***/ function(module, exports) {
 
 	module.exports = pathGetter;
@@ -35817,10 +35745,10 @@
 
 
 /***/ },
-/* 557 */
+/* 559 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var pathGetter = __webpack_require__(556);
+	var pathGetter = __webpack_require__(558);
 
 	exports.getRegexFlags = function getRegexFlags(regex) {
 	  var flags = '';
@@ -35872,16 +35800,16 @@
 
 
 /***/ },
-/* 558 */
+/* 560 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var SCSocket = __webpack_require__(559);
-	var SCSocketCreator = __webpack_require__(581);
+	var SCSocket = __webpack_require__(561);
+	var SCSocketCreator = __webpack_require__(583);
 
 	module.exports.SCSocketCreator = SCSocketCreator;
 	module.exports.SCSocket = SCSocket;
 
-	module.exports.SCEmitter = __webpack_require__(564).SCEmitter;
+	module.exports.SCEmitter = __webpack_require__(566).SCEmitter;
 
 	module.exports.connect = function (options) {
 	  return SCSocketCreator.connect(options);
@@ -35895,20 +35823,20 @@
 
 
 /***/ },
-/* 559 */
+/* 561 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(global, Buffer) {var SCEmitter = __webpack_require__(564).SCEmitter;
-	var SCChannel = __webpack_require__(567).SCChannel;
-	var Response = __webpack_require__(568).Response;
-	var AuthEngine = __webpack_require__(571).AuthEngine;
-	var formatter = __webpack_require__(572);
-	var SCTransport = __webpack_require__(573).SCTransport;
-	var querystring = __webpack_require__(574);
-	var LinkedList = __webpack_require__(578);
-	var base64 = __webpack_require__(580);
+	/* WEBPACK VAR INJECTION */(function(global, Buffer) {var SCEmitter = __webpack_require__(566).SCEmitter;
+	var SCChannel = __webpack_require__(569).SCChannel;
+	var Response = __webpack_require__(570).Response;
+	var AuthEngine = __webpack_require__(573).AuthEngine;
+	var formatter = __webpack_require__(574);
+	var SCTransport = __webpack_require__(575).SCTransport;
+	var querystring = __webpack_require__(576);
+	var LinkedList = __webpack_require__(580);
+	var base64 = __webpack_require__(582);
 
-	var scErrors = __webpack_require__(569);
+	var scErrors = __webpack_require__(571);
 	var InvalidArgumentsError = scErrors.InvalidArgumentsError;
 	var InvalidMessageError = scErrors.InvalidMessageError;
 	var SocketProtocolError = scErrors.SocketProtocolError;
@@ -36840,10 +36768,10 @@
 
 	module.exports = SCSocket;
 
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(560).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(562).Buffer))
 
 /***/ },
-/* 560 */
+/* 562 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer, global) {/*!
@@ -36856,9 +36784,9 @@
 
 	'use strict'
 
-	var base64 = __webpack_require__(561)
-	var ieee754 = __webpack_require__(562)
-	var isArray = __webpack_require__(563)
+	var base64 = __webpack_require__(563)
+	var ieee754 = __webpack_require__(564)
+	var isArray = __webpack_require__(565)
 
 	exports.Buffer = Buffer
 	exports.SlowBuffer = SlowBuffer
@@ -38636,10 +38564,10 @@
 	  return val !== val // eslint-disable-line no-self-compare
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(560).Buffer, (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(562).Buffer, (function() { return this; }())))
 
 /***/ },
-/* 561 */
+/* 563 */
 /***/ function(module, exports) {
 
 	'use strict'
@@ -38759,7 +38687,7 @@
 
 
 /***/ },
-/* 562 */
+/* 564 */
 /***/ function(module, exports) {
 
 	exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -38849,7 +38777,7 @@
 
 
 /***/ },
-/* 563 */
+/* 565 */
 /***/ function(module, exports) {
 
 	var toString = {}.toString;
@@ -38860,13 +38788,13 @@
 
 
 /***/ },
-/* 564 */
+/* 566 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Emitter = __webpack_require__(565);
+	var Emitter = __webpack_require__(567);
 
 	if (!Object.create) {
-	  Object.create = __webpack_require__(566);
+	  Object.create = __webpack_require__(568);
 	}
 
 	var SCEmitter = function () {
@@ -38897,7 +38825,7 @@
 
 
 /***/ },
-/* 565 */
+/* 567 */
 /***/ function(module, exports) {
 
 	
@@ -39064,7 +38992,7 @@
 
 
 /***/ },
-/* 566 */
+/* 568 */
 /***/ function(module, exports) {
 
 	module.exports.create = (function () {
@@ -39080,10 +39008,10 @@
 	})();
 
 /***/ },
-/* 567 */
+/* 569 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var SCEmitter = __webpack_require__(564).SCEmitter;
+	var SCEmitter = __webpack_require__(566).SCEmitter;
 
 	var SCChannel = function (name, client, options) {
 	  var self = this;
@@ -39154,10 +39082,10 @@
 
 
 /***/ },
-/* 568 */
+/* 570 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var scErrors = __webpack_require__(569);
+	var scErrors = __webpack_require__(571);
 	var InvalidActionError = scErrors.InvalidActionError;
 
 	var Response = function (socket, id) {
@@ -39215,10 +39143,10 @@
 
 
 /***/ },
-/* 569 */
+/* 571 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var cycle = __webpack_require__(570);
+	var cycle = __webpack_require__(572);
 
 	var isStrict = (function () { return !this; })();
 
@@ -39495,7 +39423,7 @@
 
 
 /***/ },
-/* 570 */
+/* 572 */
 /***/ function(module, exports) {
 
 	/*
@@ -39671,7 +39599,7 @@
 
 
 /***/ },
-/* 571 */
+/* 573 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {var AuthEngine = function () {
@@ -39734,7 +39662,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 572 */
+/* 574 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {var base64Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
@@ -39822,15 +39750,15 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 573 */
+/* 575 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var SCEmitter = __webpack_require__(564).SCEmitter;
-	var Response = __webpack_require__(568).Response;
-	var querystring = __webpack_require__(574);
-	var WebSocket = __webpack_require__(577);
+	var SCEmitter = __webpack_require__(566).SCEmitter;
+	var Response = __webpack_require__(570).Response;
+	var querystring = __webpack_require__(576);
+	var WebSocket = __webpack_require__(579);
 
-	var scErrors = __webpack_require__(569);
+	var scErrors = __webpack_require__(571);
 	var TimeoutError = scErrors.TimeoutError;
 
 
@@ -40160,17 +40088,17 @@
 
 
 /***/ },
-/* 574 */
+/* 576 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	exports.decode = exports.parse = __webpack_require__(575);
-	exports.encode = exports.stringify = __webpack_require__(576);
+	exports.decode = exports.parse = __webpack_require__(577);
+	exports.encode = exports.stringify = __webpack_require__(578);
 
 
 /***/ },
-/* 575 */
+/* 577 */
 /***/ function(module, exports) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
@@ -40256,7 +40184,7 @@
 
 
 /***/ },
-/* 576 */
+/* 578 */
 /***/ function(module, exports) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
@@ -40326,7 +40254,7 @@
 
 
 /***/ },
-/* 577 */
+/* 579 */
 /***/ function(module, exports) {
 
 	var global;
@@ -40367,16 +40295,16 @@
 
 
 /***/ },
-/* 578 */
+/* 580 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	module.exports = __webpack_require__(579);
+	module.exports = __webpack_require__(581);
 
 
 /***/ },
-/* 579 */
+/* 581 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -40768,7 +40696,7 @@
 
 
 /***/ },
-/* 580 */
+/* 582 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module, global) {/*! http://mths.be/base64 v0.1.0 by @mathias | MIT license */
@@ -40938,10 +40866,10 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(533)(module), (function() { return this; }())))
 
 /***/ },
-/* 581 */
+/* 583 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(global) {var SCSocket = __webpack_require__(559);
+	/* WEBPACK VAR INJECTION */(function(global) {var SCSocket = __webpack_require__(561);
 
 	var _connections = {};
 
@@ -41044,7 +40972,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 582 */
+/* 584 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -41052,7 +40980,7 @@
 	exports.__esModule = true;
 	exports.default = configureStore;
 
-	var _reduxDevtoolsInstrument = __webpack_require__(583);
+	var _reduxDevtoolsInstrument = __webpack_require__(585);
 
 	var _reduxDevtoolsInstrument2 = _interopRequireDefault(_reduxDevtoolsInstrument);
 
@@ -41063,7 +40991,7 @@
 	}
 
 /***/ },
-/* 583 */
+/* 585 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -41081,11 +41009,11 @@
 	exports.unliftStore = unliftStore;
 	exports.default = instrument;
 
-	var _difference = __webpack_require__(584);
+	var _difference = __webpack_require__(586);
 
 	var _difference2 = _interopRequireDefault(_difference);
 
-	var _union = __webpack_require__(651);
+	var _union = __webpack_require__(653);
 
 	var _union2 = _interopRequireDefault(_union);
 
@@ -41093,7 +41021,7 @@
 
 	var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 
-	var _symbolObservable = __webpack_require__(657);
+	var _symbolObservable = __webpack_require__(659);
 
 	var _symbolObservable2 = _interopRequireDefault(_symbolObservable);
 
@@ -41681,13 +41609,13 @@
 	}
 
 /***/ },
-/* 584 */
+/* 586 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseDifference = __webpack_require__(585),
-	    baseFlatten = __webpack_require__(632),
-	    baseRest = __webpack_require__(639),
-	    isArrayLikeObject = __webpack_require__(648);
+	var baseDifference = __webpack_require__(587),
+	    baseFlatten = __webpack_require__(634),
+	    baseRest = __webpack_require__(641),
+	    isArrayLikeObject = __webpack_require__(650);
 
 	/**
 	 * Creates an array of `array` values not included in the other given arrays
@@ -41720,15 +41648,15 @@
 
 
 /***/ },
-/* 585 */
+/* 587 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var SetCache = __webpack_require__(586),
-	    arrayIncludes = __webpack_require__(623),
-	    arrayIncludesWith = __webpack_require__(628),
-	    arrayMap = __webpack_require__(629),
-	    baseUnary = __webpack_require__(630),
-	    cacheHas = __webpack_require__(631);
+	var SetCache = __webpack_require__(588),
+	    arrayIncludes = __webpack_require__(625),
+	    arrayIncludesWith = __webpack_require__(630),
+	    arrayMap = __webpack_require__(631),
+	    baseUnary = __webpack_require__(632),
+	    cacheHas = __webpack_require__(633);
 
 	/** Used as the size to enable large array optimizations. */
 	var LARGE_ARRAY_SIZE = 200;
@@ -41793,12 +41721,12 @@
 
 
 /***/ },
-/* 586 */
+/* 588 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var MapCache = __webpack_require__(587),
-	    setCacheAdd = __webpack_require__(621),
-	    setCacheHas = __webpack_require__(622);
+	var MapCache = __webpack_require__(589),
+	    setCacheAdd = __webpack_require__(623),
+	    setCacheHas = __webpack_require__(624);
 
 	/**
 	 *
@@ -41826,14 +41754,14 @@
 
 
 /***/ },
-/* 587 */
+/* 589 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var mapCacheClear = __webpack_require__(588),
-	    mapCacheDelete = __webpack_require__(615),
-	    mapCacheGet = __webpack_require__(618),
-	    mapCacheHas = __webpack_require__(619),
-	    mapCacheSet = __webpack_require__(620);
+	var mapCacheClear = __webpack_require__(590),
+	    mapCacheDelete = __webpack_require__(617),
+	    mapCacheGet = __webpack_require__(620),
+	    mapCacheHas = __webpack_require__(621),
+	    mapCacheSet = __webpack_require__(622);
 
 	/**
 	 * Creates a map cache object to store key-value pairs.
@@ -41864,12 +41792,12 @@
 
 
 /***/ },
-/* 588 */
+/* 590 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Hash = __webpack_require__(589),
-	    ListCache = __webpack_require__(606),
-	    Map = __webpack_require__(614);
+	var Hash = __webpack_require__(591),
+	    ListCache = __webpack_require__(608),
+	    Map = __webpack_require__(616);
 
 	/**
 	 * Removes all key-value entries from the map.
@@ -41891,14 +41819,14 @@
 
 
 /***/ },
-/* 589 */
+/* 591 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var hashClear = __webpack_require__(590),
-	    hashDelete = __webpack_require__(602),
-	    hashGet = __webpack_require__(603),
-	    hashHas = __webpack_require__(604),
-	    hashSet = __webpack_require__(605);
+	var hashClear = __webpack_require__(592),
+	    hashDelete = __webpack_require__(604),
+	    hashGet = __webpack_require__(605),
+	    hashHas = __webpack_require__(606),
+	    hashSet = __webpack_require__(607);
 
 	/**
 	 * Creates a hash object.
@@ -41929,10 +41857,10 @@
 
 
 /***/ },
-/* 590 */
+/* 592 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var nativeCreate = __webpack_require__(591);
+	var nativeCreate = __webpack_require__(593);
 
 	/**
 	 * Removes all key-value entries from the hash.
@@ -41950,10 +41878,10 @@
 
 
 /***/ },
-/* 591 */
+/* 593 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(592);
+	var getNative = __webpack_require__(594);
 
 	/* Built-in method references that are verified to be native. */
 	var nativeCreate = getNative(Object, 'create');
@@ -41962,11 +41890,11 @@
 
 
 /***/ },
-/* 592 */
+/* 594 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIsNative = __webpack_require__(593),
-	    getValue = __webpack_require__(601);
+	var baseIsNative = __webpack_require__(595),
+	    getValue = __webpack_require__(603);
 
 	/**
 	 * Gets the native function at `key` of `object`.
@@ -41985,13 +41913,13 @@
 
 
 /***/ },
-/* 593 */
+/* 595 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isFunction = __webpack_require__(594),
-	    isMasked = __webpack_require__(596),
-	    isObject = __webpack_require__(595),
-	    toSource = __webpack_require__(600);
+	var isFunction = __webpack_require__(596),
+	    isMasked = __webpack_require__(598),
+	    isObject = __webpack_require__(597),
+	    toSource = __webpack_require__(602);
 
 	/**
 	 * Used to match `RegExp`
@@ -42038,10 +41966,10 @@
 
 
 /***/ },
-/* 594 */
+/* 596 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isObject = __webpack_require__(595);
+	var isObject = __webpack_require__(597);
 
 	/** `Object#toString` result references. */
 	var funcTag = '[object Function]',
@@ -42086,7 +42014,7 @@
 
 
 /***/ },
-/* 595 */
+/* 597 */
 /***/ function(module, exports) {
 
 	/**
@@ -42123,10 +42051,10 @@
 
 
 /***/ },
-/* 596 */
+/* 598 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var coreJsData = __webpack_require__(597);
+	var coreJsData = __webpack_require__(599);
 
 	/** Used to detect methods masquerading as native. */
 	var maskSrcKey = (function() {
@@ -42149,10 +42077,10 @@
 
 
 /***/ },
-/* 597 */
+/* 599 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var root = __webpack_require__(598);
+	var root = __webpack_require__(600);
 
 	/** Used to detect overreaching core-js shims. */
 	var coreJsData = root['__core-js_shared__'];
@@ -42161,10 +42089,10 @@
 
 
 /***/ },
-/* 598 */
+/* 600 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var freeGlobal = __webpack_require__(599);
+	var freeGlobal = __webpack_require__(601);
 
 	/** Detect free variable `self`. */
 	var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
@@ -42176,7 +42104,7 @@
 
 
 /***/ },
-/* 599 */
+/* 601 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** Detect free variable `global` from Node.js. */
@@ -42187,7 +42115,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 600 */
+/* 602 */
 /***/ function(module, exports) {
 
 	/** Used for built-in method references. */
@@ -42219,7 +42147,7 @@
 
 
 /***/ },
-/* 601 */
+/* 603 */
 /***/ function(module, exports) {
 
 	/**
@@ -42238,7 +42166,7 @@
 
 
 /***/ },
-/* 602 */
+/* 604 */
 /***/ function(module, exports) {
 
 	/**
@@ -42261,10 +42189,10 @@
 
 
 /***/ },
-/* 603 */
+/* 605 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var nativeCreate = __webpack_require__(591);
+	var nativeCreate = __webpack_require__(593);
 
 	/** Used to stand-in for `undefined` hash values. */
 	var HASH_UNDEFINED = '__lodash_hash_undefined__';
@@ -42297,10 +42225,10 @@
 
 
 /***/ },
-/* 604 */
+/* 606 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var nativeCreate = __webpack_require__(591);
+	var nativeCreate = __webpack_require__(593);
 
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -42326,10 +42254,10 @@
 
 
 /***/ },
-/* 605 */
+/* 607 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var nativeCreate = __webpack_require__(591);
+	var nativeCreate = __webpack_require__(593);
 
 	/** Used to stand-in for `undefined` hash values. */
 	var HASH_UNDEFINED = '__lodash_hash_undefined__';
@@ -42355,14 +42283,14 @@
 
 
 /***/ },
-/* 606 */
+/* 608 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var listCacheClear = __webpack_require__(607),
-	    listCacheDelete = __webpack_require__(608),
-	    listCacheGet = __webpack_require__(611),
-	    listCacheHas = __webpack_require__(612),
-	    listCacheSet = __webpack_require__(613);
+	var listCacheClear = __webpack_require__(609),
+	    listCacheDelete = __webpack_require__(610),
+	    listCacheGet = __webpack_require__(613),
+	    listCacheHas = __webpack_require__(614),
+	    listCacheSet = __webpack_require__(615);
 
 	/**
 	 * Creates an list cache object.
@@ -42393,7 +42321,7 @@
 
 
 /***/ },
-/* 607 */
+/* 609 */
 /***/ function(module, exports) {
 
 	/**
@@ -42412,10 +42340,10 @@
 
 
 /***/ },
-/* 608 */
+/* 610 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var assocIndexOf = __webpack_require__(609);
+	var assocIndexOf = __webpack_require__(611);
 
 	/** Used for built-in method references. */
 	var arrayProto = Array.prototype;
@@ -42453,10 +42381,10 @@
 
 
 /***/ },
-/* 609 */
+/* 611 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var eq = __webpack_require__(610);
+	var eq = __webpack_require__(612);
 
 	/**
 	 * Gets the index at which the `key` is found in `array` of key-value pairs.
@@ -42480,7 +42408,7 @@
 
 
 /***/ },
-/* 610 */
+/* 612 */
 /***/ function(module, exports) {
 
 	/**
@@ -42523,10 +42451,10 @@
 
 
 /***/ },
-/* 611 */
+/* 613 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var assocIndexOf = __webpack_require__(609);
+	var assocIndexOf = __webpack_require__(611);
 
 	/**
 	 * Gets the list cache value for `key`.
@@ -42548,10 +42476,10 @@
 
 
 /***/ },
-/* 612 */
+/* 614 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var assocIndexOf = __webpack_require__(609);
+	var assocIndexOf = __webpack_require__(611);
 
 	/**
 	 * Checks if a list cache value for `key` exists.
@@ -42570,10 +42498,10 @@
 
 
 /***/ },
-/* 613 */
+/* 615 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var assocIndexOf = __webpack_require__(609);
+	var assocIndexOf = __webpack_require__(611);
 
 	/**
 	 * Sets the list cache `key` to `value`.
@@ -42602,11 +42530,11 @@
 
 
 /***/ },
-/* 614 */
+/* 616 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(592),
-	    root = __webpack_require__(598);
+	var getNative = __webpack_require__(594),
+	    root = __webpack_require__(600);
 
 	/* Built-in method references that are verified to be native. */
 	var Map = getNative(root, 'Map');
@@ -42615,10 +42543,10 @@
 
 
 /***/ },
-/* 615 */
+/* 617 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getMapData = __webpack_require__(616);
+	var getMapData = __webpack_require__(618);
 
 	/**
 	 * Removes `key` and its value from the map.
@@ -42639,10 +42567,10 @@
 
 
 /***/ },
-/* 616 */
+/* 618 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isKeyable = __webpack_require__(617);
+	var isKeyable = __webpack_require__(619);
 
 	/**
 	 * Gets the data for `map`.
@@ -42663,7 +42591,7 @@
 
 
 /***/ },
-/* 617 */
+/* 619 */
 /***/ function(module, exports) {
 
 	/**
@@ -42684,10 +42612,10 @@
 
 
 /***/ },
-/* 618 */
+/* 620 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getMapData = __webpack_require__(616);
+	var getMapData = __webpack_require__(618);
 
 	/**
 	 * Gets the map value for `key`.
@@ -42706,10 +42634,10 @@
 
 
 /***/ },
-/* 619 */
+/* 621 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getMapData = __webpack_require__(616);
+	var getMapData = __webpack_require__(618);
 
 	/**
 	 * Checks if a map value for `key` exists.
@@ -42728,10 +42656,10 @@
 
 
 /***/ },
-/* 620 */
+/* 622 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getMapData = __webpack_require__(616);
+	var getMapData = __webpack_require__(618);
 
 	/**
 	 * Sets the map `key` to `value`.
@@ -42756,7 +42684,7 @@
 
 
 /***/ },
-/* 621 */
+/* 623 */
 /***/ function(module, exports) {
 
 	/** Used to stand-in for `undefined` hash values. */
@@ -42781,7 +42709,7 @@
 
 
 /***/ },
-/* 622 */
+/* 624 */
 /***/ function(module, exports) {
 
 	/**
@@ -42801,10 +42729,10 @@
 
 
 /***/ },
-/* 623 */
+/* 625 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIndexOf = __webpack_require__(624);
+	var baseIndexOf = __webpack_require__(626);
 
 	/**
 	 * A specialized version of `_.includes` for arrays without support for
@@ -42824,12 +42752,12 @@
 
 
 /***/ },
-/* 624 */
+/* 626 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseFindIndex = __webpack_require__(625),
-	    baseIsNaN = __webpack_require__(626),
-	    strictIndexOf = __webpack_require__(627);
+	var baseFindIndex = __webpack_require__(627),
+	    baseIsNaN = __webpack_require__(628),
+	    strictIndexOf = __webpack_require__(629);
 
 	/**
 	 * The base implementation of `_.indexOf` without `fromIndex` bounds checks.
@@ -42850,7 +42778,7 @@
 
 
 /***/ },
-/* 625 */
+/* 627 */
 /***/ function(module, exports) {
 
 	/**
@@ -42880,7 +42808,7 @@
 
 
 /***/ },
-/* 626 */
+/* 628 */
 /***/ function(module, exports) {
 
 	/**
@@ -42898,7 +42826,7 @@
 
 
 /***/ },
-/* 627 */
+/* 629 */
 /***/ function(module, exports) {
 
 	/**
@@ -42927,7 +42855,7 @@
 
 
 /***/ },
-/* 628 */
+/* 630 */
 /***/ function(module, exports) {
 
 	/**
@@ -42955,7 +42883,7 @@
 
 
 /***/ },
-/* 629 */
+/* 631 */
 /***/ function(module, exports) {
 
 	/**
@@ -42982,7 +42910,7 @@
 
 
 /***/ },
-/* 630 */
+/* 632 */
 /***/ function(module, exports) {
 
 	/**
@@ -43002,7 +42930,7 @@
 
 
 /***/ },
-/* 631 */
+/* 633 */
 /***/ function(module, exports) {
 
 	/**
@@ -43021,11 +42949,11 @@
 
 
 /***/ },
-/* 632 */
+/* 634 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arrayPush = __webpack_require__(633),
-	    isFlattenable = __webpack_require__(634);
+	var arrayPush = __webpack_require__(635),
+	    isFlattenable = __webpack_require__(636);
 
 	/**
 	 * The base implementation of `_.flatten` with support for restricting flattening.
@@ -43065,7 +42993,7 @@
 
 
 /***/ },
-/* 633 */
+/* 635 */
 /***/ function(module, exports) {
 
 	/**
@@ -43091,12 +43019,12 @@
 
 
 /***/ },
-/* 634 */
+/* 636 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Symbol = __webpack_require__(635),
-	    isArguments = __webpack_require__(636),
-	    isArray = __webpack_require__(638);
+	var Symbol = __webpack_require__(637),
+	    isArguments = __webpack_require__(638),
+	    isArray = __webpack_require__(640);
 
 	/** Built-in value references. */
 	var spreadableSymbol = Symbol ? Symbol.isConcatSpreadable : undefined;
@@ -43117,10 +43045,10 @@
 
 
 /***/ },
-/* 635 */
+/* 637 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var root = __webpack_require__(598);
+	var root = __webpack_require__(600);
 
 	/** Built-in value references. */
 	var Symbol = root.Symbol;
@@ -43129,10 +43057,10 @@
 
 
 /***/ },
-/* 636 */
+/* 638 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIsArguments = __webpack_require__(637),
+	var baseIsArguments = __webpack_require__(639),
 	    isObjectLike = __webpack_require__(530);
 
 	/** Used for built-in method references. */
@@ -43171,7 +43099,7 @@
 
 
 /***/ },
-/* 637 */
+/* 639 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var isObjectLike = __webpack_require__(530);
@@ -43204,7 +43132,7 @@
 
 
 /***/ },
-/* 638 */
+/* 640 */
 /***/ function(module, exports) {
 
 	/**
@@ -43236,12 +43164,12 @@
 
 
 /***/ },
-/* 639 */
+/* 641 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var identity = __webpack_require__(640),
-	    overRest = __webpack_require__(641),
-	    setToString = __webpack_require__(643);
+	var identity = __webpack_require__(642),
+	    overRest = __webpack_require__(643),
+	    setToString = __webpack_require__(645);
 
 	/**
 	 * The base implementation of `_.rest` which doesn't validate or coerce arguments.
@@ -43259,7 +43187,7 @@
 
 
 /***/ },
-/* 640 */
+/* 642 */
 /***/ function(module, exports) {
 
 	/**
@@ -43286,10 +43214,10 @@
 
 
 /***/ },
-/* 641 */
+/* 643 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var apply = __webpack_require__(642);
+	var apply = __webpack_require__(644);
 
 	/* Built-in method references for those with the same name as other `lodash` methods. */
 	var nativeMax = Math.max;
@@ -43328,7 +43256,7 @@
 
 
 /***/ },
-/* 642 */
+/* 644 */
 /***/ function(module, exports) {
 
 	/**
@@ -43355,11 +43283,11 @@
 
 
 /***/ },
-/* 643 */
+/* 645 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseSetToString = __webpack_require__(644),
-	    shortOut = __webpack_require__(647);
+	var baseSetToString = __webpack_require__(646),
+	    shortOut = __webpack_require__(649);
 
 	/**
 	 * Sets the `toString` method of `func` to return `string`.
@@ -43375,12 +43303,12 @@
 
 
 /***/ },
-/* 644 */
+/* 646 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var constant = __webpack_require__(645),
-	    defineProperty = __webpack_require__(646),
-	    identity = __webpack_require__(640);
+	var constant = __webpack_require__(647),
+	    defineProperty = __webpack_require__(648),
+	    identity = __webpack_require__(642);
 
 	/**
 	 * The base implementation of `setToString` without support for hot loop shorting.
@@ -43403,7 +43331,7 @@
 
 
 /***/ },
-/* 645 */
+/* 647 */
 /***/ function(module, exports) {
 
 	/**
@@ -43435,10 +43363,10 @@
 
 
 /***/ },
-/* 646 */
+/* 648 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(592);
+	var getNative = __webpack_require__(594);
 
 	var defineProperty = (function() {
 	  try {
@@ -43452,7 +43380,7 @@
 
 
 /***/ },
-/* 647 */
+/* 649 */
 /***/ function(module, exports) {
 
 	/** Used to detect hot functions by number of calls within a span of milliseconds. */
@@ -43495,10 +43423,10 @@
 
 
 /***/ },
-/* 648 */
+/* 650 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isArrayLike = __webpack_require__(649),
+	var isArrayLike = __webpack_require__(651),
 	    isObjectLike = __webpack_require__(530);
 
 	/**
@@ -43534,11 +43462,11 @@
 
 
 /***/ },
-/* 649 */
+/* 651 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isFunction = __webpack_require__(594),
-	    isLength = __webpack_require__(650);
+	var isFunction = __webpack_require__(596),
+	    isLength = __webpack_require__(652);
 
 	/**
 	 * Checks if `value` is array-like. A value is considered array-like if it's
@@ -43573,7 +43501,7 @@
 
 
 /***/ },
-/* 650 */
+/* 652 */
 /***/ function(module, exports) {
 
 	/** Used as references for various `Number` constants. */
@@ -43614,13 +43542,13 @@
 
 
 /***/ },
-/* 651 */
+/* 653 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseFlatten = __webpack_require__(632),
-	    baseRest = __webpack_require__(639),
-	    baseUniq = __webpack_require__(652),
-	    isArrayLikeObject = __webpack_require__(648);
+	var baseFlatten = __webpack_require__(634),
+	    baseRest = __webpack_require__(641),
+	    baseUniq = __webpack_require__(654),
+	    isArrayLikeObject = __webpack_require__(650);
 
 	/**
 	 * Creates an array of unique values, in order, from all given arrays using
@@ -43646,15 +43574,15 @@
 
 
 /***/ },
-/* 652 */
+/* 654 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var SetCache = __webpack_require__(586),
-	    arrayIncludes = __webpack_require__(623),
-	    arrayIncludesWith = __webpack_require__(628),
-	    cacheHas = __webpack_require__(631),
-	    createSet = __webpack_require__(653),
-	    setToArray = __webpack_require__(656);
+	var SetCache = __webpack_require__(588),
+	    arrayIncludes = __webpack_require__(625),
+	    arrayIncludesWith = __webpack_require__(630),
+	    cacheHas = __webpack_require__(633),
+	    createSet = __webpack_require__(655),
+	    setToArray = __webpack_require__(658);
 
 	/** Used as the size to enable large array optimizations. */
 	var LARGE_ARRAY_SIZE = 200;
@@ -43724,12 +43652,12 @@
 
 
 /***/ },
-/* 653 */
+/* 655 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Set = __webpack_require__(654),
-	    noop = __webpack_require__(655),
-	    setToArray = __webpack_require__(656);
+	var Set = __webpack_require__(656),
+	    noop = __webpack_require__(657),
+	    setToArray = __webpack_require__(658);
 
 	/** Used as references for various `Number` constants. */
 	var INFINITY = 1 / 0;
@@ -43749,11 +43677,11 @@
 
 
 /***/ },
-/* 654 */
+/* 656 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(592),
-	    root = __webpack_require__(598);
+	var getNative = __webpack_require__(594),
+	    root = __webpack_require__(600);
 
 	/* Built-in method references that are verified to be native. */
 	var Set = getNative(root, 'Set');
@@ -43762,7 +43690,7 @@
 
 
 /***/ },
-/* 655 */
+/* 657 */
 /***/ function(module, exports) {
 
 	/**
@@ -43785,7 +43713,7 @@
 
 
 /***/ },
-/* 656 */
+/* 658 */
 /***/ function(module, exports) {
 
 	/**
@@ -43809,18 +43737,18 @@
 
 
 /***/ },
-/* 657 */
+/* 659 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/* global window */
 	'use strict';
 
-	module.exports = __webpack_require__(658)(global || window || this);
+	module.exports = __webpack_require__(660)(global || window || this);
 
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 658 */
+/* 660 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -43845,7 +43773,7 @@
 
 
 /***/ },
-/* 659 */
+/* 661 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -43862,7 +43790,7 @@
 	};
 
 /***/ },
-/* 660 */
+/* 662 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -43885,7 +43813,7 @@
 	}
 
 /***/ },
-/* 661 */
+/* 663 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -43900,7 +43828,7 @@
 	exports.evalAction = evalAction;
 	exports.evalMethod = evalMethod;
 
-	var _getParams = __webpack_require__(662);
+	var _getParams = __webpack_require__(664);
 
 	var _getParams2 = _interopRequireDefault(_getParams);
 
@@ -43988,7 +43916,7 @@
 	/* eslint-enable */
 
 /***/ },
-/* 662 */
+/* 664 */
 /***/ function(module, exports) {
 
 	/* global window */
@@ -44030,7 +43958,7 @@
 
 
 /***/ },
-/* 663 */
+/* 665 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
@@ -44077,7 +44005,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 664 */
+/* 666 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -44093,7 +44021,7 @@
 	exports.filterStagedActions = filterStagedActions;
 	exports.filterState = filterState;
 
-	var _mapValues = __webpack_require__(665);
+	var _mapValues = __webpack_require__(667);
 
 	var _mapValues2 = _interopRequireDefault(_mapValues);
 
@@ -44192,12 +44120,12 @@
 	}
 
 /***/ },
-/* 665 */
+/* 667 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseAssignValue = __webpack_require__(666),
-	    baseForOwn = __webpack_require__(667),
-	    baseIteratee = __webpack_require__(682);
+	var baseAssignValue = __webpack_require__(668),
+	    baseForOwn = __webpack_require__(669),
+	    baseIteratee = __webpack_require__(684);
 
 	/**
 	 * Creates an object with the same keys as `object` and values generated
@@ -44241,10 +44169,10 @@
 
 
 /***/ },
-/* 666 */
+/* 668 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var defineProperty = __webpack_require__(646);
+	var defineProperty = __webpack_require__(648);
 
 	/**
 	 * The base implementation of `assignValue` and `assignMergeValue` without
@@ -44272,11 +44200,11 @@
 
 
 /***/ },
-/* 667 */
+/* 669 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseFor = __webpack_require__(668),
-	    keys = __webpack_require__(670);
+	var baseFor = __webpack_require__(670),
+	    keys = __webpack_require__(672);
 
 	/**
 	 * The base implementation of `_.forOwn` without support for iteratee shorthands.
@@ -44294,10 +44222,10 @@
 
 
 /***/ },
-/* 668 */
+/* 670 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var createBaseFor = __webpack_require__(669);
+	var createBaseFor = __webpack_require__(671);
 
 	/**
 	 * The base implementation of `baseForOwn` which iterates over `object`
@@ -44316,7 +44244,7 @@
 
 
 /***/ },
-/* 669 */
+/* 671 */
 /***/ function(module, exports) {
 
 	/**
@@ -44347,12 +44275,12 @@
 
 
 /***/ },
-/* 670 */
+/* 672 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arrayLikeKeys = __webpack_require__(671),
-	    baseKeys = __webpack_require__(679),
-	    isArrayLike = __webpack_require__(649);
+	var arrayLikeKeys = __webpack_require__(673),
+	    baseKeys = __webpack_require__(681),
+	    isArrayLike = __webpack_require__(651);
 
 	/**
 	 * Creates an array of the own enumerable property names of `object`.
@@ -44390,15 +44318,15 @@
 
 
 /***/ },
-/* 671 */
+/* 673 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseTimes = __webpack_require__(672),
-	    isArguments = __webpack_require__(636),
-	    isArray = __webpack_require__(638),
-	    isBuffer = __webpack_require__(673),
-	    isIndex = __webpack_require__(675),
-	    isTypedArray = __webpack_require__(676);
+	var baseTimes = __webpack_require__(674),
+	    isArguments = __webpack_require__(638),
+	    isArray = __webpack_require__(640),
+	    isBuffer = __webpack_require__(675),
+	    isIndex = __webpack_require__(677),
+	    isTypedArray = __webpack_require__(678);
 
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -44445,7 +44373,7 @@
 
 
 /***/ },
-/* 672 */
+/* 674 */
 /***/ function(module, exports) {
 
 	/**
@@ -44471,11 +44399,11 @@
 
 
 /***/ },
-/* 673 */
+/* 675 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(module) {var root = __webpack_require__(598),
-	    stubFalse = __webpack_require__(674);
+	/* WEBPACK VAR INJECTION */(function(module) {var root = __webpack_require__(600),
+	    stubFalse = __webpack_require__(676);
 
 	/** Detect free variable `exports`. */
 	var freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;
@@ -44516,7 +44444,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(533)(module)))
 
 /***/ },
-/* 674 */
+/* 676 */
 /***/ function(module, exports) {
 
 	/**
@@ -44540,7 +44468,7 @@
 
 
 /***/ },
-/* 675 */
+/* 677 */
 /***/ function(module, exports) {
 
 	/** Used as references for various `Number` constants. */
@@ -44568,12 +44496,12 @@
 
 
 /***/ },
-/* 676 */
+/* 678 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIsTypedArray = __webpack_require__(677),
-	    baseUnary = __webpack_require__(630),
-	    nodeUtil = __webpack_require__(678);
+	var baseIsTypedArray = __webpack_require__(679),
+	    baseUnary = __webpack_require__(632),
+	    nodeUtil = __webpack_require__(680);
 
 	/* Node.js helper references. */
 	var nodeIsTypedArray = nodeUtil && nodeUtil.isTypedArray;
@@ -44601,10 +44529,10 @@
 
 
 /***/ },
-/* 677 */
+/* 679 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isLength = __webpack_require__(650),
+	var isLength = __webpack_require__(652),
 	    isObjectLike = __webpack_require__(530);
 
 	/** `Object#toString` result references. */
@@ -44676,10 +44604,10 @@
 
 
 /***/ },
-/* 678 */
+/* 680 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(module) {var freeGlobal = __webpack_require__(599);
+	/* WEBPACK VAR INJECTION */(function(module) {var freeGlobal = __webpack_require__(601);
 
 	/** Detect free variable `exports`. */
 	var freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;
@@ -44705,11 +44633,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(533)(module)))
 
 /***/ },
-/* 679 */
+/* 681 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isPrototype = __webpack_require__(680),
-	    nativeKeys = __webpack_require__(681);
+	var isPrototype = __webpack_require__(682),
+	    nativeKeys = __webpack_require__(683);
 
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -44741,7 +44669,7 @@
 
 
 /***/ },
-/* 680 */
+/* 682 */
 /***/ function(module, exports) {
 
 	/** Used for built-in method references. */
@@ -44765,7 +44693,7 @@
 
 
 /***/ },
-/* 681 */
+/* 683 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var overArg = __webpack_require__(529);
@@ -44777,14 +44705,14 @@
 
 
 /***/ },
-/* 682 */
+/* 684 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseMatches = __webpack_require__(683),
-	    baseMatchesProperty = __webpack_require__(707),
-	    identity = __webpack_require__(640),
-	    isArray = __webpack_require__(638),
-	    property = __webpack_require__(722);
+	var baseMatches = __webpack_require__(685),
+	    baseMatchesProperty = __webpack_require__(709),
+	    identity = __webpack_require__(642),
+	    isArray = __webpack_require__(640),
+	    property = __webpack_require__(724);
 
 	/**
 	 * The base implementation of `_.iteratee`.
@@ -44814,12 +44742,12 @@
 
 
 /***/ },
-/* 683 */
+/* 685 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIsMatch = __webpack_require__(684),
-	    getMatchData = __webpack_require__(704),
-	    matchesStrictComparable = __webpack_require__(706);
+	var baseIsMatch = __webpack_require__(686),
+	    getMatchData = __webpack_require__(706),
+	    matchesStrictComparable = __webpack_require__(708);
 
 	/**
 	 * The base implementation of `_.matches` which doesn't clone `source`.
@@ -44842,11 +44770,11 @@
 
 
 /***/ },
-/* 684 */
+/* 686 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Stack = __webpack_require__(685),
-	    baseIsEqual = __webpack_require__(691);
+	var Stack = __webpack_require__(687),
+	    baseIsEqual = __webpack_require__(693);
 
 	/** Used to compose bitmasks for comparison styles. */
 	var UNORDERED_COMPARE_FLAG = 1,
@@ -44910,15 +44838,15 @@
 
 
 /***/ },
-/* 685 */
+/* 687 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var ListCache = __webpack_require__(606),
-	    stackClear = __webpack_require__(686),
-	    stackDelete = __webpack_require__(687),
-	    stackGet = __webpack_require__(688),
-	    stackHas = __webpack_require__(689),
-	    stackSet = __webpack_require__(690);
+	var ListCache = __webpack_require__(608),
+	    stackClear = __webpack_require__(688),
+	    stackDelete = __webpack_require__(689),
+	    stackGet = __webpack_require__(690),
+	    stackHas = __webpack_require__(691),
+	    stackSet = __webpack_require__(692);
 
 	/**
 	 * Creates a stack cache object to store key-value pairs.
@@ -44943,10 +44871,10 @@
 
 
 /***/ },
-/* 686 */
+/* 688 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var ListCache = __webpack_require__(606);
+	var ListCache = __webpack_require__(608);
 
 	/**
 	 * Removes all key-value entries from the stack.
@@ -44964,7 +44892,7 @@
 
 
 /***/ },
-/* 687 */
+/* 689 */
 /***/ function(module, exports) {
 
 	/**
@@ -44988,7 +44916,7 @@
 
 
 /***/ },
-/* 688 */
+/* 690 */
 /***/ function(module, exports) {
 
 	/**
@@ -45008,7 +44936,7 @@
 
 
 /***/ },
-/* 689 */
+/* 691 */
 /***/ function(module, exports) {
 
 	/**
@@ -45028,12 +44956,12 @@
 
 
 /***/ },
-/* 690 */
+/* 692 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var ListCache = __webpack_require__(606),
-	    Map = __webpack_require__(614),
-	    MapCache = __webpack_require__(587);
+	var ListCache = __webpack_require__(608),
+	    Map = __webpack_require__(616),
+	    MapCache = __webpack_require__(589);
 
 	/** Used as the size to enable large array optimizations. */
 	var LARGE_ARRAY_SIZE = 200;
@@ -45068,11 +44996,11 @@
 
 
 /***/ },
-/* 691 */
+/* 693 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIsEqualDeep = __webpack_require__(692),
-	    isObject = __webpack_require__(595),
+	var baseIsEqualDeep = __webpack_require__(694),
+	    isObject = __webpack_require__(597),
 	    isObjectLike = __webpack_require__(530);
 
 	/**
@@ -45104,17 +45032,17 @@
 
 
 /***/ },
-/* 692 */
+/* 694 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Stack = __webpack_require__(685),
-	    equalArrays = __webpack_require__(693),
-	    equalByTag = __webpack_require__(695),
-	    equalObjects = __webpack_require__(698),
-	    getTag = __webpack_require__(699),
-	    isArray = __webpack_require__(638),
-	    isBuffer = __webpack_require__(673),
-	    isTypedArray = __webpack_require__(676);
+	var Stack = __webpack_require__(687),
+	    equalArrays = __webpack_require__(695),
+	    equalByTag = __webpack_require__(697),
+	    equalObjects = __webpack_require__(700),
+	    getTag = __webpack_require__(701),
+	    isArray = __webpack_require__(640),
+	    isBuffer = __webpack_require__(675),
+	    isTypedArray = __webpack_require__(678);
 
 	/** Used to compose bitmasks for comparison styles. */
 	var PARTIAL_COMPARE_FLAG = 2;
@@ -45199,12 +45127,12 @@
 
 
 /***/ },
-/* 693 */
+/* 695 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var SetCache = __webpack_require__(586),
-	    arraySome = __webpack_require__(694),
-	    cacheHas = __webpack_require__(631);
+	var SetCache = __webpack_require__(588),
+	    arraySome = __webpack_require__(696),
+	    cacheHas = __webpack_require__(633);
 
 	/** Used to compose bitmasks for comparison styles. */
 	var UNORDERED_COMPARE_FLAG = 1,
@@ -45289,7 +45217,7 @@
 
 
 /***/ },
-/* 694 */
+/* 696 */
 /***/ function(module, exports) {
 
 	/**
@@ -45318,15 +45246,15 @@
 
 
 /***/ },
-/* 695 */
+/* 697 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Symbol = __webpack_require__(635),
-	    Uint8Array = __webpack_require__(696),
-	    eq = __webpack_require__(610),
-	    equalArrays = __webpack_require__(693),
-	    mapToArray = __webpack_require__(697),
-	    setToArray = __webpack_require__(656);
+	var Symbol = __webpack_require__(637),
+	    Uint8Array = __webpack_require__(698),
+	    eq = __webpack_require__(612),
+	    equalArrays = __webpack_require__(695),
+	    mapToArray = __webpack_require__(699),
+	    setToArray = __webpack_require__(658);
 
 	/** Used to compose bitmasks for comparison styles. */
 	var UNORDERED_COMPARE_FLAG = 1,
@@ -45437,10 +45365,10 @@
 
 
 /***/ },
-/* 696 */
+/* 698 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var root = __webpack_require__(598);
+	var root = __webpack_require__(600);
 
 	/** Built-in value references. */
 	var Uint8Array = root.Uint8Array;
@@ -45449,7 +45377,7 @@
 
 
 /***/ },
-/* 697 */
+/* 699 */
 /***/ function(module, exports) {
 
 	/**
@@ -45473,10 +45401,10 @@
 
 
 /***/ },
-/* 698 */
+/* 700 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var keys = __webpack_require__(670);
+	var keys = __webpack_require__(672);
 
 	/** Used to compose bitmasks for comparison styles. */
 	var PARTIAL_COMPARE_FLAG = 2;
@@ -45569,16 +45497,16 @@
 
 
 /***/ },
-/* 699 */
+/* 701 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var DataView = __webpack_require__(700),
-	    Map = __webpack_require__(614),
-	    Promise = __webpack_require__(701),
-	    Set = __webpack_require__(654),
-	    WeakMap = __webpack_require__(702),
-	    baseGetTag = __webpack_require__(703),
-	    toSource = __webpack_require__(600);
+	var DataView = __webpack_require__(702),
+	    Map = __webpack_require__(616),
+	    Promise = __webpack_require__(703),
+	    Set = __webpack_require__(656),
+	    WeakMap = __webpack_require__(704),
+	    baseGetTag = __webpack_require__(705),
+	    toSource = __webpack_require__(602);
 
 	/** `Object#toString` result references. */
 	var mapTag = '[object Map]',
@@ -45643,11 +45571,11 @@
 
 
 /***/ },
-/* 700 */
+/* 702 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(592),
-	    root = __webpack_require__(598);
+	var getNative = __webpack_require__(594),
+	    root = __webpack_require__(600);
 
 	/* Built-in method references that are verified to be native. */
 	var DataView = getNative(root, 'DataView');
@@ -45656,11 +45584,11 @@
 
 
 /***/ },
-/* 701 */
+/* 703 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(592),
-	    root = __webpack_require__(598);
+	var getNative = __webpack_require__(594),
+	    root = __webpack_require__(600);
 
 	/* Built-in method references that are verified to be native. */
 	var Promise = getNative(root, 'Promise');
@@ -45669,11 +45597,11 @@
 
 
 /***/ },
-/* 702 */
+/* 704 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(592),
-	    root = __webpack_require__(598);
+	var getNative = __webpack_require__(594),
+	    root = __webpack_require__(600);
 
 	/* Built-in method references that are verified to be native. */
 	var WeakMap = getNative(root, 'WeakMap');
@@ -45682,7 +45610,7 @@
 
 
 /***/ },
-/* 703 */
+/* 705 */
 /***/ function(module, exports) {
 
 	/** Used for built-in method references. */
@@ -45710,11 +45638,11 @@
 
 
 /***/ },
-/* 704 */
+/* 706 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isStrictComparable = __webpack_require__(705),
-	    keys = __webpack_require__(670);
+	var isStrictComparable = __webpack_require__(707),
+	    keys = __webpack_require__(672);
 
 	/**
 	 * Gets the property names, values, and compare flags of `object`.
@@ -45740,10 +45668,10 @@
 
 
 /***/ },
-/* 705 */
+/* 707 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isObject = __webpack_require__(595);
+	var isObject = __webpack_require__(597);
 
 	/**
 	 * Checks if `value` is suitable for strict equality comparisons, i.e. `===`.
@@ -45761,7 +45689,7 @@
 
 
 /***/ },
-/* 706 */
+/* 708 */
 /***/ function(module, exports) {
 
 	/**
@@ -45787,16 +45715,16 @@
 
 
 /***/ },
-/* 707 */
+/* 709 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIsEqual = __webpack_require__(691),
-	    get = __webpack_require__(708),
-	    hasIn = __webpack_require__(719),
-	    isKey = __webpack_require__(717),
-	    isStrictComparable = __webpack_require__(705),
-	    matchesStrictComparable = __webpack_require__(706),
-	    toKey = __webpack_require__(718);
+	var baseIsEqual = __webpack_require__(693),
+	    get = __webpack_require__(710),
+	    hasIn = __webpack_require__(721),
+	    isKey = __webpack_require__(719),
+	    isStrictComparable = __webpack_require__(707),
+	    matchesStrictComparable = __webpack_require__(708),
+	    toKey = __webpack_require__(720);
 
 	/** Used to compose bitmasks for comparison styles. */
 	var UNORDERED_COMPARE_FLAG = 1,
@@ -45826,10 +45754,10 @@
 
 
 /***/ },
-/* 708 */
+/* 710 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseGet = __webpack_require__(709);
+	var baseGet = __webpack_require__(711);
 
 	/**
 	 * Gets the value at `path` of `object`. If the resolved value is
@@ -45865,12 +45793,12 @@
 
 
 /***/ },
-/* 709 */
+/* 711 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var castPath = __webpack_require__(710),
-	    isKey = __webpack_require__(717),
-	    toKey = __webpack_require__(718);
+	var castPath = __webpack_require__(712),
+	    isKey = __webpack_require__(719),
+	    toKey = __webpack_require__(720);
 
 	/**
 	 * The base implementation of `_.get` without support for default values.
@@ -45896,11 +45824,11 @@
 
 
 /***/ },
-/* 710 */
+/* 712 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isArray = __webpack_require__(638),
-	    stringToPath = __webpack_require__(711);
+	var isArray = __webpack_require__(640),
+	    stringToPath = __webpack_require__(713);
 
 	/**
 	 * Casts `value` to a path array if it's not one.
@@ -45917,11 +45845,11 @@
 
 
 /***/ },
-/* 711 */
+/* 713 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var memoizeCapped = __webpack_require__(712),
-	    toString = __webpack_require__(714);
+	var memoizeCapped = __webpack_require__(714),
+	    toString = __webpack_require__(716);
 
 	/** Used to match property names within property paths. */
 	var reLeadingDot = /^\./,
@@ -45954,10 +45882,10 @@
 
 
 /***/ },
-/* 712 */
+/* 714 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var memoize = __webpack_require__(713);
+	var memoize = __webpack_require__(715);
 
 	/** Used as the maximum memoize cache size. */
 	var MAX_MEMOIZE_SIZE = 500;
@@ -45986,10 +45914,10 @@
 
 
 /***/ },
-/* 713 */
+/* 715 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var MapCache = __webpack_require__(587);
+	var MapCache = __webpack_require__(589);
 
 	/** Error message constants. */
 	var FUNC_ERROR_TEXT = 'Expected a function';
@@ -46065,10 +45993,10 @@
 
 
 /***/ },
-/* 714 */
+/* 716 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseToString = __webpack_require__(715);
+	var baseToString = __webpack_require__(717);
 
 	/**
 	 * Converts `value` to a string. An empty string is returned for `null`
@@ -46099,13 +46027,13 @@
 
 
 /***/ },
-/* 715 */
+/* 717 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Symbol = __webpack_require__(635),
-	    arrayMap = __webpack_require__(629),
-	    isArray = __webpack_require__(638),
-	    isSymbol = __webpack_require__(716);
+	var Symbol = __webpack_require__(637),
+	    arrayMap = __webpack_require__(631),
+	    isArray = __webpack_require__(640),
+	    isSymbol = __webpack_require__(718);
 
 	/** Used as references for various `Number` constants. */
 	var INFINITY = 1 / 0;
@@ -46142,7 +46070,7 @@
 
 
 /***/ },
-/* 716 */
+/* 718 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var isObjectLike = __webpack_require__(530);
@@ -46186,11 +46114,11 @@
 
 
 /***/ },
-/* 717 */
+/* 719 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isArray = __webpack_require__(638),
-	    isSymbol = __webpack_require__(716);
+	var isArray = __webpack_require__(640),
+	    isSymbol = __webpack_require__(718);
 
 	/** Used to match property names within property paths. */
 	var reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/,
@@ -46221,10 +46149,10 @@
 
 
 /***/ },
-/* 718 */
+/* 720 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isSymbol = __webpack_require__(716);
+	var isSymbol = __webpack_require__(718);
 
 	/** Used as references for various `Number` constants. */
 	var INFINITY = 1 / 0;
@@ -46248,11 +46176,11 @@
 
 
 /***/ },
-/* 719 */
+/* 721 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseHasIn = __webpack_require__(720),
-	    hasPath = __webpack_require__(721);
+	var baseHasIn = __webpack_require__(722),
+	    hasPath = __webpack_require__(723);
 
 	/**
 	 * Checks if `path` is a direct or inherited property of `object`.
@@ -46288,7 +46216,7 @@
 
 
 /***/ },
-/* 720 */
+/* 722 */
 /***/ function(module, exports) {
 
 	/**
@@ -46307,16 +46235,16 @@
 
 
 /***/ },
-/* 721 */
+/* 723 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var castPath = __webpack_require__(710),
-	    isArguments = __webpack_require__(636),
-	    isArray = __webpack_require__(638),
-	    isIndex = __webpack_require__(675),
-	    isKey = __webpack_require__(717),
-	    isLength = __webpack_require__(650),
-	    toKey = __webpack_require__(718);
+	var castPath = __webpack_require__(712),
+	    isArguments = __webpack_require__(638),
+	    isArray = __webpack_require__(640),
+	    isIndex = __webpack_require__(677),
+	    isKey = __webpack_require__(719),
+	    isLength = __webpack_require__(652),
+	    toKey = __webpack_require__(720);
 
 	/**
 	 * Checks if `path` exists on `object`.
@@ -46353,13 +46281,13 @@
 
 
 /***/ },
-/* 722 */
+/* 724 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseProperty = __webpack_require__(723),
-	    basePropertyDeep = __webpack_require__(724),
-	    isKey = __webpack_require__(717),
-	    toKey = __webpack_require__(718);
+	var baseProperty = __webpack_require__(725),
+	    basePropertyDeep = __webpack_require__(726),
+	    isKey = __webpack_require__(719),
+	    toKey = __webpack_require__(720);
 
 	/**
 	 * Creates a function that returns the value at `path` of a given object.
@@ -46391,7 +46319,7 @@
 
 
 /***/ },
-/* 723 */
+/* 725 */
 /***/ function(module, exports) {
 
 	/**
@@ -46411,10 +46339,10 @@
 
 
 /***/ },
-/* 724 */
+/* 726 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseGet = __webpack_require__(709);
+	var baseGet = __webpack_require__(711);
 
 	/**
 	 * A specialized version of `baseProperty` which supports deep paths.
@@ -46433,7 +46361,7 @@
 
 
 /***/ },
-/* 725 */
+/* 727 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -46448,11 +46376,11 @@
 
 	var _reactRouter = __webpack_require__(455);
 
-	var _App = __webpack_require__(726);
+	var _App = __webpack_require__(728);
 
 	var _App2 = _interopRequireDefault(_App);
 
-	var _HomePage = __webpack_require__(729);
+	var _HomePage = __webpack_require__(732);
 
 	var _HomePage2 = _interopRequireDefault(_HomePage);
 
@@ -46466,7 +46394,7 @@
 	// <IndexRoute component={HomePage} />
 
 /***/ },
-/* 726 */
+/* 728 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -46481,7 +46409,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _Header = __webpack_require__(727);
+	var _Header = __webpack_require__(770);
 
 	var _Header2 = _interopRequireDefault(_Header);
 
@@ -46523,326 +46451,8 @@
 	exports.default = App;
 
 /***/ },
-/* 727 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _react = __webpack_require__(298);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _reactRouter = __webpack_require__(455);
-
-	var _reactRedux = __webpack_require__(518);
-
-	var _classnames = __webpack_require__(728);
-
-	var _classnames2 = _interopRequireDefault(_classnames);
-
-	var _seatsActions = __webpack_require__(763);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var Header = function (_React$Component) {
-	    _inherits(Header, _React$Component);
-
-	    function Header(props) {
-	        _classCallCheck(this, Header);
-
-	        var _this = _possibleConstructorReturn(this, (Header.__proto__ || Object.getPrototypeOf(Header)).call(this, props));
-
-	        _this.state = { showDropDown: [false, false, false, false], // search bar DropDown = 0;
-	            searchByTypes: ['User', 'Seat', 'Floor'],
-	            searchBy: 'Users' };
-	        _this.addSeat = _this.addSeat.bind(_this);
-	        return _this;
-	    }
-
-	    _createClass(Header, [{
-	        key: 'componentDidMount',
-	        value: function componentDidMount() {
-	            document.body.addEventListener('click', this.onClick.bind(this, -1));
-	        }
-	    }, {
-	        key: 'onClick',
-	        value: function onClick(id) {
-	            this.setState({ showDropDown: this.state.showDropDown.map(function (_, i) {
-	                    return i === id;
-	                }) });
-	        }
-	    }, {
-	        key: 'searchBySet',
-	        value: function searchBySet(type) {
-	            this.setState({ searchBy: type });
-	        }
-	    }, {
-	        key: 'addSeat',
-	        value: function addSeat() {
-	            var seat = {
-	                id: '_' + Math.random().toString(36).substr(2, 9),
-	                x: 150,
-	                y: 75,
-	                radius: 20,
-	                floor: 8,
-	                assignedTo: null
-	            };
-	            this.props.addNewSeat(seat);
-	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
-	            var _this2 = this;
-
-	            var searchList = this.state.searchByTypes.map(function (v, i) {
-	                return _react2.default.createElement(
-	                    'li',
-	                    { key: i },
-	                    _react2.default.createElement(
-	                        'a',
-	                        { onClick: _this2.searchBySet.bind(_this2, v) },
-	                        'By ',
-	                        v
-	                    )
-	                );
-	            });
-	            return _react2.default.createElement(
-	                'nav',
-	                { className: 'navbar navbar-default' },
-	                _react2.default.createElement(
-	                    'div',
-	                    { className: 'container-fluid' },
-	                    _react2.default.createElement(
-	                        'div',
-	                        { className: 'navbar-header' },
-	                        _react2.default.createElement(
-	                            _reactRouter.IndexLink,
-	                            { to: '/', className: 'navbar-brand' },
-	                            'Yaroslav Stasiuk'
-	                        ),
-	                        _react2.default.createElement(
-	                            'button',
-	                            { 'data-toggle': 'collapse', 'data-target': '.navbar-collapse', className: 'navbar-toggle' },
-	                            _react2.default.createElement(
-	                                'span',
-	                                { className: 'sr-only' },
-	                                'Toggle Navigation'
-	                            ),
-	                            _react2.default.createElement('span', { className: 'icon-bar' }),
-	                            _react2.default.createElement('span', { className: 'icon-bar' }),
-	                            _react2.default.createElement('span', { className: 'icon-bar' })
-	                        )
-	                    ),
-	                    _react2.default.createElement(
-	                        'div',
-	                        { className: 'navbar-collapse collapse' },
-	                        _react2.default.createElement(
-	                            'div',
-	                            { className: 'nav navbar-nav' },
-	                            _react2.default.createElement(
-	                                'li',
-	                                { className: 'dropdown nav-elements' },
-	                                _react2.default.createElement(
-	                                    'a',
-	                                    { id: 'projects', onClick: this.onClick.bind(this, 1) },
-	                                    _react2.default.createElement(
-	                                        'span',
-	                                        null,
-	                                        'Floor'
-	                                    ),
-	                                    _react2.default.createElement('span', { className: 'caret' })
-	                                ),
-	                                _react2.default.createElement(
-	                                    'ul',
-	                                    { className: (0, _classnames2.default)('dropdown-menu react-toggle', this.state.showDropDown[1] ? '' : 'hidden') },
-	                                    _react2.default.createElement(
-	                                        'li',
-	                                        null,
-	                                        _react2.default.createElement(
-	                                            _reactRouter.Link,
-	                                            { to: '#' },
-	                                            'Null'
-	                                        )
-	                                    ),
-	                                    _react2.default.createElement(
-	                                        'li',
-	                                        null,
-	                                        _react2.default.createElement(
-	                                            _reactRouter.Link,
-	                                            { to: '#' },
-	                                            'Null'
-	                                        )
-	                                    )
-	                                )
-	                            ),
-	                            _react2.default.createElement(
-	                                'li',
-	                                { className: 'dropdown nav-elements' },
-	                                _react2.default.createElement(
-	                                    'a',
-	                                    { id: 'projects', onClick: this.onClick.bind(this, 2) },
-	                                    _react2.default.createElement(
-	                                        'span',
-	                                        null,
-	                                        'Seats'
-	                                    ),
-	                                    _react2.default.createElement('span', { className: 'caret' })
-	                                ),
-	                                _react2.default.createElement(
-	                                    'ul',
-	                                    { className: (0, _classnames2.default)('dropdown-menu react-toggle', this.state.showDropDown[2] ? '' : 'hidden') },
-	                                    _react2.default.createElement(
-	                                        'li',
-	                                        null,
-	                                        _react2.default.createElement(
-	                                            'a',
-	                                            { onClick: this.addSeat },
-	                                            'Add Seat'
-	                                        )
-	                                    ),
-	                                    _react2.default.createElement(
-	                                        'li',
-	                                        null,
-	                                        _react2.default.createElement(
-	                                            _reactRouter.Link,
-	                                            { to: '/projects' },
-	                                            'Search Seat'
-	                                        )
-	                                    )
-	                                )
-	                            ),
-	                            _react2.default.createElement(
-	                                'li',
-	                                { className: 'dropdown nav-elements' },
-	                                _react2.default.createElement(
-	                                    'a',
-	                                    { id: 'projects', onClick: this.onClick.bind(this, 3) },
-	                                    _react2.default.createElement(
-	                                        'span',
-	                                        null,
-	                                        'Users'
-	                                    ),
-	                                    _react2.default.createElement('span', { className: 'caret' })
-	                                ),
-	                                _react2.default.createElement(
-	                                    'ul',
-	                                    { className: (0, _classnames2.default)('dropdown-menu react-toggle', this.state.showDropDown[3] ? '' : 'hidden') },
-	                                    _react2.default.createElement(
-	                                        'li',
-	                                        null,
-	                                        _react2.default.createElement(
-	                                            _reactRouter.Link,
-	                                            { to: '/projects' },
-	                                            'Add User'
-	                                        )
-	                                    ),
-	                                    _react2.default.createElement(
-	                                        'li',
-	                                        null,
-	                                        _react2.default.createElement(
-	                                            _reactRouter.Link,
-	                                            { to: '/projects' },
-	                                            'Search User'
-	                                        )
-	                                    )
-	                                )
-	                            )
-	                        ),
-	                        _react2.default.createElement(
-	                            'div',
-	                            { className: 'nav navbar-nav navbar-right' },
-	                            _react2.default.createElement(
-	                                'li',
-	                                null,
-	                                _react2.default.createElement(
-	                                    _reactRouter.Link,
-	                                    { to: '/contacts', id: 'contact' },
-	                                    _react2.default.createElement(
-	                                        'span',
-	                                        null,
-	                                        'Contact'
-	                                    )
-	                                )
-	                            )
-	                        ),
-	                        _react2.default.createElement(
-	                            'div',
-	                            { className: 'col-lg-6 navbar-nav navbar-right ' },
-	                            _react2.default.createElement(
-	                                'div',
-	                                { className: 'input-group ' },
-	                                _react2.default.createElement('input', { type: 'text', className: 'form-control', 'aria-label': '...' }),
-	                                _react2.default.createElement(
-	                                    'div',
-	                                    { className: 'input-group-btn' },
-	                                    _react2.default.createElement(
-	                                        'button',
-	                                        { type: 'button', className: 'btn btn-default', onClick: this.onClick.bind(this, 0) },
-	                                        'By ',
-	                                        this.state.searchBy,
-	                                        _react2.default.createElement('span', { className: 'caret' })
-	                                    ),
-	                                    _react2.default.createElement(
-	                                        'ul',
-	                                        { className: (0, _classnames2.default)('dropdown-menu react-toggle', this.state.showDropDown[0] ? '' : 'hidden') },
-	                                        searchList,
-	                                        _react2.default.createElement('li', { role: 'separator', className: 'divider' }),
-	                                        _react2.default.createElement(
-	                                            'li',
-	                                            null,
-	                                            _react2.default.createElement(
-	                                                'a',
-	                                                { href: '#' },
-	                                                'Lonely Users'
-	                                            )
-	                                        ),
-	                                        _react2.default.createElement(
-	                                            'li',
-	                                            null,
-	                                            _react2.default.createElement(
-	                                                'a',
-	                                                { href: '#' },
-	                                                'Empty Seats'
-	                                            )
-	                                        )
-	                                    )
-	                                )
-	                            )
-	                        )
-	                    )
-	                )
-	            );
-	        }
-	    }]);
-
-	    return Header;
-	}(_react2.default.Component);
-
-	;
-
-	function mapStateToProps(state, ownProps) {
-	    return {
-	        seats: state.seats,
-	        nextPokeList: state.pokemonsNextGetReducer,
-	        favoriteList: state.toggleFavoriteReducer
-	    };
-	}
-	exports.default = (0, _reactRedux.connect)(mapStateToProps, { addNewSeat: _seatsActions.addNewSeat })(Header);
-
-/***/ },
-/* 728 */
+/* 729 */,
+/* 730 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -46896,7 +46506,42 @@
 
 
 /***/ },
-/* 729 */
+/* 731 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	exports.addNewSeat = addNewSeat;
+	exports.selectSeat = selectSeat;
+	exports.updateSeatLocation = updateSeatLocation;
+	exports.updateSeatInfo = updateSeatInfo;
+
+	var _actionTypes = __webpack_require__(544);
+
+	var types = _interopRequireWildcard(_actionTypes);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function addNewSeat(seat) {
+		return { type: types.NEW_SEAT, seat: seat };
+	}
+
+	function selectSeat(seat) {
+		return { type: types.SELECT_SEAT, seat: seat };
+	}
+
+	function updateSeatLocation(id, x, y) {
+		return { type: types.UPDATE_SEAT_LOCATION, id: id, x: x, y: y };
+	}
+	function updateSeatInfo() {
+		return { type: types.UPDATE_SEAT_LOCATION, id: id, x: x, y: y };
+	}
+
+/***/ },
+/* 732 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -46911,21 +46556,19 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactNotificationSystem = __webpack_require__(730);
+	var _reactNotificationSystem = __webpack_require__(733);
 
 	var _reactRedux = __webpack_require__(518);
 
-	var _loadPokemonsActions = __webpack_require__(737);
-
-	var _canvasElement = __webpack_require__(742);
+	var _canvasElement = __webpack_require__(769);
 
 	var _canvasElement2 = _interopRequireDefault(_canvasElement);
 
-	var _InfoElement = __webpack_require__(744);
+	var _InfoElement = __webpack_require__(767);
 
 	var _InfoElement2 = _interopRequireDefault(_InfoElement);
 
-	var _SearchElement = __webpack_require__(745);
+	var _SearchElement = __webpack_require__(768);
 
 	var _SearchElement2 = _interopRequireDefault(_SearchElement);
 
@@ -46975,19 +46618,19 @@
 	    };
 	}
 
-	exports.default = (0, _reactRedux.connect)(mapStateToProps, { loadPokemons: _loadPokemonsActions.loadPokemons })(HomePage);
+	//export default connect(mapStateToProps, {loadPokemons})(HomePage);
 
-	//export default HomePage;
+	exports.default = HomePage;
 
 /***/ },
-/* 730 */
+/* 733 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(298);
-	var merge = __webpack_require__(731);
-	var NotificationContainer = __webpack_require__(732);
-	var Constants = __webpack_require__(734);
-	var Styles = __webpack_require__(736);
+	var merge = __webpack_require__(734);
+	var NotificationContainer = __webpack_require__(735);
+	var Constants = __webpack_require__(737);
+	var Styles = __webpack_require__(739);
 
 	var NotificationSystem = React.createClass({displayName: "NotificationSystem",
 
@@ -47202,7 +46845,7 @@
 
 
 /***/ },
-/* 731 */
+/* 734 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -47291,12 +46934,12 @@
 
 
 /***/ },
-/* 732 */
+/* 735 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(298);
-	var NotificationItem = __webpack_require__(733);
-	var Constants = __webpack_require__(734);
+	var NotificationItem = __webpack_require__(736);
+	var Constants = __webpack_require__(737);
 
 	var NotificationContainer = React.createClass({displayName: "NotificationContainer",
 
@@ -47353,14 +46996,14 @@
 
 
 /***/ },
-/* 733 */
+/* 736 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(298);
 	var ReactDOM = __webpack_require__(454);
-	var Constants = __webpack_require__(734);
-	var Helpers = __webpack_require__(735);
-	var merge = __webpack_require__(731);
+	var Constants = __webpack_require__(737);
+	var Helpers = __webpack_require__(738);
+	var merge = __webpack_require__(734);
 
 	/* From Modernizr */
 	var whichTransitionEvent = function() {
@@ -47686,7 +47329,7 @@
 
 
 /***/ },
-/* 734 */
+/* 737 */
 /***/ function(module, exports) {
 
 	var CONSTANTS = {
@@ -47726,7 +47369,7 @@
 
 
 /***/ },
-/* 735 */
+/* 738 */
 /***/ function(module, exports) {
 
 	var Helpers = {
@@ -47758,7 +47401,7 @@
 
 
 /***/ },
-/* 736 */
+/* 739 */
 /***/ function(module, exports) {
 
 	// Used for calculations
@@ -48024,700 +47667,59 @@
 
 
 /***/ },
-/* 737 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.loadPokemonsSuccess = loadPokemonsSuccess;
-	exports.loadPokemonsDataSuccess = loadPokemonsDataSuccess;
-	exports.changePokemonsNextUrl = changePokemonsNextUrl;
-	exports.loadPokemons = loadPokemons;
-
-	var _actionTypes = __webpack_require__(544);
-
-	var types = _interopRequireWildcard(_actionTypes);
-
-	var _pokeApi = __webpack_require__(738);
-
-	var _pokeApi2 = _interopRequireDefault(_pokeApi);
-
-	var _ajaxStatusActions = __webpack_require__(741);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	function loadPokemonsSuccess(pokemons) {
-	    return { type: types.LOAD_POKEMONS_SUCCESS, pokemons: pokemons };
-	}
-	function loadPokemonsDataSuccess(data, url) {
-	    return { type: types.LOAD_POKEMONS_DATA_SUCCESS, data: data, url: url };
-	}
-	function changePokemonsNextUrl(url) {
-	    return { type: types.LOAD_POKEMONS_NEXT_LINK, url: url };
-	}
-
-	function loadPokemons(url) {
-	    return function (dispatch) {
-	        dispatch((0, _ajaxStatusActions.beginAjaxCall)());
-	        return _pokeApi2.default.getPokemonsList(url).then(function (pokemons) {
-	            dispatch(loadPokemonsSuccess(pokemons));
-	            // loading pokemons data
-	            pokemons.results.forEach(function (v) {
-	                dispatch(loadPokemonData(v.url));
-	            });
-	            // changing url
-	            dispatch(changePokemonsNextUrl(pokemons.next));
-	        }).catch(function (error) {
-	            throw error;
-	        });
-	    };
-	}
-
-	function loadPokemonData(url) {
-	    return function (dispatch) {
-	        dispatch((0, _ajaxStatusActions.beginAjaxCall)());
-	        return _pokeApi2.default.getPokemonsData(url).then(function (pokemon) {
-	            dispatch(loadPokemonsDataSuccess(pokemon, url));
-	        }).catch(function (error) {
-	            throw error;
-	        });
-	    };
-	}
-
-/***/ },
-/* 738 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _isomorphicFetch = __webpack_require__(739);
-
-	var _isomorphicFetch2 = _interopRequireDefault(_isomorphicFetch);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	var PokemonApi = function () {
-	  function PokemonApi() {
-	    _classCallCheck(this, PokemonApi);
-	  }
-
-	  _createClass(PokemonApi, null, [{
-	    key: 'getPokemonsList',
-	    value: function getPokemonsList(url) {
-	      return (0, _isomorphicFetch2.default)(url).then(function (res) {
-	        return res.json();
-	      });
-	    }
-	  }, {
-	    key: 'getPokemonsData',
-	    value: function getPokemonsData(url) {
-	      return (0, _isomorphicFetch2.default)(url).then(function (res) {
-	        return res.json();
-	      });
-	    }
-	  }]);
-
-	  return PokemonApi;
-	}();
-
-	exports.default = PokemonApi;
-
-/***/ },
-/* 739 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// the whatwg-fetch polyfill installs the fetch() function
-	// on the global object (window or self)
-	//
-	// Return that as the export for use in Webpack, Browserify etc.
-	__webpack_require__(740);
-	module.exports = self.fetch.bind(self);
-
-
-/***/ },
-/* 740 */
+/* 740 */,
+/* 741 */,
+/* 742 */,
+/* 743 */,
+/* 744 */,
+/* 745 */,
+/* 746 */,
+/* 747 */,
+/* 748 */,
+/* 749 */
 /***/ function(module, exports) {
 
-	(function(self) {
-	  'use strict';
-
-	  if (self.fetch) {
-	    return
-	  }
-
-	  var support = {
-	    searchParams: 'URLSearchParams' in self,
-	    iterable: 'Symbol' in self && 'iterator' in Symbol,
-	    blob: 'FileReader' in self && 'Blob' in self && (function() {
-	      try {
-	        new Blob()
-	        return true
-	      } catch(e) {
-	        return false
-	      }
-	    })(),
-	    formData: 'FormData' in self,
-	    arrayBuffer: 'ArrayBuffer' in self
-	  }
-
-	  function normalizeName(name) {
-	    if (typeof name !== 'string') {
-	      name = String(name)
-	    }
-	    if (/[^a-z0-9\-#$%&'*+.\^_`|~]/i.test(name)) {
-	      throw new TypeError('Invalid character in header field name')
-	    }
-	    return name.toLowerCase()
-	  }
-
-	  function normalizeValue(value) {
-	    if (typeof value !== 'string') {
-	      value = String(value)
-	    }
-	    return value
-	  }
-
-	  // Build a destructive iterator for the value list
-	  function iteratorFor(items) {
-	    var iterator = {
-	      next: function() {
-	        var value = items.shift()
-	        return {done: value === undefined, value: value}
-	      }
-	    }
-
-	    if (support.iterable) {
-	      iterator[Symbol.iterator] = function() {
-	        return iterator
-	      }
-	    }
-
-	    return iterator
-	  }
-
-	  function Headers(headers) {
-	    this.map = {}
-
-	    if (headers instanceof Headers) {
-	      headers.forEach(function(value, name) {
-	        this.append(name, value)
-	      }, this)
-
-	    } else if (headers) {
-	      Object.getOwnPropertyNames(headers).forEach(function(name) {
-	        this.append(name, headers[name])
-	      }, this)
-	    }
-	  }
-
-	  Headers.prototype.append = function(name, value) {
-	    name = normalizeName(name)
-	    value = normalizeValue(value)
-	    var list = this.map[name]
-	    if (!list) {
-	      list = []
-	      this.map[name] = list
-	    }
-	    list.push(value)
-	  }
-
-	  Headers.prototype['delete'] = function(name) {
-	    delete this.map[normalizeName(name)]
-	  }
-
-	  Headers.prototype.get = function(name) {
-	    var values = this.map[normalizeName(name)]
-	    return values ? values[0] : null
-	  }
-
-	  Headers.prototype.getAll = function(name) {
-	    return this.map[normalizeName(name)] || []
-	  }
-
-	  Headers.prototype.has = function(name) {
-	    return this.map.hasOwnProperty(normalizeName(name))
-	  }
-
-	  Headers.prototype.set = function(name, value) {
-	    this.map[normalizeName(name)] = [normalizeValue(value)]
-	  }
-
-	  Headers.prototype.forEach = function(callback, thisArg) {
-	    Object.getOwnPropertyNames(this.map).forEach(function(name) {
-	      this.map[name].forEach(function(value) {
-	        callback.call(thisArg, value, name, this)
-	      }, this)
-	    }, this)
-	  }
-
-	  Headers.prototype.keys = function() {
-	    var items = []
-	    this.forEach(function(value, name) { items.push(name) })
-	    return iteratorFor(items)
-	  }
-
-	  Headers.prototype.values = function() {
-	    var items = []
-	    this.forEach(function(value) { items.push(value) })
-	    return iteratorFor(items)
-	  }
-
-	  Headers.prototype.entries = function() {
-	    var items = []
-	    this.forEach(function(value, name) { items.push([name, value]) })
-	    return iteratorFor(items)
-	  }
-
-	  if (support.iterable) {
-	    Headers.prototype[Symbol.iterator] = Headers.prototype.entries
-	  }
-
-	  function consumed(body) {
-	    if (body.bodyUsed) {
-	      return Promise.reject(new TypeError('Already read'))
-	    }
-	    body.bodyUsed = true
-	  }
-
-	  function fileReaderReady(reader) {
-	    return new Promise(function(resolve, reject) {
-	      reader.onload = function() {
-	        resolve(reader.result)
-	      }
-	      reader.onerror = function() {
-	        reject(reader.error)
-	      }
-	    })
-	  }
-
-	  function readBlobAsArrayBuffer(blob) {
-	    var reader = new FileReader()
-	    reader.readAsArrayBuffer(blob)
-	    return fileReaderReady(reader)
-	  }
-
-	  function readBlobAsText(blob) {
-	    var reader = new FileReader()
-	    reader.readAsText(blob)
-	    return fileReaderReady(reader)
-	  }
-
-	  function Body() {
-	    this.bodyUsed = false
-
-	    this._initBody = function(body) {
-	      this._bodyInit = body
-	      if (typeof body === 'string') {
-	        this._bodyText = body
-	      } else if (support.blob && Blob.prototype.isPrototypeOf(body)) {
-	        this._bodyBlob = body
-	      } else if (support.formData && FormData.prototype.isPrototypeOf(body)) {
-	        this._bodyFormData = body
-	      } else if (support.searchParams && URLSearchParams.prototype.isPrototypeOf(body)) {
-	        this._bodyText = body.toString()
-	      } else if (!body) {
-	        this._bodyText = ''
-	      } else if (support.arrayBuffer && ArrayBuffer.prototype.isPrototypeOf(body)) {
-	        // Only support ArrayBuffers for POST method.
-	        // Receiving ArrayBuffers happens via Blobs, instead.
-	      } else {
-	        throw new Error('unsupported BodyInit type')
-	      }
-
-	      if (!this.headers.get('content-type')) {
-	        if (typeof body === 'string') {
-	          this.headers.set('content-type', 'text/plain;charset=UTF-8')
-	        } else if (this._bodyBlob && this._bodyBlob.type) {
-	          this.headers.set('content-type', this._bodyBlob.type)
-	        } else if (support.searchParams && URLSearchParams.prototype.isPrototypeOf(body)) {
-	          this.headers.set('content-type', 'application/x-www-form-urlencoded;charset=UTF-8')
-	        }
-	      }
-	    }
-
-	    if (support.blob) {
-	      this.blob = function() {
-	        var rejected = consumed(this)
-	        if (rejected) {
-	          return rejected
-	        }
-
-	        if (this._bodyBlob) {
-	          return Promise.resolve(this._bodyBlob)
-	        } else if (this._bodyFormData) {
-	          throw new Error('could not read FormData body as blob')
-	        } else {
-	          return Promise.resolve(new Blob([this._bodyText]))
-	        }
-	      }
-
-	      this.arrayBuffer = function() {
-	        return this.blob().then(readBlobAsArrayBuffer)
-	      }
-
-	      this.text = function() {
-	        var rejected = consumed(this)
-	        if (rejected) {
-	          return rejected
-	        }
-
-	        if (this._bodyBlob) {
-	          return readBlobAsText(this._bodyBlob)
-	        } else if (this._bodyFormData) {
-	          throw new Error('could not read FormData body as text')
-	        } else {
-	          return Promise.resolve(this._bodyText)
-	        }
-	      }
-	    } else {
-	      this.text = function() {
-	        var rejected = consumed(this)
-	        return rejected ? rejected : Promise.resolve(this._bodyText)
-	      }
-	    }
-
-	    if (support.formData) {
-	      this.formData = function() {
-	        return this.text().then(decode)
-	      }
-	    }
-
-	    this.json = function() {
-	      return this.text().then(JSON.parse)
-	    }
-
-	    return this
-	  }
-
-	  // HTTP methods whose capitalization should be normalized
-	  var methods = ['DELETE', 'GET', 'HEAD', 'OPTIONS', 'POST', 'PUT']
-
-	  function normalizeMethod(method) {
-	    var upcased = method.toUpperCase()
-	    return (methods.indexOf(upcased) > -1) ? upcased : method
-	  }
-
-	  function Request(input, options) {
-	    options = options || {}
-	    var body = options.body
-	    if (Request.prototype.isPrototypeOf(input)) {
-	      if (input.bodyUsed) {
-	        throw new TypeError('Already read')
-	      }
-	      this.url = input.url
-	      this.credentials = input.credentials
-	      if (!options.headers) {
-	        this.headers = new Headers(input.headers)
-	      }
-	      this.method = input.method
-	      this.mode = input.mode
-	      if (!body) {
-	        body = input._bodyInit
-	        input.bodyUsed = true
-	      }
-	    } else {
-	      this.url = input
-	    }
-
-	    this.credentials = options.credentials || this.credentials || 'omit'
-	    if (options.headers || !this.headers) {
-	      this.headers = new Headers(options.headers)
-	    }
-	    this.method = normalizeMethod(options.method || this.method || 'GET')
-	    this.mode = options.mode || this.mode || null
-	    this.referrer = null
-
-	    if ((this.method === 'GET' || this.method === 'HEAD') && body) {
-	      throw new TypeError('Body not allowed for GET or HEAD requests')
-	    }
-	    this._initBody(body)
-	  }
-
-	  Request.prototype.clone = function() {
-	    return new Request(this)
-	  }
-
-	  function decode(body) {
-	    var form = new FormData()
-	    body.trim().split('&').forEach(function(bytes) {
-	      if (bytes) {
-	        var split = bytes.split('=')
-	        var name = split.shift().replace(/\+/g, ' ')
-	        var value = split.join('=').replace(/\+/g, ' ')
-	        form.append(decodeURIComponent(name), decodeURIComponent(value))
-	      }
-	    })
-	    return form
-	  }
-
-	  function headers(xhr) {
-	    var head = new Headers()
-	    var pairs = (xhr.getAllResponseHeaders() || '').trim().split('\n')
-	    pairs.forEach(function(header) {
-	      var split = header.trim().split(':')
-	      var key = split.shift().trim()
-	      var value = split.join(':').trim()
-	      head.append(key, value)
-	    })
-	    return head
-	  }
-
-	  Body.call(Request.prototype)
-
-	  function Response(bodyInit, options) {
-	    if (!options) {
-	      options = {}
-	    }
-
-	    this.type = 'default'
-	    this.status = options.status
-	    this.ok = this.status >= 200 && this.status < 300
-	    this.statusText = options.statusText
-	    this.headers = options.headers instanceof Headers ? options.headers : new Headers(options.headers)
-	    this.url = options.url || ''
-	    this._initBody(bodyInit)
-	  }
-
-	  Body.call(Response.prototype)
-
-	  Response.prototype.clone = function() {
-	    return new Response(this._bodyInit, {
-	      status: this.status,
-	      statusText: this.statusText,
-	      headers: new Headers(this.headers),
-	      url: this.url
-	    })
-	  }
-
-	  Response.error = function() {
-	    var response = new Response(null, {status: 0, statusText: ''})
-	    response.type = 'error'
-	    return response
-	  }
-
-	  var redirectStatuses = [301, 302, 303, 307, 308]
-
-	  Response.redirect = function(url, status) {
-	    if (redirectStatuses.indexOf(status) === -1) {
-	      throw new RangeError('Invalid status code')
-	    }
-
-	    return new Response(null, {status: status, headers: {location: url}})
-	  }
-
-	  self.Headers = Headers
-	  self.Request = Request
-	  self.Response = Response
-
-	  self.fetch = function(input, init) {
-	    return new Promise(function(resolve, reject) {
-	      var request
-	      if (Request.prototype.isPrototypeOf(input) && !init) {
-	        request = input
-	      } else {
-	        request = new Request(input, init)
-	      }
-
-	      var xhr = new XMLHttpRequest()
-
-	      function responseURL() {
-	        if ('responseURL' in xhr) {
-	          return xhr.responseURL
-	        }
-
-	        // Avoid security warnings on getResponseHeader when not allowed by CORS
-	        if (/^X-Request-URL:/m.test(xhr.getAllResponseHeaders())) {
-	          return xhr.getResponseHeader('X-Request-URL')
-	        }
-
-	        return
-	      }
-
-	      xhr.onload = function() {
-	        var options = {
-	          status: xhr.status,
-	          statusText: xhr.statusText,
-	          headers: headers(xhr),
-	          url: responseURL()
-	        }
-	        var body = 'response' in xhr ? xhr.response : xhr.responseText
-	        resolve(new Response(body, options))
-	      }
-
-	      xhr.onerror = function() {
-	        reject(new TypeError('Network request failed'))
-	      }
-
-	      xhr.ontimeout = function() {
-	        reject(new TypeError('Network request failed'))
-	      }
-
-	      xhr.open(request.method, request.url, true)
-
-	      if (request.credentials === 'include') {
-	        xhr.withCredentials = true
-	      }
-
-	      if ('responseType' in xhr && support.blob) {
-	        xhr.responseType = 'blob'
-	      }
-
-	      request.headers.forEach(function(value, name) {
-	        xhr.setRequestHeader(name, value)
-	      })
-
-	      xhr.send(typeof request._bodyInit === 'undefined' ? null : request._bodyInit)
-	    })
-	  }
-	  self.fetch.polyfill = true
-	})(typeof self !== 'undefined' ? self : this);
-
+	// removed by extract-text-webpack-plugin
 
 /***/ },
-/* 741 */
-/***/ function(module, exports, __webpack_require__) {
+/* 750 */,
+/* 751 */,
+/* 752 */,
+/* 753 */
+/***/ function(module, exports) {
 
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.beginAjaxCall = beginAjaxCall;
-	exports.ajaxCallError = ajaxCallError;
-
-	var _actionTypes = __webpack_require__(544);
-
-	var types = _interopRequireWildcard(_actionTypes);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	function beginAjaxCall() {
-	    return { type: types.BEGIN_AJAX_CALL };
-	}
-
-	function ajaxCallError() {
-	    return { type: types.AJAX_CALL_ERROR };
-	}
+	// removed by extract-text-webpack-plugin
 
 /***/ },
-/* 742 */
-/***/ function(module, exports, __webpack_require__) {
+/* 754 */,
+/* 755 */
+/***/ function(module, exports) {
 
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-					value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _react = __webpack_require__(298);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _reactRedux = __webpack_require__(518);
-
-	var _seatsActions = __webpack_require__(763);
-
-	var _canvasManipulation = __webpack_require__(766);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var Canvas = function (_React$Component) {
-					_inherits(Canvas, _React$Component);
-
-					function Canvas(props) {
-									_classCallCheck(this, Canvas);
-
-									var _this = _possibleConstructorReturn(this, (Canvas.__proto__ || Object.getPrototypeOf(Canvas)).call(this, props));
-
-									_this.state = {
-													canvas: '',
-													context: ''
-									};
-									_this.selectSeat = _this.selectSeat.bind(_this);
-									_this.seatLocationUpdate = _this.seatLocationUpdate.bind(_this);
-									return _this;
-					}
-
-					_createClass(Canvas, [{
-									key: 'componentDidMount',
-									value: function componentDidMount() {
-													this.setState({ canvas: this.refs.canvas, context: this.refs.canvas.getContext('2d') });
-									}
-					}, {
-									key: 'drawShapes',
-									value: function drawShapes() {
-													console.log(1);
-													(0, _canvasManipulation.drawShapes)(this.state, this.props.seats);
-									}
-					}, {
-									key: 'selectSeat',
-									value: function selectSeat(e) {
-													var el = (0, _canvasManipulation.selectElement)(this.state, this.props.seats, e.nativeEvent);
-													if (el || this.props.selected.x) {
-																	this.props.selectSeat(el || {});
-													}
-									}
-					}, {
-									key: 'seatLocationUpdate',
-									value: function seatLocationUpdate(e) {
-													if (this.props.selected.x && e.nativeEvent.buttons == 1) {
-																	var eNative = e.nativeEvent;
-																	this.props.updateSeatLocation(this.props.selected.id, eNative.clientX, eNative.clientY);
-													}
-									}
-					}, {
-									key: 'render',
-									value: function render() {
-													var canvas = this.state.canvas,
-													    context = this.state.context;
-													if (canvas) {
-																	context.clearRect(0, 0, canvas.width, canvas.height);
-																	this.drawShapes();
-													}
-													return _react2.default.createElement(
-																	'canvas',
-																	{ id: 'canvas', width: '800', height: '500', ref: 'canvas',
-																					onMouseDown: this.selectSeat, onMouseMove: this.seatLocationUpdate },
-																	'Canvas not supported'
-													);
-									}
-					}]);
-
-					return Canvas;
-	}(_react2.default.Component);
-
-	function mapStateToProps(state, ownProps) {
-					return {
-									seats: state.arrSeatsReducer,
-									selected: state.selectSeatReducer
-					};
-	}
-	exports.default = (0, _reactRedux.connect)(mapStateToProps, { selectSeat: _seatsActions.selectSeat, updateSeatLocation: _seatsActions.updateSeatLocation })(Canvas);
+	// removed by extract-text-webpack-plugin
 
 /***/ },
-/* 743 */,
-/* 744 */
+/* 756 */,
+/* 757 */
+/***/ function(module, exports) {
+
+	// removed by extract-text-webpack-plugin
+
+/***/ },
+/* 758 */,
+/* 759 */
+/***/ function(module, exports) {
+
+	// removed by extract-text-webpack-plugin
+
+/***/ },
+/* 760 */,
+/* 761 */,
+/* 762 */,
+/* 763 */,
+/* 764 */,
+/* 765 */,
+/* 766 */,
+/* 767 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -48734,7 +47736,7 @@
 
 	var _reactRedux = __webpack_require__(518);
 
-	var _loadPokemonsActions = __webpack_require__(737);
+	var _seatsActions = __webpack_require__(731);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -48756,10 +47758,40 @@
 	    _createClass(Information, [{
 	        key: 'render',
 	        value: function render() {
+	            var selectedSeat = this.props.selected;
 	            return _react2.default.createElement(
 	                'div',
 	                { className: 'info-box' },
-	                'Info'
+	                _react2.default.createElement(
+	                    'div',
+	                    null,
+	                    'Info'
+	                ),
+	                _react2.default.createElement(
+	                    'div',
+	                    null,
+	                    selectedSeat.id
+	                ),
+	                _react2.default.createElement(
+	                    'div',
+	                    null,
+	                    selectedSeat.x
+	                ),
+	                _react2.default.createElement(
+	                    'div',
+	                    null,
+	                    selectedSeat.y
+	                ),
+	                _react2.default.createElement(
+	                    'div',
+	                    null,
+	                    selectedSeat.floor
+	                ),
+	                _react2.default.createElement(
+	                    'div',
+	                    null,
+	                    selectedSeat.assignedTo || 'Empty Seat'
+	                )
 	            );
 	        }
 	    }]);
@@ -48769,16 +47801,15 @@
 
 	function mapStateToProps(state, ownProps) {
 	    return {
-	        pokemons: state.pokemonsReducer,
-	        nextPokeList: state.pokemonsNextGetReducer,
-	        favoriteList: state.toggleFavoriteReducer
+	        seats: state.arrSeatsReducer,
+	        selected: state.selectSeatReducer
 	    };
 	}
-	exports.default = Information;
-	//export default connect(mapStateToProps, {loadPokemons})(Canvas);
+	//export default Information;
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, { updateSeatInfo: _seatsActions.updateSeatInfo })(Information);
 
 /***/ },
-/* 745 */
+/* 768 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -48794,8 +47825,6 @@
 	var _react2 = _interopRequireDefault(_react);
 
 	var _reactRedux = __webpack_require__(518);
-
-	var _loadPokemonsActions = __webpack_require__(737);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -48839,49 +47868,7 @@
 	//export default connect(mapStateToProps, {loadPokemons})(Canvas);
 
 /***/ },
-/* 746 */
-/***/ function(module, exports) {
-
-	// removed by extract-text-webpack-plugin
-
-/***/ },
-/* 747 */,
-/* 748 */,
-/* 749 */,
-/* 750 */
-/***/ function(module, exports) {
-
-	// removed by extract-text-webpack-plugin
-
-/***/ },
-/* 751 */,
-/* 752 */
-/***/ function(module, exports) {
-
-	// removed by extract-text-webpack-plugin
-
-/***/ },
-/* 753 */,
-/* 754 */
-/***/ function(module, exports) {
-
-	// removed by extract-text-webpack-plugin
-
-/***/ },
-/* 755 */,
-/* 756 */
-/***/ function(module, exports) {
-
-	// removed by extract-text-webpack-plugin
-
-/***/ },
-/* 757 */,
-/* 758 */,
-/* 759 */,
-/* 760 */,
-/* 761 */,
-/* 762 */,
-/* 763 */
+/* 769 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -48889,99 +47876,432 @@
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
-	exports.addNewSeat = addNewSeat;
-	exports.selectSeat = selectSeat;
-	exports.updateSeatLocation = updateSeatLocation;
 
-	var _actionTypes = __webpack_require__(544);
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var types = _interopRequireWildcard(_actionTypes);
+	var _react = __webpack_require__(298);
 
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	var _react2 = _interopRequireDefault(_react);
 
-	function addNewSeat(seat) {
-		return { type: types.NEW_SEAT, seat: seat };
+	var _reactRedux = __webpack_require__(518);
+
+	var _seatsActions = __webpack_require__(731);
+
+	var _canvasManipulation = __webpack_require__(772);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Canvas = function (_React$Component) {
+		_inherits(Canvas, _React$Component);
+
+		function Canvas(props) {
+			_classCallCheck(this, Canvas);
+
+			var _this = _possibleConstructorReturn(this, (Canvas.__proto__ || Object.getPrototypeOf(Canvas)).call(this, props));
+
+			_this.state = {
+				canvas: '',
+				context: '',
+				lastdrag: {}
+			};
+			_this.selectSeat = _this.selectSeat.bind(_this);
+			_this.seatLocationUpdate = _this.seatLocationUpdate.bind(_this);
+			return _this;
+		}
+
+		_createClass(Canvas, [{
+			key: 'componentDidMount',
+			value: function componentDidMount() {
+				this.setState({ canvas: this.refs.canvas, context: this.refs.canvas.getContext('2d') });
+			}
+		}, {
+			key: 'drawShapes',
+			value: function drawShapes() {
+				(0, _canvasManipulation.drawShapes)(this.state, this.props.seats);
+			}
+		}, {
+			key: 'selectSeat',
+			value: function selectSeat(e) {
+				var _selectElement = (0, _canvasManipulation.selectElement)(this.state, this.props.seats, e.nativeEvent),
+				    shapeBeingDragged = _selectElement.shapeBeingDragged,
+				    lastdrag = _selectElement.lastdrag;
+
+				if (shapeBeingDragged || this.props.selected.x) {
+					this.props.selectSeat(shapeBeingDragged || {});
+					this.state.lastdrag = lastdrag;
+				}
+			}
+		}, {
+			key: 'seatLocationUpdate',
+			value: function seatLocationUpdate(e) {
+				if (this.props.selected.x && e.nativeEvent.buttons == 1) {
+					var location = (0, _canvasManipulation.windowToCanvas)(this.state.canvas, e.nativeEvent);
+					var x = this.props.selected.x + (location.x - this.state.lastdrag.x),
+					    y = this.props.selected.y + (location.y - this.state.lastdrag.y);
+					this.props.updateSeatLocation(this.props.selected.id, x, y);
+				}
+			}
+		}, {
+			key: 'render',
+			value: function render() {
+				var canvas = this.state.canvas,
+				    context = this.state.context;
+				if (canvas) {
+					context.clearRect(0, 0, canvas.width, canvas.height);
+					this.drawShapes();
+				}
+				return _react2.default.createElement(
+					'canvas',
+					{ id: 'canvas', width: '800', height: '500', ref: 'canvas',
+						onMouseDown: this.selectSeat, onMouseMove: this.seatLocationUpdate },
+					'Canvas not supported'
+				);
+			}
+		}]);
+
+		return Canvas;
+	}(_react2.default.Component);
+
+	function mapStateToProps(state, ownProps) {
+		return {
+			seats: state.arrSeatsReducer,
+			selected: state.selectSeatReducer
+		};
 	}
-
-	function selectSeat(seat) {
-		return { type: types.SELECT_SEAT, seat: seat };
-	}
-
-	function updateSeatLocation(id, x, y) {
-		return { type: types.UPDATE_SEAT_LOCATION, id: id, x: x, y: y };
-	}
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, { selectSeat: _seatsActions.selectSeat, updateSeatLocation: _seatsActions.updateSeatLocation })(Canvas);
 
 /***/ },
-/* 764 */
+/* 770 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
-					value: true
+	    value: true
 	});
-	exports.arrSeatsReducer = arrSeatsReducer;
-	exports.selectSeatReducer = selectSeatReducer;
 
-	var _actionTypes = __webpack_require__(544);
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var types = _interopRequireWildcard(_actionTypes);
+	var _react = __webpack_require__(298);
 
-	var _initialState = __webpack_require__(545);
+	var _react2 = _interopRequireDefault(_react);
 
-	var _initialState2 = _interopRequireDefault(_initialState);
+	var _reactRouter = __webpack_require__(455);
 
-	var _shapes = __webpack_require__(765);
+	var _reactRedux = __webpack_require__(518);
 
-	var _shapes2 = _interopRequireDefault(_shapes);
+	var _classnames = __webpack_require__(730);
+
+	var _classnames2 = _interopRequireDefault(_classnames);
+
+	var _seatsActions = __webpack_require__(731);
+
+	var _initValues = __webpack_require__(774);
+
+	var _initValues2 = _interopRequireDefault(_initValues);
+
+	var _newUserForm = __webpack_require__(775);
+
+	var _newUserForm2 = _interopRequireDefault(_newUserForm);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-	function arrSeatsReducer() {
-					var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _initialState2.default.seats;
-					var action = arguments[1];
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-					switch (action.type) {
-									case types.NEW_SEAT:
-													return [].concat(_toConsumableArray(state), [new _shapes2.default(action.seat)]);
-									case types.UPDATE_SEAT_LOCATION:
-													var i = -1;
-													state.some(function (el, index) {
-																	if (el.id == action.id) {
-																					i = index;
-																					return true;
-																	}
-													});
-													if (i < 0) return state;
-													var seat = state[i];
-													console.log(seat.x, action.x);
-													seat.x = action.x;
-													seat.y = action.y;
-													console.log(seat.x);
-													return [].concat(_toConsumableArray(state.slice(0, i)), [seat], _toConsumableArray(state.slice(i + 1)));
-									default:
-													return state;
-					}
-	};
+	var Header = function (_React$Component) {
+	    _inherits(Header, _React$Component);
 
-	function selectSeatReducer() {
-					var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _initialState2.default.selected;
-					var action = arguments[1];
+	    function Header(props) {
+	        _classCallCheck(this, Header);
 
-					switch (action.type) {
-									case types.SELECT_SEAT:
-													return action.seat;
-									default:
-													return state;
-					}
+	        var _this = _possibleConstructorReturn(this, (Header.__proto__ || Object.getPrototypeOf(Header)).call(this, props));
+
+	        _this.state = { showDropDown: [false, false, false, false], // search bar DropDown = 0;
+	            searchByTypes: ['User', 'Seat', 'Floor'],
+	            searchBy: 'Users' };
+	        _this.addSeat = _this.addSeat.bind(_this);
+	        _this.addUser = _this.addUser.bind(_this);
+	        return _this;
+	    }
+
+	    _createClass(Header, [{
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
+	            document.body.addEventListener('click', this.onClick.bind(this, -1));
+	        }
+	    }, {
+	        key: 'onClick',
+	        value: function onClick(id) {
+	            this.setState({ showDropDown: this.state.showDropDown.map(function (_, i) {
+	                    return i === id;
+	                }) });
+	        }
+	    }, {
+	        key: 'searchBySet',
+	        value: function searchBySet(type) {
+	            this.setState({ searchBy: type });
+	        }
+	    }, {
+	        key: 'addSeat',
+	        value: function addSeat() {
+	            this.props.addNewSeat(_initValues2.default.newSeatForm);
+	        }
+	    }, {
+	        key: 'addUser',
+	        value: function addUser() {
+	            console.log('new User');
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var _this2 = this;
+
+	            var searchList = this.state.searchByTypes.map(function (v, i) {
+	                return _react2.default.createElement(
+	                    'li',
+	                    { key: i },
+	                    _react2.default.createElement(
+	                        'a',
+	                        { onClick: _this2.searchBySet.bind(_this2, v) },
+	                        'By ',
+	                        v
+	                    )
+	                );
+	            });
+	            return _react2.default.createElement(
+	                'nav',
+	                { className: 'navbar navbar-default' },
+	                _react2.default.createElement('newUserForm', null),
+	                _react2.default.createElement(
+	                    'div',
+	                    { className: 'container-fluid' },
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'navbar-header' },
+	                        _react2.default.createElement(
+	                            _reactRouter.IndexLink,
+	                            { to: '/', className: 'navbar-brand' },
+	                            'Yaroslav Stasiuk'
+	                        ),
+	                        _react2.default.createElement(
+	                            'button',
+	                            { 'data-toggle': 'collapse', 'data-target': '.navbar-collapse', className: 'navbar-toggle' },
+	                            _react2.default.createElement(
+	                                'span',
+	                                { className: 'sr-only' },
+	                                'Toggle Navigation'
+	                            ),
+	                            _react2.default.createElement('span', { className: 'icon-bar' }),
+	                            _react2.default.createElement('span', { className: 'icon-bar' }),
+	                            _react2.default.createElement('span', { className: 'icon-bar' })
+	                        )
+	                    ),
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'navbar-collapse collapse' },
+	                        _react2.default.createElement(
+	                            'div',
+	                            { className: 'nav navbar-nav' },
+	                            _react2.default.createElement(
+	                                'li',
+	                                { className: 'dropdown nav-elements' },
+	                                _react2.default.createElement(
+	                                    'a',
+	                                    { id: 'projects', onClick: this.onClick.bind(this, 1) },
+	                                    _react2.default.createElement(
+	                                        'span',
+	                                        null,
+	                                        'Floor'
+	                                    ),
+	                                    _react2.default.createElement('span', { className: 'caret' })
+	                                ),
+	                                _react2.default.createElement(
+	                                    'ul',
+	                                    { className: (0, _classnames2.default)('dropdown-menu react-toggle', this.state.showDropDown[1] ? '' : 'hidden') },
+	                                    _react2.default.createElement(
+	                                        'li',
+	                                        null,
+	                                        _react2.default.createElement(
+	                                            _reactRouter.Link,
+	                                            { to: '#' },
+	                                            'Null'
+	                                        )
+	                                    ),
+	                                    _react2.default.createElement(
+	                                        'li',
+	                                        null,
+	                                        _react2.default.createElement(
+	                                            _reactRouter.Link,
+	                                            { to: '#' },
+	                                            'Null'
+	                                        )
+	                                    )
+	                                )
+	                            ),
+	                            _react2.default.createElement(
+	                                'li',
+	                                { className: 'dropdown nav-elements' },
+	                                _react2.default.createElement(
+	                                    'a',
+	                                    { id: 'projects', onClick: this.onClick.bind(this, 2) },
+	                                    _react2.default.createElement(
+	                                        'span',
+	                                        null,
+	                                        'Seats'
+	                                    ),
+	                                    _react2.default.createElement('span', { className: 'caret' })
+	                                ),
+	                                _react2.default.createElement(
+	                                    'ul',
+	                                    { className: (0, _classnames2.default)('dropdown-menu react-toggle', this.state.showDropDown[2] ? '' : 'hidden') },
+	                                    _react2.default.createElement(
+	                                        'li',
+	                                        null,
+	                                        _react2.default.createElement(
+	                                            'a',
+	                                            { onClick: this.addSeat },
+	                                            'Add Seat'
+	                                        )
+	                                    ),
+	                                    _react2.default.createElement(
+	                                        'li',
+	                                        null,
+	                                        _react2.default.createElement(
+	                                            _reactRouter.Link,
+	                                            { to: '/projects' },
+	                                            'Search Seat'
+	                                        )
+	                                    )
+	                                )
+	                            ),
+	                            _react2.default.createElement(
+	                                'li',
+	                                { className: 'dropdown nav-elements' },
+	                                _react2.default.createElement(
+	                                    'a',
+	                                    { id: 'projects', onClick: this.onClick.bind(this, 3) },
+	                                    _react2.default.createElement(
+	                                        'span',
+	                                        null,
+	                                        'Users'
+	                                    ),
+	                                    _react2.default.createElement('span', { className: 'caret' })
+	                                ),
+	                                _react2.default.createElement(
+	                                    'ul',
+	                                    { className: (0, _classnames2.default)('dropdown-menu react-toggle', this.state.showDropDown[3] ? '' : 'hidden') },
+	                                    _react2.default.createElement(
+	                                        'li',
+	                                        null,
+	                                        _react2.default.createElement(
+	                                            'a',
+	                                            { onClick: this.addUser },
+	                                            'Add User'
+	                                        )
+	                                    ),
+	                                    _react2.default.createElement(
+	                                        'li',
+	                                        null,
+	                                        _react2.default.createElement(
+	                                            _reactRouter.Link,
+	                                            { to: '/projects' },
+	                                            'Search User'
+	                                        )
+	                                    )
+	                                )
+	                            )
+	                        ),
+	                        _react2.default.createElement(
+	                            'div',
+	                            { className: 'nav navbar-nav navbar-right' },
+	                            _react2.default.createElement(
+	                                'li',
+	                                null,
+	                                _react2.default.createElement(
+	                                    _reactRouter.Link,
+	                                    { to: '/contacts', id: 'contact' },
+	                                    _react2.default.createElement(
+	                                        'span',
+	                                        null,
+	                                        'Contact'
+	                                    )
+	                                )
+	                            )
+	                        ),
+	                        _react2.default.createElement(
+	                            'div',
+	                            { className: 'col-lg-6 navbar-nav navbar-right ' },
+	                            _react2.default.createElement(
+	                                'div',
+	                                { className: 'input-group ' },
+	                                _react2.default.createElement('input', { type: 'text', className: 'form-control', 'aria-label': '...' }),
+	                                _react2.default.createElement(
+	                                    'div',
+	                                    { className: 'input-group-btn' },
+	                                    _react2.default.createElement(
+	                                        'button',
+	                                        { type: 'button', className: 'btn btn-default', onClick: this.onClick.bind(this, 0) },
+	                                        'By ',
+	                                        this.state.searchBy,
+	                                        _react2.default.createElement('span', { className: 'caret' })
+	                                    ),
+	                                    _react2.default.createElement(
+	                                        'ul',
+	                                        { className: (0, _classnames2.default)('dropdown-menu react-toggle', this.state.showDropDown[0] ? '' : 'hidden') },
+	                                        searchList,
+	                                        _react2.default.createElement('li', { role: 'separator', className: 'divider' }),
+	                                        _react2.default.createElement(
+	                                            'li',
+	                                            null,
+	                                            _react2.default.createElement(
+	                                                'a',
+	                                                { href: '#' },
+	                                                'Lonely Users'
+	                                            )
+	                                        ),
+	                                        _react2.default.createElement(
+	                                            'li',
+	                                            null,
+	                                            _react2.default.createElement(
+	                                                'a',
+	                                                { href: '#' },
+	                                                'Empty Seats'
+	                                            )
+	                                        )
+	                                    )
+	                                )
+	                            )
+	                        )
+	                    )
+	                )
+	            );
+	        }
+	    }]);
+
+	    return Header;
+	}(_react2.default.Component);
+
+	;
+
+	function mapStateToProps(state, ownProps) {
+	    return {
+	        seats: state.seats
+	    };
 	}
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, { addNewSeat: _seatsActions.addNewSeat })(Header);
 
 /***/ },
-/* 765 */
+/* 771 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -49085,7 +48405,7 @@
 
 			var _this = _possibleConstructorReturn(this, (Seat.__proto__ || Object.getPrototypeOf(Seat)).call(this));
 
-			_this.id = seat.id;
+			_this.id = seat.newId ? seat.id() : seat.id; // that's the function for random generator!
 			_this.x = seat.x;
 			_this.y = seat.y;
 			_this.radius = seat.radius;
@@ -49155,67 +48475,383 @@
 	exports.default = Seat;
 
 /***/ },
-/* 766 */
+/* 772 */
 /***/ function(module, exports) {
 
 	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+		value: true
 	});
 	exports.windowToCanvas = windowToCanvas;
 	exports.selectElement = selectElement;
-	exports.elementMove = elementMove;
 	exports.drawShapes = drawShapes;
-	var lastdrag = { x: 0, y: 0 };
-
 	function windowToCanvas(canvas, e) {
-	  var x = e.x || e.clientX,
-	      y = e.y || e.clientY,
-	      bbox = canvas.getBoundingClientRect();
-
-	  return { x: x - bbox.left * (canvas.width / bbox.width),
-	    y: y - bbox.top * (canvas.height / bbox.height)
-	  };
+		var x = e.x || e.clientX,
+		    y = e.y || e.clientY,
+		    bbox = canvas.getBoundingClientRect();
+		return { x: x - bbox.left * (canvas.width / bbox.width),
+			y: y - bbox.top * (canvas.height / bbox.height)
+		};
 	};
 
 	function selectElement(state, shapes, e) {
-	  var shapeBeingDragged = undefined;
-	  var location = windowToCanvas(state.canvas, e);
-	  shapes.forEach(function (shape) {
-	    if (shape.isPointInPath(state.context, location.x, location.y)) {
-	      shapeBeingDragged = shape;
-	      lastdrag.x = location.x;
-	      lastdrag.y = location.y;
-	    }
-	  });
-	  return shapeBeingDragged;
-	}
-
-	function elementMove() {
-	  var location, dragVector;
-	  if (shapeBeingDragged !== undefined) {
-	    location = windowToCanvas(e);
-	    dragVector = { x: location.x - lastdrag.x,
-	      y: location.y - lastdrag.y
-	    };
-	    shapeBeingDragged.move(dragVector.x, dragVector.y);
-
-	    lastdrag.x = location.x;
-	    lastdrag.y = location.y;
-
-	    context.clearRect(0, 0, canvas.width, canvas.height);
-	    drawShapes();
-	    //detectCollisions();
-	  }
+		var shapeBeingDragged = undefined;
+		var lastdrag = { x: 0, y: 0 };
+		var location = windowToCanvas(state.canvas, e);
+		shapes.forEach(function (shape) {
+			if (shape.isPointInPath(state.context, location.x, location.y)) {
+				shapeBeingDragged = shape;
+				lastdrag.x = location.x;
+				lastdrag.y = location.y;
+			}
+		});
+		return { shapeBeingDragged: shapeBeingDragged, lastdrag: lastdrag };
 	}
 
 	function drawShapes(state, seats) {
-	  seats.forEach(function (seat) {
-	    seat.stroke(state.context);
-	    seat.fill(state.context);
-	  });
+		seats.forEach(function (seat) {
+			seat.stroke(state.context);
+			seat.fill(state.context);
+		});
 	}
+
+/***/ },
+/* 773 */,
+/* 774 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	exports.default = {
+		newSeatForm: {
+			id: function id() {
+				return '_' + Math.random().toString(36).substr(2, 9);
+			},
+			newId: true,
+			x: 150,
+			y: 75,
+			radius: 20,
+			floor: 8,
+			assignedTo: null
+		}
+	};
+
+/***/ },
+/* 775 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(298);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactRedux = __webpack_require__(518);
+
+	var _classnames = __webpack_require__(730);
+
+	var _classnames2 = _interopRequireDefault(_classnames);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var newUserForm = function (_React$Component) {
+	    _inherits(newUserForm, _React$Component);
+
+	    function newUserForm(props) {
+	        _classCallCheck(this, newUserForm);
+
+	        var _this = _possibleConstructorReturn(this, (newUserForm.__proto__ || Object.getPrototypeOf(newUserForm)).call(this, props));
+
+	        _this.state = { showDropDown: [false, false, false, false], // search bar DropDown = 0;
+	            searchByTypes: ['User', 'Seat', 'Floor'],
+	            searchBy: 'Users' };
+	        _this.addSeat = _this.addSeat.bind(_this);
+	        _this.addUser = _this.addUser.bind(_this);
+	        return _this;
+	    }
+
+	    _createClass(newUserForm, [{
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
+	            document.body.addEventListener('click', this.onClick.bind(this, -1));
+	        }
+	    }, {
+	        key: 'onClick',
+	        value: function onClick(id) {
+	            this.setState({ showDropDown: this.state.showDropDown.map(function (_, i) {
+	                    return i === id;
+	                }) });
+	        }
+	    }, {
+	        key: 'searchBySet',
+	        value: function searchBySet(type) {
+	            this.setState({ searchBy: type });
+	        }
+	    }, {
+	        key: 'addSeat',
+	        value: function addSeat() {
+	            this.props.addNewSeat(config.newSeatForm);
+	        }
+	    }, {
+	        key: 'addUser',
+	        value: function addUser() {
+	            console.log('new User');
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var _this2 = this;
+
+	            var searchList = this.state.searchByTypes.map(function (v, i) {
+	                return _react2.default.createElement(
+	                    'li',
+	                    { key: i },
+	                    _react2.default.createElement(
+	                        'a',
+	                        { onClick: _this2.searchBySet.bind(_this2, v) },
+	                        'By ',
+	                        v
+	                    )
+	                );
+	            });
+	            return _react2.default.createElement(
+	                'nav',
+	                { className: 'navbar navbar-default' },
+	                _react2.default.createElement('newUserForm', null),
+	                _react2.default.createElement(
+	                    'div',
+	                    { className: 'container-fluid' },
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'navbar-header' },
+	                        _react2.default.createElement(
+	                            IndexLink,
+	                            { to: '/', className: 'navbar-brand' },
+	                            'Yaroslav Stasiuk'
+	                        ),
+	                        _react2.default.createElement(
+	                            'button',
+	                            { 'data-toggle': 'collapse', 'data-target': '.navbar-collapse', className: 'navbar-toggle' },
+	                            _react2.default.createElement(
+	                                'span',
+	                                { className: 'sr-only' },
+	                                'Toggle Navigation'
+	                            ),
+	                            _react2.default.createElement('span', { className: 'icon-bar' }),
+	                            _react2.default.createElement('span', { className: 'icon-bar' }),
+	                            _react2.default.createElement('span', { className: 'icon-bar' })
+	                        )
+	                    ),
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'navbar-collapse collapse' },
+	                        _react2.default.createElement(
+	                            'div',
+	                            { className: 'nav navbar-nav' },
+	                            _react2.default.createElement(
+	                                'li',
+	                                { className: 'dropdown nav-elements' },
+	                                _react2.default.createElement(
+	                                    'a',
+	                                    { id: 'projects', onClick: this.onClick.bind(this, 1) },
+	                                    _react2.default.createElement(
+	                                        'span',
+	                                        null,
+	                                        'Floor'
+	                                    ),
+	                                    _react2.default.createElement('span', { className: 'caret' })
+	                                ),
+	                                _react2.default.createElement(
+	                                    'ul',
+	                                    { className: (0, _classnames2.default)('dropdown-menu react-toggle', this.state.showDropDown[1] ? '' : 'hidden') },
+	                                    _react2.default.createElement(
+	                                        'li',
+	                                        null,
+	                                        _react2.default.createElement(
+	                                            Link,
+	                                            { to: '#' },
+	                                            'Null'
+	                                        )
+	                                    ),
+	                                    _react2.default.createElement(
+	                                        'li',
+	                                        null,
+	                                        _react2.default.createElement(
+	                                            Link,
+	                                            { to: '#' },
+	                                            'Null'
+	                                        )
+	                                    )
+	                                )
+	                            ),
+	                            _react2.default.createElement(
+	                                'li',
+	                                { className: 'dropdown nav-elements' },
+	                                _react2.default.createElement(
+	                                    'a',
+	                                    { id: 'projects', onClick: this.onClick.bind(this, 2) },
+	                                    _react2.default.createElement(
+	                                        'span',
+	                                        null,
+	                                        'Seats'
+	                                    ),
+	                                    _react2.default.createElement('span', { className: 'caret' })
+	                                ),
+	                                _react2.default.createElement(
+	                                    'ul',
+	                                    { className: (0, _classnames2.default)('dropdown-menu react-toggle', this.state.showDropDown[2] ? '' : 'hidden') },
+	                                    _react2.default.createElement(
+	                                        'li',
+	                                        null,
+	                                        _react2.default.createElement(
+	                                            'a',
+	                                            { onClick: this.addSeat },
+	                                            'Add Seat'
+	                                        )
+	                                    ),
+	                                    _react2.default.createElement(
+	                                        'li',
+	                                        null,
+	                                        _react2.default.createElement(
+	                                            Link,
+	                                            { to: '/projects' },
+	                                            'Search Seat'
+	                                        )
+	                                    )
+	                                )
+	                            ),
+	                            _react2.default.createElement(
+	                                'li',
+	                                { className: 'dropdown nav-elements' },
+	                                _react2.default.createElement(
+	                                    'a',
+	                                    { id: 'projects', onClick: this.onClick.bind(this, 3) },
+	                                    _react2.default.createElement(
+	                                        'span',
+	                                        null,
+	                                        'Users'
+	                                    ),
+	                                    _react2.default.createElement('span', { className: 'caret' })
+	                                ),
+	                                _react2.default.createElement(
+	                                    'ul',
+	                                    { className: (0, _classnames2.default)('dropdown-menu react-toggle', this.state.showDropDown[3] ? '' : 'hidden') },
+	                                    _react2.default.createElement(
+	                                        'li',
+	                                        null,
+	                                        _react2.default.createElement(
+	                                            'a',
+	                                            { onClick: this.addUser },
+	                                            'Add User'
+	                                        )
+	                                    ),
+	                                    _react2.default.createElement(
+	                                        'li',
+	                                        null,
+	                                        _react2.default.createElement(
+	                                            Link,
+	                                            { to: '/projects' },
+	                                            'Search User'
+	                                        )
+	                                    )
+	                                )
+	                            )
+	                        ),
+	                        _react2.default.createElement(
+	                            'div',
+	                            { className: 'nav navbar-nav navbar-right' },
+	                            _react2.default.createElement(
+	                                'li',
+	                                null,
+	                                _react2.default.createElement(
+	                                    Link,
+	                                    { to: '/contacts', id: 'contact' },
+	                                    _react2.default.createElement(
+	                                        'span',
+	                                        null,
+	                                        'Contact'
+	                                    )
+	                                )
+	                            )
+	                        ),
+	                        _react2.default.createElement(
+	                            'div',
+	                            { className: 'col-lg-6 navbar-nav navbar-right ' },
+	                            _react2.default.createElement(
+	                                'div',
+	                                { className: 'input-group ' },
+	                                _react2.default.createElement('input', { type: 'text', className: 'form-control', 'aria-label': '...' }),
+	                                _react2.default.createElement(
+	                                    'div',
+	                                    { className: 'input-group-btn' },
+	                                    _react2.default.createElement(
+	                                        'button',
+	                                        { type: 'button', className: 'btn btn-default', onClick: this.onClick.bind(this, 0) },
+	                                        'By ',
+	                                        this.state.searchBy,
+	                                        _react2.default.createElement('span', { className: 'caret' })
+	                                    ),
+	                                    _react2.default.createElement(
+	                                        'ul',
+	                                        { className: (0, _classnames2.default)('dropdown-menu react-toggle', this.state.showDropDown[0] ? '' : 'hidden') },
+	                                        searchList,
+	                                        _react2.default.createElement('li', { role: 'separator', className: 'divider' }),
+	                                        _react2.default.createElement(
+	                                            'li',
+	                                            null,
+	                                            _react2.default.createElement(
+	                                                'a',
+	                                                { href: '#' },
+	                                                'Lonely Users'
+	                                            )
+	                                        ),
+	                                        _react2.default.createElement(
+	                                            'li',
+	                                            null,
+	                                            _react2.default.createElement(
+	                                                'a',
+	                                                { href: '#' },
+	                                                'Empty Seats'
+	                                            )
+	                                        )
+	                                    )
+	                                )
+	                            )
+	                        )
+	                    )
+	                )
+	            );
+	        }
+	    }]);
+
+	    return newUserForm;
+	}(_react2.default.Component);
+
+	;
+
+	function mapStateToProps(state, ownProps) {
+	    return {
+	        seats: state.seats
+	    };
+	}
+	//export default connect(mapStateToProps, {})(newUserForm);
+	exports.default = newUserForm;
 
 /***/ }
 /******/ ]);

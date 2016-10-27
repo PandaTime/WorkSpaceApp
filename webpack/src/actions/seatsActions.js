@@ -12,3 +12,6 @@ export function selectSeat(seat){
 export function updateSeatLocation(id, x, y){
 	return {type: types.UPDATE_SEAT_LOCATION, id, x, y};
 }
+export function updateSeatInfo(){
+	return {type: types.UPDATE_SEAT_LOCATION, id, x, y};
+}

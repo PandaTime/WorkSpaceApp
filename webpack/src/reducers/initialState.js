@@ -1,12 +1,7 @@
-import defaultValues from './../config';
-import {getFavoritePokemons} from './../api/localstorageAPI';
+import defaultValues from '../components/home/initValues';
 
 export default {
-    favoritePokemons: getFavoritePokemons(),
 	seats: [],
 	selected: {},
-    pokemons: [],
-	pokemonsDataList: {},
-    nextPokeList: defaultValues.initialPokemons,
     ajaxCallsInProgress: 0
 };

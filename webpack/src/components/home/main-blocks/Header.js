@@ -2,15 +2,18 @@ import React, {PropTypes} from 'react';
 import { Link, IndexLink } from 'react-router';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import {addNewSeat} from '../../actions/seatsActions';
+import {addNewSeat} from '../../../actions/seatsActions';
+import config from '../initValues';
+import newUserForm from './header-blocks/newUserForm';
 
 class Header extends React.Component{
     constructor(props){
         super(props);
         this.state = {showDropDown : [false, false, false, false], // search bar DropDown = 0;
 					  searchByTypes: ['User', 'Seat', 'Floor'],
-					  searchBy: 'Users'}
+					  searchBy: 'Users'};
 		this.addSeat = this.addSeat.bind(this);
+        this.addUser = this.addUser.bind(this);
     }
 	componentDidMount() {
         document.body.addEventListener('click', this.onClick.bind(this, -1));
@@ -22,22 +25,18 @@ class Header extends React.Component{
 		this.setState({searchBy: type});
 	}
 	addSeat(){
-		var seat = {
-			id: '_' + Math.random().toString(36).substr(2, 9),
-			x: 150,
-			y: 75,
-			radius: 20,
-			floor: 8,
-			assignedTo: null
-		}
-		this.props.addNewSeat(seat);
+        this.props.addNewSeat(config.newSeatForm);
 	}
+    addUser(){
+        console.log('new User');
+    }
     render() {
 		var searchList = this.state.searchByTypes.map((v, i)=>{
 			return(<li key={i}><a onClick={this.searchBySet.bind(this, v)}>By {v}</a></li>)
-		})
+		});
         return (
             <nav className="navbar navbar-default">
+                <newUserForm />
                 <div className="container-fluid">
                     <div className="navbar-header"><IndexLink to="/" className="navbar-brand">Yaroslav
                         Stasiuk</IndexLink>
@@ -54,6 +53,7 @@ class Header extends React.Component{
                                 <a id="projects" onClick={this.onClick.bind(this, 1)}>
                                     <span>Floor</span><span className="caret"></span>
                                 </a>
+
                                 <ul className={classNames('dropdown-menu react-toggle', this.state.showDropDown[1] ? '' : 'hidden')}>
                                     <li><Link to="#">Null</Link></li>
                                     <li><Link to="#">Null</Link></li>
@@ -73,7 +73,7 @@ class Header extends React.Component{
                                     <span>Users</span><span className="caret"></span>
                                 </a>
                                 <ul className={classNames('dropdown-menu react-toggle', this.state.showDropDown[3] ? '' : 'hidden')}>
-                                    <li><Link to="/projects">Add User</Link></li>
+                                    <li><a onClick={this.addUser}>Add User</a></li>
                                     <li><Link to="/projects">Search User</Link></li>
                                 </ul>
                             </li>
@@ -106,9 +106,7 @@ class Header extends React.Component{
 
 function mapStateToProps(state, ownProps){
     return {
-        seats: state.seats,
-        nextPokeList: state.pokemonsNextGetReducer,
-        favoriteList: state.toggleFavoriteReducer
+        seats: state.seats
     };
 }
 export default connect(mapStateToProps, {addNewSeat})(Header);

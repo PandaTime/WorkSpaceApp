@@ -1,15 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import {loadPokemons} from '../../actions/loadPokemonsActions';
 
 
-class Information extends React.Component {
+class Search extends React.Component {
     constructor(props){
         super(props);
     }
     render() {
         return (
-            <div className="info-box">Info</div>
+            <div className="search-box">Search</div>
         );
     }
 }
@@ -21,6 +20,6 @@ function mapStateToProps(state, ownProps){
         favoriteList: state.toggleFavoriteReducer
     };
 }
-export default Information;
+export default Search;
 //export default connect(mapStateToProps, {loadPokemons})(Canvas);
 

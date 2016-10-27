@@ -1,4 +1,4 @@
-import defaultValues from './../config';
+import defaultValues from '../components/home/initValues';
 
 export function getFavoritePokemons(){
     return JSON.parse(localStorage.getItem(defaultValues.favoritePokStorage)) || {};

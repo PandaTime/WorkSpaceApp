@@ -2,10 +2,9 @@ import React from 'react';
 //import {Link} from 'react-router';
 import {NotificationSystem} from 'react-notification-system';
 import { connect } from 'react-redux';
-import {loadPokemons} from '../../actions/loadPokemonsActions';
-import Canvas from './visualization/canvasElement';
-import Info from './InfoElement';
-import Search from './SearchElement';
+import Canvas from './main-blocks/canvasElement';
+import Info from './main-blocks/InfoElement';
+import Search from './main-blocks/SearchElement';
 
 class HomePage extends React.Component {
     constructor(props){
@@ -34,6 +33,6 @@ function mapStateToProps(state, ownProps){
     };
 }
 
-export default connect(mapStateToProps, {loadPokemons})(HomePage);
+//export default connect(mapStateToProps, {loadPokemons})(HomePage);
 
-//export default HomePage;
+export default HomePage;
