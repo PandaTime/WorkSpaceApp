@@ -1,6 +1,8 @@
 import React, {PropTypes} from 'react';
 import { Link, IndexLink } from 'react-router';
+import { connect } from 'react-redux';
 import classNames from 'classnames';
+import {addNewSeat} from '../../actions/seatsActions';
 
 class Header extends React.Component{
     constructor(props){
@@ -8,7 +10,7 @@ class Header extends React.Component{
         this.state = {showDropDown : [false, false, false, false], // search bar DropDown = 0;
 					  searchByTypes: ['User', 'Seat', 'Floor'],
 					  searchBy: 'Users'}
-
+		this.addSeat = this.addSeat.bind(this);
     }
 	componentDidMount() {
         document.body.addEventListener('click', this.onClick.bind(this, -1));
@@ -18,6 +20,17 @@ class Header extends React.Component{
     }
 	searchBySet(type){
 		this.setState({searchBy: type});
+	}
+	addSeat(){
+		var seat = {
+			id: '_' + Math.random().toString(36).substr(2, 9),
+			x: 150,
+			y: 75,
+			radius: 20,
+			floor: 8,
+			assignedTo: null
+		}
+		this.props.addNewSeat(seat);
 	}
     render() {
 		var searchList = this.state.searchByTypes.map((v, i)=>{
@@ -51,7 +64,7 @@ class Header extends React.Component{
                                     <span>Seats</span><span className="caret"></span>
                                 </a>
                                 <ul className={classNames('dropdown-menu react-toggle', this.state.showDropDown[2] ? '' : 'hidden')}>
-                                    <li><Link to="/projects">Add Seat</Link></li>
+                                    <li><a onClick={this.addSeat}>Add Seat</a></li>
                                     <li><Link to="/projects">Search Seat</Link></li>
                                 </ul>
                             </li>
@@ -91,4 +104,11 @@ class Header extends React.Component{
     }
 };
 
-export default Header;
+function mapStateToProps(state, ownProps){
+    return {
+        seats: state.seats,
+        nextPokeList: state.pokemonsNextGetReducer,
+        favoriteList: state.toggleFavoriteReducer
+    };
+}
+export default connect(mapStateToProps, {addNewSeat})(Header);

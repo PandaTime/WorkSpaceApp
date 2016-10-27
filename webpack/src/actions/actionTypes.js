@@ -14,5 +14,6 @@ export const UPDATE_USER = 'UPDATE_USER';
 export const SWAP_USERS = 'SWAP_USERS';
 
 export const NEW_SEAT = 'NEW_SEAT';
+export const SELECT_SEAT = 'SELECT_SEAT';
 export const UPDATE_SEAT_LOCATION = 'UPDATE_SEAT_LOCATION';
 export const DELETE_SEAT = 'DELETE_SEAT';

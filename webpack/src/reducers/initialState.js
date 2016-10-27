@@ -3,6 +3,8 @@ import {getFavoritePokemons} from './../api/localstorageAPI';
 
 export default {
     favoritePokemons: getFavoritePokemons(),
+	seats: [],
+	selected: {},
     pokemons: [],
 	pokemonsDataList: {},
     nextPokeList: defaultValues.initialPokemons,

@@ -68,15 +68,15 @@
 
 	var _routes2 = _interopRequireDefault(_routes);
 
-	__webpack_require__(735);
+	__webpack_require__(746);
 
-	__webpack_require__(749);
+	__webpack_require__(750);
 
-	__webpack_require__(753);
+	__webpack_require__(752);
 
-	__webpack_require__(739);
+	__webpack_require__(754);
 
-	__webpack_require__(741);
+	__webpack_require__(756);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -34908,7 +34908,7 @@
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
-	    value: true
+	   value: true
 	});
 
 	var _redux = __webpack_require__(525);
@@ -34921,14 +34921,18 @@
 
 	var _ajaxStatusReducer2 = _interopRequireDefault(_ajaxStatusReducer);
 
+	var _seatsReducer = __webpack_require__(764);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var rootReducer = (0, _redux.combineReducers)({
-	    pokemonsReducer: _pokemonsReducer.pokemonsReducer,
-	    pokemonsDataReducer: _pokemonsReducer.pokemonsDataReducer,
-	    pokemonsNextGetReducer: _pokemonsReducer.pokemonsNextGetReducer,
-	    toggleFavoriteReducer: _toggleFavoriteReducer.toggleFavoriteReducer,
-	    ajaxCallsInProgress: _ajaxStatusReducer2.default
+	   pokemonsReducer: _pokemonsReducer.pokemonsReducer,
+	   pokemonsDataReducer: _pokemonsReducer.pokemonsDataReducer,
+	   pokemonsNextGetReducer: _pokemonsReducer.pokemonsNextGetReducer,
+	   toggleFavoriteReducer: _toggleFavoriteReducer.toggleFavoriteReducer,
+	   arrSeatsReducer: _seatsReducer.arrSeatsReducer,
+	   selectSeatReducer: _seatsReducer.selectSeatReducer,
+	   ajaxCallsInProgress: _ajaxStatusReducer2.default
 	});
 
 	exports.default = rootReducer;
@@ -35025,6 +35029,7 @@
 	var SWAP_USERS = exports.SWAP_USERS = 'SWAP_USERS';
 
 	var NEW_SEAT = exports.NEW_SEAT = 'NEW_SEAT';
+	var SELECT_SEAT = exports.SELECT_SEAT = 'SELECT_SEAT';
 	var UPDATE_SEAT_LOCATION = exports.UPDATE_SEAT_LOCATION = 'UPDATE_SEAT_LOCATION';
 	var DELETE_SEAT = exports.DELETE_SEAT = 'DELETE_SEAT';
 
@@ -35035,7 +35040,7 @@
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
-	    value: true
+	   value: true
 	});
 
 	var _config = __webpack_require__(546);
@@ -35047,11 +35052,13 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	exports.default = {
-	    favoritePokemons: (0, _localstorageAPI.getFavoritePokemons)(),
-	    pokemons: [],
-	    pokemonsDataList: {},
-	    nextPokeList: _config2.default.initialPokemons,
-	    ajaxCallsInProgress: 0
+	   favoritePokemons: (0, _localstorageAPI.getFavoritePokemons)(),
+	   seats: [],
+	   selected: {},
+	   pokemons: [],
+	   pokemonsDataList: {},
+	   nextPokeList: _config2.default.initialPokemons,
+	   ajaxCallsInProgress: 0
 	};
 
 /***/ },
@@ -46533,9 +46540,13 @@
 
 	var _reactRouter = __webpack_require__(455);
 
+	var _reactRedux = __webpack_require__(518);
+
 	var _classnames = __webpack_require__(728);
 
 	var _classnames2 = _interopRequireDefault(_classnames);
+
+	var _seatsActions = __webpack_require__(763);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -46556,7 +46567,7 @@
 	        _this.state = { showDropDown: [false, false, false, false], // search bar DropDown = 0;
 	            searchByTypes: ['User', 'Seat', 'Floor'],
 	            searchBy: 'Users' };
-
+	        _this.addSeat = _this.addSeat.bind(_this);
 	        return _this;
 	    }
 
@@ -46576,6 +46587,19 @@
 	        key: 'searchBySet',
 	        value: function searchBySet(type) {
 	            this.setState({ searchBy: type });
+	        }
+	    }, {
+	        key: 'addSeat',
+	        value: function addSeat() {
+	            var seat = {
+	                id: '_' + Math.random().toString(36).substr(2, 9),
+	                x: 150,
+	                y: 75,
+	                radius: 20,
+	                floor: 8,
+	                assignedTo: null
+	            };
+	            this.props.addNewSeat(seat);
 	        }
 	    }, {
 	        key: 'render',
@@ -46683,8 +46707,8 @@
 	                                        'li',
 	                                        null,
 	                                        _react2.default.createElement(
-	                                            _reactRouter.Link,
-	                                            { to: '/projects' },
+	                                            'a',
+	                                            { onClick: this.addSeat },
 	                                            'Add Seat'
 	                                        )
 	                                    ),
@@ -46808,7 +46832,14 @@
 
 	;
 
-	exports.default = Header;
+	function mapStateToProps(state, ownProps) {
+	    return {
+	        seats: state.seats,
+	        nextPokeList: state.pokemonsNextGetReducer,
+	        favoriteList: state.toggleFavoriteReducer
+	    };
+	}
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, { addNewSeat: _seatsActions.addNewSeat })(Header);
 
 /***/ },
 /* 728 */
@@ -46880,19 +46911,21 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _reactNotificationSystem = __webpack_require__(730);
+
 	var _reactRedux = __webpack_require__(518);
 
-	var _loadPokemonsActions = __webpack_require__(730);
+	var _loadPokemonsActions = __webpack_require__(737);
 
-	var _canvasElement = __webpack_require__(751);
+	var _canvasElement = __webpack_require__(742);
 
 	var _canvasElement2 = _interopRequireDefault(_canvasElement);
 
-	var _InfoElement = __webpack_require__(752);
+	var _InfoElement = __webpack_require__(744);
 
 	var _InfoElement2 = _interopRequireDefault(_InfoElement);
 
-	var _SearchElement = __webpack_require__(755);
+	var _SearchElement = __webpack_require__(745);
 
 	var _SearchElement2 = _interopRequireDefault(_SearchElement);
 
@@ -46950,6 +46983,1050 @@
 /* 730 */
 /***/ function(module, exports, __webpack_require__) {
 
+	var React = __webpack_require__(298);
+	var merge = __webpack_require__(731);
+	var NotificationContainer = __webpack_require__(732);
+	var Constants = __webpack_require__(734);
+	var Styles = __webpack_require__(736);
+
+	var NotificationSystem = React.createClass({displayName: "NotificationSystem",
+
+	  uid: 3400,
+
+	  _isMounted: false,
+
+	  _getStyles: {
+	    overrideStyle: {},
+
+	    overrideWidth: null,
+
+	    setOverrideStyle: function(style) {
+	      this.overrideStyle = style;
+	    },
+
+	    wrapper: function() {
+	      if (!this.overrideStyle) return {};
+	      return merge({}, Styles.Wrapper, this.overrideStyle.Wrapper);
+	    },
+
+	    container: function(position) {
+	      var override = this.overrideStyle.Containers || {};
+	      if (!this.overrideStyle) return {};
+
+	      this.overrideWidth = Styles.Containers.DefaultStyle.width;
+
+	      if (override.DefaultStyle && override.DefaultStyle.width) {
+	        this.overrideWidth = override.DefaultStyle.width;
+	      }
+
+	      if (override[position] && override[position].width) {
+	        this.overrideWidth = override[position].width;
+	      }
+
+	      return merge({}, Styles.Containers.DefaultStyle, Styles.Containers[position], override.DefaultStyle, override[position]);
+	    },
+
+	    elements: {
+	      notification: 'NotificationItem',
+	      title: 'Title',
+	      messageWrapper: 'MessageWrapper',
+	      dismiss: 'Dismiss',
+	      action: 'Action',
+	      actionWrapper: 'ActionWrapper'
+	    },
+
+	    byElement: function(element) {
+	      var self = this;
+	      return function(level) {
+	        var _element = self.elements[element];
+	        var override = self.overrideStyle[_element] || {};
+	        if (!self.overrideStyle) return {};
+	        return merge({}, Styles[_element].DefaultStyle, Styles[_element][level], override.DefaultStyle, override[level]);
+	      };
+	    }
+	  },
+
+	  _didNotificationRemoved: function(uid) {
+	    var notification;
+	    var notifications = this.state.notifications.filter(function(toCheck) {
+	      if (toCheck.uid === uid) {
+	        notification = toCheck;
+	      }
+	      return toCheck.uid !== uid;
+	    });
+
+	    if (notification && notification.onRemove) {
+	      notification.onRemove(notification);
+	    }
+
+	    if (this._isMounted) {
+	      this.setState({ notifications: notifications });
+	    }
+	  },
+
+	  getInitialState: function() {
+	    return {
+	      notifications: []
+	    };
+	  },
+
+	  propTypes: {
+	    style: React.PropTypes.oneOfType([
+	      React.PropTypes.bool,
+	      React.PropTypes.object
+	    ]),
+	    noAnimation: React.PropTypes.bool,
+	    allowHTML: React.PropTypes.bool
+	  },
+
+	  getDefaultProps: function() {
+	    return {
+	      style: {},
+	      noAnimation: false,
+	      allowHTML: false
+	    };
+	  },
+
+	  addNotification: function(notification) {
+	    var _notification = merge({}, Constants.notification, notification);
+	    var notifications = this.state.notifications;
+	    var i;
+
+	    if (!_notification.level) {
+	      throw new Error('notification level is required.');
+	    }
+
+	    if (Object.keys(Constants.levels).indexOf(_notification.level) === -1) {
+	      throw new Error('\'' + _notification.level + '\' is not a valid level.');
+	    }
+
+	    if (isNaN(_notification.autoDismiss)) {
+	      throw new Error('\'autoDismiss\' must be a number.');
+	    }
+
+	    if (Object.keys(Constants.positions).indexOf(_notification.position) === -1) {
+	      throw new Error('\'' + _notification.position + '\' is not a valid position.');
+	    }
+
+	    // Some preparations
+	    _notification.position = _notification.position.toLowerCase();
+	    _notification.level = _notification.level.toLowerCase();
+	    _notification.autoDismiss = parseInt(_notification.autoDismiss, 10);
+
+	    _notification.uid = _notification.uid || this.uid;
+	    _notification.ref = 'notification-' + _notification.uid;
+	    this.uid += 1;
+
+	    // do not add if the notification already exists based on supplied uid
+	    for (i = 0; i < notifications.length; i++) {
+	      if (notifications[i].uid === _notification.uid) {
+	        return false;
+	      }
+	    }
+
+	    notifications.push(_notification);
+
+	    if (typeof _notification.onAdd === 'function') {
+	      notification.onAdd(_notification);
+	    }
+
+	    this.setState({
+	      notifications: notifications
+	    });
+
+	    return _notification;
+	  },
+
+	  removeNotification: function(notification) {
+	    var self = this;
+	    Object.keys(this.refs).forEach(function(container) {
+	      if (container.indexOf('container') > -1) {
+	        Object.keys(self.refs[container].refs).forEach(function(_notification) {
+	          var uid = notification.uid ? notification.uid : notification;
+	          if (_notification === 'notification-' + uid) {
+	            self.refs[container].refs[_notification]._hideNotification();
+	          }
+	        });
+	      }
+	    });
+	  },
+
+	  componentDidMount: function() {
+	    this._getStyles.setOverrideStyle(this.props.style);
+	    this._isMounted = true;
+	  },
+
+	  componentWillUnmount: function() {
+	    this._isMounted = false;
+	  },
+
+	  render: function() {
+	    var self = this;
+	    var containers = null;
+	    var notifications = this.state.notifications;
+
+	    if (notifications.length) {
+	      containers = Object.keys(Constants.positions).map(function(position) {
+	        var _notifications = notifications.filter(function(notification) {
+	          return position === notification.position;
+	        });
+
+	        if (_notifications.length) {
+	          return (
+	            React.createElement(NotificationContainer, {
+	              ref:  'container-' + position, 
+	              key:  position, 
+	              position:  position, 
+	              notifications:  _notifications, 
+	              getStyles:  self._getStyles, 
+	              onRemove:  self._didNotificationRemoved, 
+	              noAnimation:  self.props.noAnimation, 
+	              allowHTML:  self.props.allowHTML}
+	            )
+	          );
+	        }
+	      });
+	    }
+
+
+	    return (
+	      React.createElement("div", {className: "notifications-wrapper", style:  this._getStyles.wrapper() }, 
+	         containers 
+	      )
+
+	    );
+	  }
+	});
+
+	module.exports = NotificationSystem;
+
+
+/***/ },
+/* 731 */
+/***/ function(module, exports) {
+
+	'use strict';
+	/* eslint-disable no-unused-vars */
+	var hasOwnProperty = Object.prototype.hasOwnProperty;
+	var propIsEnumerable = Object.prototype.propertyIsEnumerable;
+
+	function toObject(val) {
+		if (val === null || val === undefined) {
+			throw new TypeError('Object.assign cannot be called with null or undefined');
+		}
+
+		return Object(val);
+	}
+
+	function shouldUseNative() {
+		try {
+			if (!Object.assign) {
+				return false;
+			}
+
+			// Detect buggy property enumeration order in older V8 versions.
+
+			// https://bugs.chromium.org/p/v8/issues/detail?id=4118
+			var test1 = new String('abc');  // eslint-disable-line
+			test1[5] = 'de';
+			if (Object.getOwnPropertyNames(test1)[0] === '5') {
+				return false;
+			}
+
+			// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+			var test2 = {};
+			for (var i = 0; i < 10; i++) {
+				test2['_' + String.fromCharCode(i)] = i;
+			}
+			var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
+				return test2[n];
+			});
+			if (order2.join('') !== '0123456789') {
+				return false;
+			}
+
+			// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+			var test3 = {};
+			'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
+				test3[letter] = letter;
+			});
+			if (Object.keys(Object.assign({}, test3)).join('') !==
+					'abcdefghijklmnopqrst') {
+				return false;
+			}
+
+			return true;
+		} catch (e) {
+			// We don't expect any of the above to throw, but better to be safe.
+			return false;
+		}
+	}
+
+	module.exports = shouldUseNative() ? Object.assign : function (target, source) {
+		var from;
+		var to = toObject(target);
+		var symbols;
+
+		for (var s = 1; s < arguments.length; s++) {
+			from = Object(arguments[s]);
+
+			for (var key in from) {
+				if (hasOwnProperty.call(from, key)) {
+					to[key] = from[key];
+				}
+			}
+
+			if (Object.getOwnPropertySymbols) {
+				symbols = Object.getOwnPropertySymbols(from);
+				for (var i = 0; i < symbols.length; i++) {
+					if (propIsEnumerable.call(from, symbols[i])) {
+						to[symbols[i]] = from[symbols[i]];
+					}
+				}
+			}
+		}
+
+		return to;
+	};
+
+
+/***/ },
+/* 732 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(298);
+	var NotificationItem = __webpack_require__(733);
+	var Constants = __webpack_require__(734);
+
+	var NotificationContainer = React.createClass({displayName: "NotificationContainer",
+
+	  propTypes: {
+	    position: React.PropTypes.string.isRequired,
+	    notifications: React.PropTypes.array.isRequired,
+	    getStyles: React.PropTypes.object
+	  },
+
+	  _style: {},
+
+	  componentWillMount: function() {
+	    // Fix position if width is overrided
+	    this._style = this.props.getStyles.container(this.props.position);
+
+	    if (this.props.getStyles.overrideWidth && (this.props.position === Constants.positions.tc || this.props.position === Constants.positions.bc)) {
+	      this._style.marginLeft = -(this.props.getStyles.overrideWidth / 2);
+	    }
+	  },
+
+	  render: function() {
+	    var self = this;
+	    var notifications;
+
+	    if ([Constants.positions.bl, Constants.positions.br, Constants.positions.bc].indexOf(this.props.position) > -1) {
+	      this.props.notifications.reverse();
+	    }
+
+	    notifications = this.props.notifications.map(function(notification) {
+	      return (
+	        React.createElement(NotificationItem, {
+	          ref:  'notification-' + notification.uid, 
+	          key:  notification.uid, 
+	          notification:  notification, 
+	          getStyles:  self.props.getStyles, 
+	          onRemove:  self.props.onRemove, 
+	          noAnimation:  self.props.noAnimation, 
+	          allowHTML:  self.props.allowHTML, 
+	          children:  self.props.children}
+	        )
+	      );
+	    });
+
+	    return (
+	      React.createElement("div", {className:  'notifications-' + this.props.position, style:  this._style}, 
+	         notifications 
+	      )
+	    );
+	  }
+	});
+
+
+	module.exports = NotificationContainer;
+
+
+/***/ },
+/* 733 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(298);
+	var ReactDOM = __webpack_require__(454);
+	var Constants = __webpack_require__(734);
+	var Helpers = __webpack_require__(735);
+	var merge = __webpack_require__(731);
+
+	/* From Modernizr */
+	var whichTransitionEvent = function() {
+	  var t;
+	  var el = document.createElement('fakeelement');
+	  var transitions = {
+	    'transition': 'transitionend',
+	    'OTransition': 'oTransitionEnd',
+	    'MozTransition': 'transitionend',
+	    'WebkitTransition': 'webkitTransitionEnd'
+	  };
+
+	  for (t in transitions) {
+	    if (el.style[t] !== undefined) {
+	      return transitions[t];
+	    }
+	  }
+	};
+
+	var NotificationItem = React.createClass({displayName: "NotificationItem",
+
+	  propTypes: {
+	    notification: React.PropTypes.object,
+	    getStyles: React.PropTypes.object,
+	    onRemove: React.PropTypes.func,
+	    allowHTML: React.PropTypes.bool,
+	    noAnimation: React.PropTypes.bool,
+	    children: React.PropTypes.oneOfType([
+	      React.PropTypes.string,
+	      React.PropTypes.element
+	    ])
+	  },
+
+	  getDefaultProps: function() {
+	    return {
+	      noAnimation: false,
+	      onRemove: function() {},
+	      allowHTML: false
+	    };
+	  },
+
+	  getInitialState: function() {
+	    return {
+	      visible: false,
+	      removed: false
+	    };
+	  },
+
+	  componentWillMount: function() {
+	    var getStyles = this.props.getStyles;
+	    var level = this.props.notification.level;
+
+	    this._noAnimation = this.props.noAnimation;
+
+	    this._styles = {
+	      notification: getStyles.byElement('notification')(level),
+	      title: getStyles.byElement('title')(level),
+	      dismiss: getStyles.byElement('dismiss')(level),
+	      messageWrapper: getStyles.byElement('messageWrapper')(level),
+	      actionWrapper: getStyles.byElement('actionWrapper')(level),
+	      action: getStyles.byElement('action')(level)
+	    };
+
+	    if (!this.props.notification.dismissible) {
+	      this._styles.notification.cursor = 'default';
+	    }
+	  },
+
+	  _styles: {},
+
+	  _notificationTimer: null,
+
+	  _height: 0,
+
+	  _noAnimation: null,
+
+	  _isMounted: false,
+
+	  _removeCount: 0,
+
+	  _getCssPropertyByPosition: function() {
+	    var position = this.props.notification.position;
+	    var css = {};
+
+	    switch (position) {
+	    case Constants.positions.tl:
+	    case Constants.positions.bl:
+	      css = {
+	        property: 'left',
+	        value: -200
+	      };
+	      break;
+
+	    case Constants.positions.tr:
+	    case Constants.positions.br:
+	      css = {
+	        property: 'right',
+	        value: -200
+	      };
+	      break;
+
+	    case Constants.positions.tc:
+	      css = {
+	        property: 'top',
+	        value: -100
+	      };
+	      break;
+
+	    case Constants.positions.bc:
+	      css = {
+	        property: 'bottom',
+	        value: -100
+	      };
+	      break;
+
+	    default:
+	    }
+
+	    return css;
+	  },
+
+	  _defaultAction: function(event) {
+	    var notification = this.props.notification;
+
+	    event.preventDefault();
+	    this._hideNotification();
+	    if (typeof notification.action.callback === 'function') {
+	      notification.action.callback();
+	    }
+	  },
+
+	  _hideNotification: function() {
+	    if (this._notificationTimer) {
+	      this._notificationTimer.clear();
+	    }
+
+	    if (this._isMounted) {
+	      this.setState({
+	        visible: false,
+	        removed: true
+	      });
+	    }
+
+	    if (this._noAnimation) {
+	      this._removeNotification();
+	    }
+	  },
+
+	  _removeNotification: function() {
+	    this.props.onRemove(this.props.notification.uid);
+	  },
+
+	  _dismiss: function() {
+	    if (!this.props.notification.dismissible) {
+	      return;
+	    }
+
+	    this._hideNotification();
+	  },
+
+	  _showNotification: function() {
+	    var self = this;
+	    setTimeout(function() {
+	      if (self._isMounted) {
+	        self.setState({
+	          visible: true
+	        });
+	      }
+	    }, 50);
+	  },
+
+	  _onTransitionEnd: function() {
+	    if (this._removeCount > 0) return;
+	    if (this.state.removed) {
+	      this._removeCount++;
+	      this._removeNotification();
+	    }
+	  },
+
+	  componentDidMount: function() {
+	    var self = this;
+	    var transitionEvent = whichTransitionEvent();
+	    var notification = this.props.notification;
+	    var element = ReactDOM.findDOMNode(this);
+
+	    this._height = element.offsetHeight;
+
+	    this._isMounted = true;
+
+	    // Watch for transition end
+	    if (!this._noAnimation) {
+	      if (transitionEvent) {
+	        element.addEventListener(transitionEvent, this._onTransitionEnd);
+	      } else {
+	        this._noAnimation = true;
+	      }
+	    }
+
+
+	    if (notification.autoDismiss) {
+	      this._notificationTimer = new Helpers.Timer(function() {
+	        self._hideNotification();
+	      }, notification.autoDismiss * 1000);
+	    }
+
+	    this._showNotification();
+	  },
+
+	  _handleMouseEnter: function() {
+	    var notification = this.props.notification;
+	    if (notification.autoDismiss) {
+	      this._notificationTimer.pause();
+	    }
+	  },
+
+	  _handleMouseLeave: function() {
+	    var notification = this.props.notification;
+	    if (notification.autoDismiss) {
+	      this._notificationTimer.resume();
+	    }
+	  },
+
+	  componentWillUnmount: function() {
+	    var element = ReactDOM.findDOMNode(this);
+	    var transitionEvent = whichTransitionEvent();
+	    element.removeEventListener(transitionEvent, this._onTransitionEnd);
+	    this._isMounted = false;
+	  },
+
+	  _allowHTML: function(string) {
+	    return { __html: string };
+	  },
+
+	  render: function() {
+	    var notification = this.props.notification;
+	    var className = 'notification notification-' + notification.level;
+	    var notificationStyle = merge({}, this._styles.notification);
+	    var cssByPos = this._getCssPropertyByPosition();
+	    var dismiss = null;
+	    var actionButton = null;
+	    var title = null;
+	    var message = null;
+
+	    if (this.state.visible) {
+	      className = className + ' notification-visible';
+	    } else {
+	      className = className + ' notification-hidden';
+	    }
+
+	    if (!notification.dismissible) {
+	      className = className + ' notification-not-dismissible';
+	    }
+
+	    if (this.props.getStyles.overrideStyle) {
+	      if (!this.state.visible && !this.state.removed) {
+	        notificationStyle[cssByPos.property] = cssByPos.value;
+	      }
+
+	      if (this.state.visible && !this.state.removed) {
+	        notificationStyle.height = this._height;
+	        notificationStyle[cssByPos.property] = 0;
+	      }
+
+	      if (this.state.removed) {
+	        notificationStyle.overlay = 'hidden';
+	        notificationStyle.height = 0;
+	        notificationStyle.marginTop = 0;
+	        notificationStyle.paddingTop = 0;
+	        notificationStyle.paddingBottom = 0;
+	      }
+	      notificationStyle.opacity = this.state.visible ? this._styles.notification.isVisible.opacity : this._styles.notification.isHidden.opacity;
+	    }
+
+	    if (notification.title) {
+	      title = React.createElement("h4", {className: "notification-title", style:  this._styles.title},  notification.title);
+	    }
+
+	    if (notification.message) {
+	      if (this.props.allowHTML) {
+	        message = (
+	          React.createElement("div", {className: "notification-message", style:  this._styles.messageWrapper, dangerouslySetInnerHTML:  this._allowHTML(notification.message) })
+	        );
+	      } else {
+	        message = (
+	          React.createElement("div", {className: "notification-message", style:  this._styles.messageWrapper},  notification.message)
+	        );
+	      }
+	    }
+
+	    if (notification.dismissible) {
+	      dismiss = React.createElement("span", {className: "notification-dismiss", style:  this._styles.dismiss}, "×");
+	    }
+
+	    if (notification.action) {
+	      actionButton = (
+	        React.createElement("div", {className: "notification-action-wrapper", style:  this._styles.actionWrapper}, 
+	          React.createElement("button", {className: "notification-action-button", 
+	            onClick:  this._defaultAction, 
+	            style:  this._styles.action}, 
+	               notification.action.label
+	          )
+	        )
+	      );
+	    }
+
+	    if (notification.children) {
+	      actionButton = notification.children;
+	    }
+
+	    return (
+	      React.createElement("div", {className:  className, onClick:  this._dismiss, onMouseEnter:  this._handleMouseEnter, onMouseLeave:  this._handleMouseLeave, style:  notificationStyle }, 
+	         title, 
+	         message, 
+	         dismiss, 
+	         actionButton 
+	      )
+	    );
+	  }
+
+	});
+
+	module.exports = NotificationItem;
+
+
+/***/ },
+/* 734 */
+/***/ function(module, exports) {
+
+	var CONSTANTS = {
+
+	  // Positions
+	  positions: {
+	    tl: 'tl',
+	    tr: 'tr',
+	    tc: 'tc',
+	    bl: 'bl',
+	    br: 'br',
+	    bc: 'bc'
+	  },
+
+	  // Levels
+	  levels: {
+	    success: 'success',
+	    error: 'error',
+	    warning: 'warning',
+	    info: 'info'
+	  },
+
+	  // Notification defaults
+	  notification: {
+	    title: null,
+	    message: null,
+	    level: null,
+	    position: 'tr',
+	    autoDismiss: 5,
+	    dismissible: true,
+	    action: null
+	  }
+	};
+
+
+	module.exports = CONSTANTS;
+
+
+/***/ },
+/* 735 */
+/***/ function(module, exports) {
+
+	var Helpers = {
+	  Timer: function(callback, delay) {
+	    var timerId;
+	    var start;
+	    var remaining = delay;
+
+	    this.pause = function() {
+	      clearTimeout(timerId);
+	      remaining -= new Date() - start;
+	    };
+
+	    this.resume = function() {
+	      start = new Date();
+	      clearTimeout(timerId);
+	      timerId = setTimeout(callback, remaining);
+	    };
+
+	    this.clear = function() {
+	      clearTimeout(timerId);
+	    };
+
+	    this.resume();
+	  }
+	};
+
+	module.exports = Helpers;
+
+
+/***/ },
+/* 736 */
+/***/ function(module, exports) {
+
+	// Used for calculations
+	var defaultWidth = 320;
+	var defaultColors = {
+	  success: {
+	    rgb: '94, 164, 0',
+	    hex: '#5ea400'
+	  },
+	  error: {
+	    rgb: '236, 61, 61',
+	    hex: '#ec3d3d'
+	  },
+	  warning: {
+	    rgb: '235, 173, 23',
+	    hex: '#ebad1a'
+	  },
+	  info: {
+	    rgb: '54, 156, 199',
+	    hex: '#369cc7'
+	  }
+	};
+	var defaultShadowOpacity = '0.9';
+
+	var STYLES = {
+
+	  Wrapper: {},
+	  Containers: {
+	    DefaultStyle: {
+	      fontFamily: 'inherit',
+	      position: 'fixed',
+	      width: defaultWidth,
+	      padding: '0 10px 10px 10px',
+	      zIndex: 9998,
+	      WebkitBoxSizing: 'border-box',
+	      MozBoxSizing: 'border-box',
+	      boxSizing: 'border-box',
+	      height: 'auto'
+	    },
+
+	    tl: {
+	      top: '0px',
+	      bottom: 'auto',
+	      left: '0px',
+	      right: 'auto'
+	    },
+
+	    tr: {
+	      top: '0px',
+	      bottom: 'auto',
+	      left: 'auto',
+	      right: '0px'
+	    },
+
+	    tc: {
+	      top: '0px',
+	      bottom: 'auto',
+	      margin: '0 auto',
+	      left: '50%',
+	      marginLeft: -(defaultWidth / 2)
+	    },
+
+	    bl: {
+	      top: 'auto',
+	      bottom: '0px',
+	      left: '0px',
+	      right: 'auto'
+	    },
+
+	    br: {
+	      top: 'auto',
+	      bottom: '0px',
+	      left: 'auto',
+	      right: '0px'
+	    },
+
+	    bc: {
+	      top: 'auto',
+	      bottom: '0px',
+	      margin: '0 auto',
+	      left: '50%',
+	      marginLeft: -(defaultWidth / 2)
+	    }
+
+	  },
+
+	  NotificationItem: {
+	    DefaultStyle: {
+	      position: 'relative',
+	      width: '100%',
+	      cursor: 'pointer',
+	      borderRadius: '2px',
+	      fontSize: '13px',
+	      margin: '10px 0 0',
+	      padding: '10px',
+	      display: 'block',
+	      WebkitBoxSizing: 'border-box',
+	      MozBoxSizing: 'border-box',
+	      boxSizing: 'border-box',
+	      opacity: 0,
+	      transition: '0.3s ease-in-out',
+	      WebkitTransform: 'translate3d(0, 0, 0)',
+	      transform: 'translate3d(0, 0, 0)',
+	      willChange: 'transform, opacity',
+
+	      isHidden: {
+	        opacity: 0
+	      },
+
+	      isVisible: {
+	        opacity: 1
+	      }
+	    },
+
+	    success: {
+	      borderTop: '2px solid ' + defaultColors.success.hex,
+	      backgroundColor: '#f0f5ea',
+	      color: '#4b583a',
+	      WebkitBoxShadow: '0 0 1px rgba(' + defaultColors.success.rgb + ',' + defaultShadowOpacity + ')',
+	      MozBoxShadow: '0 0 1px rgba(' + defaultColors.success.rgb + ',' + defaultShadowOpacity + ')',
+	      boxShadow: '0 0 1px rgba(' + defaultColors.success.rgb + ',' + defaultShadowOpacity + ')'
+	    },
+
+	    error: {
+	      borderTop: '2px solid ' + defaultColors.error.hex,
+	      backgroundColor: '#f4e9e9',
+	      color: '#412f2f',
+	      WebkitBoxShadow: '0 0 1px rgba(' + defaultColors.error.rgb + ',' + defaultShadowOpacity + ')',
+	      MozBoxShadow: '0 0 1px rgba(' + defaultColors.error.rgb + ',' + defaultShadowOpacity + ')',
+	      boxShadow: '0 0 1px rgba(' + defaultColors.error.rgb + ',' + defaultShadowOpacity + ')'
+	    },
+
+	    warning: {
+	      borderTop: '2px solid ' + defaultColors.warning.hex,
+	      backgroundColor: '#f9f6f0',
+	      color: '#5a5343',
+	      WebkitBoxShadow: '0 0 1px rgba(' + defaultColors.warning.rgb + ',' + defaultShadowOpacity + ')',
+	      MozBoxShadow: '0 0 1px rgba(' + defaultColors.warning.rgb + ',' + defaultShadowOpacity + ')',
+	      boxShadow: '0 0 1px rgba(' + defaultColors.warning.rgb + ',' + defaultShadowOpacity + ')'
+	    },
+
+	    info: {
+	      borderTop: '2px solid ' + defaultColors.info.hex,
+	      backgroundColor: '#e8f0f4',
+	      color: '#41555d',
+	      WebkitBoxShadow: '0 0 1px rgba(' + defaultColors.info.rgb + ',' + defaultShadowOpacity + ')',
+	      MozBoxShadow: '0 0 1px rgba(' + defaultColors.info.rgb + ',' + defaultShadowOpacity + ')',
+	      boxShadow: '0 0 1px rgba(' + defaultColors.info.rgb + ',' + defaultShadowOpacity + ')'
+	    }
+	  },
+
+	  Title: {
+	    DefaultStyle: {
+	      fontSize: '14px',
+	      margin: '0 0 5px 0',
+	      padding: 0,
+	      fontWeight: 'bold'
+	    },
+
+	    success: {
+	      color: defaultColors.success.hex
+	    },
+
+	    error: {
+	      color: defaultColors.error.hex
+	    },
+
+	    warning: {
+	      color: defaultColors.warning.hex
+	    },
+
+	    info: {
+	      color: defaultColors.info.hex
+	    }
+
+	  },
+
+	  MessageWrapper: {
+	    DefaultStyle: {
+	      margin: 0,
+	      padding: 0
+	    }
+	  },
+
+	  Dismiss: {
+	    DefaultStyle: {
+	      fontFamily: 'Arial',
+	      fontSize: '17px',
+	      position: 'absolute',
+	      top: '4px',
+	      right: '5px',
+	      lineHeight: '15px',
+	      backgroundColor: '#dededf',
+	      color: '#ffffff',
+	      borderRadius: '50%',
+	      width: '14px',
+	      height: '14px',
+	      fontWeight: 'bold',
+	      textAlign: 'center'
+	    },
+
+	    success: {
+	      color: '#f0f5ea',
+	      backgroundColor: '#b0ca92'
+	    },
+
+	    error: {
+	      color: '#f4e9e9',
+	      backgroundColor: '#e4bebe'
+	    },
+
+	    warning: {
+	      color: '#f9f6f0',
+	      backgroundColor: '#e1cfac'
+	    },
+
+	    info: {
+	      color: '#e8f0f4',
+	      backgroundColor: '#a4becb'
+	    }
+	  },
+
+	  Action: {
+	    DefaultStyle: {
+	      background: '#ffffff',
+	      borderRadius: '2px',
+	      padding: '6px 20px',
+	      fontWeight: 'bold',
+	      margin: '10px 0 0 0',
+	      border: 0
+	    },
+
+	    success: {
+	      backgroundColor: defaultColors.success.hex,
+	      color: '#ffffff'
+	    },
+
+	    error: {
+	      backgroundColor: defaultColors.error.hex,
+	      color: '#ffffff'
+	    },
+
+	    warning: {
+	      backgroundColor: defaultColors.warning.hex,
+	      color: '#ffffff'
+	    },
+
+	    info: {
+	      backgroundColor: defaultColors.info.hex,
+	      color: '#ffffff'
+	    }
+	  },
+
+	  ActionWrapper: {
+	    DefaultStyle: {
+	      margin: 0,
+	      padding: 0
+	    }
+	  }
+	};
+
+	module.exports = STYLES;
+
+
+/***/ },
+/* 737 */
+/***/ function(module, exports, __webpack_require__) {
+
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
@@ -46964,11 +48041,11 @@
 
 	var types = _interopRequireWildcard(_actionTypes);
 
-	var _pokeApi = __webpack_require__(731);
+	var _pokeApi = __webpack_require__(738);
 
 	var _pokeApi2 = _interopRequireDefault(_pokeApi);
 
-	var _ajaxStatusActions = __webpack_require__(734);
+	var _ajaxStatusActions = __webpack_require__(741);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -47013,7 +48090,7 @@
 	}
 
 /***/ },
-/* 731 */
+/* 738 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -47024,7 +48101,7 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _isomorphicFetch = __webpack_require__(732);
+	var _isomorphicFetch = __webpack_require__(739);
 
 	var _isomorphicFetch2 = _interopRequireDefault(_isomorphicFetch);
 
@@ -47059,19 +48136,19 @@
 	exports.default = PokemonApi;
 
 /***/ },
-/* 732 */
+/* 739 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// the whatwg-fetch polyfill installs the fetch() function
 	// on the global object (window or self)
 	//
 	// Return that as the export for use in Webpack, Browserify etc.
-	__webpack_require__(733);
+	__webpack_require__(740);
 	module.exports = self.fetch.bind(self);
 
 
 /***/ },
-/* 733 */
+/* 740 */
 /***/ function(module, exports) {
 
 	(function(self) {
@@ -47510,7 +48587,7 @@
 
 
 /***/ },
-/* 734 */
+/* 741 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -47536,49 +48613,13 @@
 	}
 
 /***/ },
-/* 735 */
-/***/ function(module, exports) {
-
-	// removed by extract-text-webpack-plugin
-
-/***/ },
-/* 736 */,
-/* 737 */,
-/* 738 */,
-/* 739 */
-/***/ function(module, exports) {
-
-	// removed by extract-text-webpack-plugin
-
-/***/ },
-/* 740 */,
-/* 741 */
-/***/ function(module, exports) {
-
-	// removed by extract-text-webpack-plugin
-
-/***/ },
-/* 742 */,
-/* 743 */,
-/* 744 */,
-/* 745 */,
-/* 746 */,
-/* 747 */,
-/* 748 */,
-/* 749 */
-/***/ function(module, exports) {
-
-	// removed by extract-text-webpack-plugin
-
-/***/ },
-/* 750 */,
-/* 751 */
+/* 742 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
-	    value: true
+					value: true
 	});
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -47589,7 +48630,9 @@
 
 	var _reactRedux = __webpack_require__(518);
 
-	var _loadPokemonsActions = __webpack_require__(730);
+	var _seatsActions = __webpack_require__(763);
+
+	var _canvasManipulation = __webpack_require__(766);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -47600,61 +48643,81 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var Canvas = function (_React$Component) {
-	    _inherits(Canvas, _React$Component);
+					_inherits(Canvas, _React$Component);
 
-	    function Canvas(props) {
-	        _classCallCheck(this, Canvas);
+					function Canvas(props) {
+									_classCallCheck(this, Canvas);
 
-	        var _this = _possibleConstructorReturn(this, (Canvas.__proto__ || Object.getPrototypeOf(Canvas)).call(this, props));
+									var _this = _possibleConstructorReturn(this, (Canvas.__proto__ || Object.getPrototypeOf(Canvas)).call(this, props));
 
-	        _this.state = {
-	            canvas: '',
-	            context: ''
-	        };
-	        return _this;
-	    }
+									_this.state = {
+													canvas: '',
+													context: ''
+									};
+									_this.selectSeat = _this.selectSeat.bind(_this);
+									_this.seatLocationUpdate = _this.seatLocationUpdate.bind(_this);
+									return _this;
+					}
 
-	    _createClass(Canvas, [{
-	        key: 'componentDidMount',
-	        value: function componentDidMount() {
-	            this.setState({ canvas: this.refs.canvas, context: this.refs.canvas.getContext('2d') });
-	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
-	            var canvas = this.state.canvas,
-	                context = this.state.context;
-	            if (canvas) {
-	                context.font = '38pt Arial';
-	                context.fillStyle = 'cornflowerblue';
-	                context.strokeStyle = 'blue';
-	                context.fillText("Hello Canvas", canvas.width / 2 - 150, canvas.height / 2 + 15);
-	                context.strokeText("Hello Canvas", canvas.width / 2 - 150, canvas.height / 2 + 15);
-	            }
-	            return _react2.default.createElement(
-	                'canvas',
-	                { id: 'canvas', width: '800', height: '500', ref: 'canvas' },
-	                'Canvas not supported'
-	            );
-	        }
-	    }]);
+					_createClass(Canvas, [{
+									key: 'componentDidMount',
+									value: function componentDidMount() {
+													this.setState({ canvas: this.refs.canvas, context: this.refs.canvas.getContext('2d') });
+									}
+					}, {
+									key: 'drawShapes',
+									value: function drawShapes() {
+													console.log(1);
+													(0, _canvasManipulation.drawShapes)(this.state, this.props.seats);
+									}
+					}, {
+									key: 'selectSeat',
+									value: function selectSeat(e) {
+													var el = (0, _canvasManipulation.selectElement)(this.state, this.props.seats, e.nativeEvent);
+													if (el || this.props.selected.x) {
+																	this.props.selectSeat(el || {});
+													}
+									}
+					}, {
+									key: 'seatLocationUpdate',
+									value: function seatLocationUpdate(e) {
+													if (this.props.selected.x && e.nativeEvent.buttons == 1) {
+																	var eNative = e.nativeEvent;
+																	this.props.updateSeatLocation(this.props.selected.id, eNative.clientX, eNative.clientY);
+													}
+									}
+					}, {
+									key: 'render',
+									value: function render() {
+													var canvas = this.state.canvas,
+													    context = this.state.context;
+													if (canvas) {
+																	context.clearRect(0, 0, canvas.width, canvas.height);
+																	this.drawShapes();
+													}
+													return _react2.default.createElement(
+																	'canvas',
+																	{ id: 'canvas', width: '800', height: '500', ref: 'canvas',
+																					onMouseDown: this.selectSeat, onMouseMove: this.seatLocationUpdate },
+																	'Canvas not supported'
+													);
+									}
+					}]);
 
-	    return Canvas;
+					return Canvas;
 	}(_react2.default.Component);
 
 	function mapStateToProps(state, ownProps) {
-	    return {
-	        pokemons: state.pokemonsReducer,
-	        nextPokeList: state.pokemonsNextGetReducer,
-	        favoriteList: state.toggleFavoriteReducer
-	    };
+					return {
+									seats: state.arrSeatsReducer,
+									selected: state.selectSeatReducer
+					};
 	}
-	exports.default = (0, _reactRedux.connect)(mapStateToProps, { loadPokemons: _loadPokemonsActions.loadPokemons })(Canvas);
-
-	//export default HomePage;
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, { selectSeat: _seatsActions.selectSeat, updateSeatLocation: _seatsActions.updateSeatLocation })(Canvas);
 
 /***/ },
-/* 752 */
+/* 743 */,
+/* 744 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -47671,7 +48734,7 @@
 
 	var _reactRedux = __webpack_require__(518);
 
-	var _loadPokemonsActions = __webpack_require__(730);
+	var _loadPokemonsActions = __webpack_require__(737);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -47715,14 +48778,7 @@
 	//export default connect(mapStateToProps, {loadPokemons})(Canvas);
 
 /***/ },
-/* 753 */
-/***/ function(module, exports) {
-
-	// removed by extract-text-webpack-plugin
-
-/***/ },
-/* 754 */,
-/* 755 */
+/* 745 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -47739,7 +48795,7 @@
 
 	var _reactRedux = __webpack_require__(518);
 
-	var _loadPokemonsActions = __webpack_require__(730);
+	var _loadPokemonsActions = __webpack_require__(737);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -47781,6 +48837,385 @@
 	}
 	exports.default = Search;
 	//export default connect(mapStateToProps, {loadPokemons})(Canvas);
+
+/***/ },
+/* 746 */
+/***/ function(module, exports) {
+
+	// removed by extract-text-webpack-plugin
+
+/***/ },
+/* 747 */,
+/* 748 */,
+/* 749 */,
+/* 750 */
+/***/ function(module, exports) {
+
+	// removed by extract-text-webpack-plugin
+
+/***/ },
+/* 751 */,
+/* 752 */
+/***/ function(module, exports) {
+
+	// removed by extract-text-webpack-plugin
+
+/***/ },
+/* 753 */,
+/* 754 */
+/***/ function(module, exports) {
+
+	// removed by extract-text-webpack-plugin
+
+/***/ },
+/* 755 */,
+/* 756 */
+/***/ function(module, exports) {
+
+	// removed by extract-text-webpack-plugin
+
+/***/ },
+/* 757 */,
+/* 758 */,
+/* 759 */,
+/* 760 */,
+/* 761 */,
+/* 762 */,
+/* 763 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	exports.addNewSeat = addNewSeat;
+	exports.selectSeat = selectSeat;
+	exports.updateSeatLocation = updateSeatLocation;
+
+	var _actionTypes = __webpack_require__(544);
+
+	var types = _interopRequireWildcard(_actionTypes);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function addNewSeat(seat) {
+		return { type: types.NEW_SEAT, seat: seat };
+	}
+
+	function selectSeat(seat) {
+		return { type: types.SELECT_SEAT, seat: seat };
+	}
+
+	function updateSeatLocation(id, x, y) {
+		return { type: types.UPDATE_SEAT_LOCATION, id: id, x: x, y: y };
+	}
+
+/***/ },
+/* 764 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+					value: true
+	});
+	exports.arrSeatsReducer = arrSeatsReducer;
+	exports.selectSeatReducer = selectSeatReducer;
+
+	var _actionTypes = __webpack_require__(544);
+
+	var types = _interopRequireWildcard(_actionTypes);
+
+	var _initialState = __webpack_require__(545);
+
+	var _initialState2 = _interopRequireDefault(_initialState);
+
+	var _shapes = __webpack_require__(765);
+
+	var _shapes2 = _interopRequireDefault(_shapes);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+	function arrSeatsReducer() {
+					var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _initialState2.default.seats;
+					var action = arguments[1];
+
+					switch (action.type) {
+									case types.NEW_SEAT:
+													return [].concat(_toConsumableArray(state), [new _shapes2.default(action.seat)]);
+									case types.UPDATE_SEAT_LOCATION:
+													var i = -1;
+													state.some(function (el, index) {
+																	if (el.id == action.id) {
+																					i = index;
+																					return true;
+																	}
+													});
+													if (i < 0) return state;
+													var seat = state[i];
+													console.log(seat.x, action.x);
+													seat.x = action.x;
+													seat.y = action.y;
+													console.log(seat.x);
+													return [].concat(_toConsumableArray(state.slice(0, i)), [seat], _toConsumableArray(state.slice(i + 1)));
+									default:
+													return state;
+					}
+	};
+
+	function selectSeatReducer() {
+					var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _initialState2.default.selected;
+					var action = arguments[1];
+
+					switch (action.type) {
+									case types.SELECT_SEAT:
+													return action.seat;
+									default:
+													return state;
+					}
+	}
+
+/***/ },
+/* 765 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var Shape = function () {
+		function Shape() {
+			_classCallCheck(this, Shape);
+
+			this.x = undefined;
+			this.y = undefined;
+			this.strokeStyle = 'rgba(255, 253, 208, 0.9)';
+			this.fillStyle = 'rgba(147, 197, 114, 0.8)';
+		}
+
+		_createClass(Shape, [{
+			key: 'collidesWith',
+			value: function collidesWith(shape) {
+				var axes = this.getAxes().concat(shape.getAxes());
+				return !this.separationOnAxes(axes, shape);
+			}
+		}, {
+			key: 'separationOnAxes',
+			value: function separationOnAxes(axes, shape) {
+				for (var i = 0; i < axes.length; ++i) {
+					axis = axes[i];
+					projection1 = shape.project(axis);
+					projection2 = this.project(axis);
+
+					if (!projection1.overlaps(projection2)) {
+						return true;
+					}
+				}
+				return false;
+			}
+		}, {
+			key: 'protomove',
+			value: function protomove(dx, dy) {
+				throw 'move(dx, dy) not implemented';
+			}
+		}, {
+			key: 'protocreatePath',
+			value: function protocreatePath(context) {
+				throw 'createPath(context) not implemented';
+			}
+		}, {
+			key: 'getAxes',
+			value: function getAxes() {
+				throw 'getAxes() not implemented';
+			}
+		}, {
+			key: 'project',
+			value: function project(axis) {
+				throw 'project(axis) not implemented';
+			}
+		}, {
+			key: 'fill',
+			value: function fill(context) {
+				context.save();
+				context.fillStyle = this.fillStyle;
+				this.createPath(context);
+				context.fill();
+				context.restore();
+			}
+		}, {
+			key: 'stroke',
+			value: function stroke(context) {
+				context.save();
+				context.strokeStyle = this.strokeStyle;
+				this.createPath(context);
+				context.stroke();
+				context.restore();
+			}
+		}, {
+			key: 'isPointInPath',
+			value: function isPointInPath(context, x, y) {
+				this.createPath(context);
+				return context.isPointInPath(x, y);
+			}
+		}]);
+
+		return Shape;
+	}();
+
+	var Seat = function (_Shape) {
+		_inherits(Seat, _Shape);
+
+		function Seat(seat) {
+			_classCallCheck(this, Seat);
+
+			var _this = _possibleConstructorReturn(this, (Seat.__proto__ || Object.getPrototypeOf(Seat)).call(this));
+
+			_this.id = seat.id;
+			_this.x = seat.x;
+			_this.y = seat.y;
+			_this.radius = seat.radius;
+			_this.strokeStyle = 'rgba(255, 253, 208, 0.9)';
+			_this.fillStyle = 'rgba(147, 197, 114, 0.8)';
+			return _this;
+		}
+
+		_createClass(Seat, [{
+			key: 'collidesWith',
+			value: function collidesWith(shape) {
+				var point,
+				    length,
+				    min = 10000,
+				    v1,
+				    v2,
+				    edge,
+				    perpendicular,
+				    normal,
+				    axes = shape.getAxes(),
+				    distance;
+
+				if (axes === undefined) {
+					// circle
+					distance = Math.sqrt(Math.pow(shape.x - this.x, 2) + Math.pow(shape.y - this.y, 2));
+					return distance < Math.abs(this.radius + shape.radius);
+				} else {
+					// polygon
+					return polygonCollidesWithCircle(shape, this);
+				}
+			}
+		}, {
+			key: 'getAxes',
+			value: function getAxes() {
+				return undefined; // there are an infinite number of axes for circles
+			}
+		}, {
+			key: 'project',
+			value: function project(axis) {
+				var scalars = [],
+				    point = new Point(this.x, this.y);
+				dotProduct = new Vector(point).dotProduct(axis);
+
+				scalars.push(dotProduct);
+				scalars.push(dotProduct + this.radius);
+				scalars.push(dotProduct - this.radius);
+
+				return new Projection(Math.min.apply(Math, scalars), Math.max.apply(Math, scalars));
+			}
+		}, {
+			key: 'move',
+			value: function move(dx, dy) {
+				this.x += dx;
+				this.y += dy;
+			}
+		}, {
+			key: 'createPath',
+			value: function createPath(context) {
+				context.beginPath();
+				context.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+			}
+		}]);
+
+		return Seat;
+	}(Shape);
+
+	exports.default = Seat;
+
+/***/ },
+/* 766 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.windowToCanvas = windowToCanvas;
+	exports.selectElement = selectElement;
+	exports.elementMove = elementMove;
+	exports.drawShapes = drawShapes;
+	var lastdrag = { x: 0, y: 0 };
+
+	function windowToCanvas(canvas, e) {
+	  var x = e.x || e.clientX,
+	      y = e.y || e.clientY,
+	      bbox = canvas.getBoundingClientRect();
+
+	  return { x: x - bbox.left * (canvas.width / bbox.width),
+	    y: y - bbox.top * (canvas.height / bbox.height)
+	  };
+	};
+
+	function selectElement(state, shapes, e) {
+	  var shapeBeingDragged = undefined;
+	  var location = windowToCanvas(state.canvas, e);
+	  shapes.forEach(function (shape) {
+	    if (shape.isPointInPath(state.context, location.x, location.y)) {
+	      shapeBeingDragged = shape;
+	      lastdrag.x = location.x;
+	      lastdrag.y = location.y;
+	    }
+	  });
+	  return shapeBeingDragged;
+	}
+
+	function elementMove() {
+	  var location, dragVector;
+	  if (shapeBeingDragged !== undefined) {
+	    location = windowToCanvas(e);
+	    dragVector = { x: location.x - lastdrag.x,
+	      y: location.y - lastdrag.y
+	    };
+	    shapeBeingDragged.move(dragVector.x, dragVector.y);
+
+	    lastdrag.x = location.x;
+	    lastdrag.y = location.y;
+
+	    context.clearRect(0, 0, canvas.width, canvas.height);
+	    drawShapes();
+	    //detectCollisions();
+	  }
+	}
+
+	function drawShapes(state, seats) {
+	  seats.forEach(function (seat) {
+	    seat.stroke(state.context);
+	    seat.fill(state.context);
+	  });
+	}
 
 /***/ }
 /******/ ]);

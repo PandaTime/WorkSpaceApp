@@ -1,5 +1,6 @@
 import React from 'react';
 //import {Link} from 'react-router';
+import {NotificationSystem} from 'react-notification-system';
 import { connect } from 'react-redux';
 import {loadPokemons} from '../../actions/loadPokemonsActions';
 import Canvas from './visualization/canvasElement';
