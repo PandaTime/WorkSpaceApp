@@ -4,12 +4,12 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 import {addNewSeat} from '../../../actions/seatsActions';
 import config from '../initValues';
-import newUserForm from './header-blocks/newUserForm';
+import NewUserForm from './header-blocks/newUserForm';
 
 class Header extends React.Component{
     constructor(props){
         super(props);
-        this.state = {showDropDown : [false, false, false, false], // search bar DropDown = 0;
+        this.state = {showDropDown : [false, false, false, false, false], // search bar DropDown = 0; // add new user = 4; //
 					  searchByTypes: ['User', 'Seat', 'Floor'],
 					  searchBy: 'Users'};
 		this.addSeat = this.addSeat.bind(this);
@@ -34,9 +34,12 @@ class Header extends React.Component{
 		var searchList = this.state.searchByTypes.map((v, i)=>{
 			return(<li key={i}><a onClick={this.searchBySet.bind(this, v)}>By {v}</a></li>)
 		});
+		
         return (
             <nav className="navbar navbar-default">
-                <newUserForm />
+				<div>
+					<NewUserForm />
+				</div>
                 <div className="container-fluid">
                     <div className="navbar-header"><IndexLink to="/" className="navbar-brand">Yaroslav
                         Stasiuk</IndexLink>
@@ -82,8 +85,8 @@ class Header extends React.Component{
                             <li>
                                 <Link to="/contacts" id="contact"><span>Contact</span></Link>
                             </li>
-                        </div>
-						<div className="col-lg-6 navbar-nav navbar-right ">
+                        </div>			
+						<div className="col-xs-6 navbar-nav navbar-right ">
 							<div className="input-group ">
 								<input type="text" className="form-control" aria-label="..."/>
 								<div className="input-group-btn">
