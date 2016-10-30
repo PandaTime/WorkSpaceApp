@@ -1,6 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+//import {newUser} from '../../../actions/usersActions';
+//import {newUser} from '../../../actions/seatsActions';
+
 
 class Search extends React.Component {
     constructor(props){

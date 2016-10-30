@@ -9,17 +9,19 @@ import NewUserForm from './header-blocks/newUserForm';
 class Header extends React.Component{
     constructor(props){
         super(props);
-        this.state = {showDropDown : [false, false, false, false, false], // search bar DropDown = 0; // add new user = 4; //
-					  searchByTypes: ['User', 'Seat', 'Floor'],
+        this.state = {showDropDown : [false, false, false, false], // search bar DropDown = 0; //
+					  showNewUserBox : false,
+                      searchByTypes: ['User', 'Seat', 'Floor'],
 					  searchBy: 'Users'};
 		this.addSeat = this.addSeat.bind(this);
-        this.addUser = this.addUser.bind(this);
     }
 	componentDidMount() {
         document.body.addEventListener('click', this.onClick.bind(this, -1));
     }
     onClick(id) {
-		this.setState({showDropDown : this.state.showDropDown.map((_, i)=>i===id)});
+        //console.log(id, this.state.showDropDown[id]);
+        // клик по тому же элементу = закрытие его(мешает глобал листенер)
+		this.setState({showDropDown : this.state.showDropDown.map( this.state.showDropDown[id] ? (()=> false) : ((_, i)=>i===id))});
     }
 	searchBySet(type){
 		this.setState({searchBy: type});
@@ -27,18 +29,22 @@ class Header extends React.Component{
 	addSeat(){
         this.props.addNewSeat(config.newSeatForm);
 	}
-    addUser(){
-        console.log('new User');
+    toggleUserForm(hideNewUser){ // т.к. дизейбл не исключает возможности нажатия, а я не хочу создавать 2 функции
+        if(!hideNewUser && this.state.showNewUserBox){
+            this.onClick(3);
+            return;
+        }
+        this.setState({showNewUserBox: hideNewUser ? false : true,
+            showDropDown: this.state.showDropDown.map(()=>false)});
     }
     render() {
 		var searchList = this.state.searchByTypes.map((v, i)=>{
 			return(<li key={i}><a onClick={this.searchBySet.bind(this, v)}>By {v}</a></li>)
 		});
-		
         return (
             <nav className="navbar navbar-default">
-				<div>
-					<NewUserForm />
+				<div className={classNames(this.state.showNewUserBox ? '' : 'hidden')}>
+					<NewUserForm toggleUserForm={this.toggleUserForm.bind(this)}/>
 				</div>
                 <div className="container-fluid">
                     <div className="navbar-header"><IndexLink to="/" className="navbar-brand">Yaroslav
@@ -67,7 +73,7 @@ class Header extends React.Component{
                                     <span>Seats</span><span className="caret"></span>
                                 </a>
                                 <ul className={classNames('dropdown-menu react-toggle', this.state.showDropDown[2] ? '' : 'hidden')}>
-                                    <li><a onClick={this.addSeat}>Add Seat</a></li>
+                                    <li><a onClick={this.addSeat} className={classNames(this.state.showDropDown ? 'disable' : '')}>Add Seat</a></li>
                                     <li><Link to="/projects">Search Seat</Link></li>
                                 </ul>
                             </li>
@@ -76,7 +82,7 @@ class Header extends React.Component{
                                     <span>Users</span><span className="caret"></span>
                                 </a>
                                 <ul className={classNames('dropdown-menu react-toggle', this.state.showDropDown[3] ? '' : 'hidden')}>
-                                    <li><a onClick={this.addUser}>Add User</a></li>
+                                    <li className={classNames(this.state.showNewUserBox ? 'disabled' : '')}><a onClick={this.toggleUserForm.bind(this, false)}>Add User</a></li>
                                     <li><Link to="/projects">Search User</Link></li>
                                 </ul>
                             </li>

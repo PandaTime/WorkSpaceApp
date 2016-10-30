@@ -1,19 +1,12 @@
 import * as types from './actionTypes';
 
-export function addToFavoriteSuccess(pokemon) {
-    return {type: types.ADD_FAVORITE, pokemon};
-}
-export function delFromFavoriteSuccess(pokemonID) {
-    return {type: types.DEL_FAVORITE, pokemonID};
+export function selectUser(user){
+    return {type: types.SELECT_USER, user};
 }
 
-export function addToFavorite(pokemon){
-    return function(dispatch) {
-        dispatch(addToFavoriteSuccess(pokemon));
-    };
+export function newUser(user){
+    return {type: types.NEW_USER, user};
 }
-export function delFromFavorite(pokemonID){
-    return function(dispatch) {
-        dispatch(delFromFavoriteSuccess(pokemonID));
-    };
+export function updateUserLocation(user){
+    return {type: types.UPDATE_USER_SEAT, user};
 }

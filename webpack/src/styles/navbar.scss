@@ -4,6 +4,13 @@
 .input-group {
 	padding-top: 0.8rem;
 }
+.new-user-close-btn{
+    position: relative;
+    float: right;
+}
+.pointer-cursor{
+    cursor: pointer
+}
 .new-user-container{
     position: absolute;
     width: 300px;

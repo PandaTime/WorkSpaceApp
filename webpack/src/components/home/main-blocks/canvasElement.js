@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import {selectSeat, updateSeatLocation} from '../../../actions/seatsActions';
 import {drawShapes, selectElement, windowToCanvas} from '../../canvasManipulation/canvasManipulation';
+import {selectUser} from '../../../actions/usersActions'
 
 class Canvas extends React.Component {
     constructor(props){
@@ -22,17 +23,18 @@ class Canvas extends React.Component {
 	}
 	selectSeat(e){
 		var {shapeBeingDragged, lastdrag} = selectElement(this.state, this.props.seats, e.nativeEvent);
-		if(shapeBeingDragged || this.props.selected.x){
+		if(shapeBeingDragged || this.props.selectedSeat.x){
 			this.props.selectSeat(shapeBeingDragged || {});
+			this.props.selectUser({});
 			this.state.lastdrag = lastdrag;
 		}
 	}
 	seatLocationUpdate(e){
-		if(this.props.selected.x && (e.nativeEvent.buttons == 1)){
+		if(this.props.selectedSeat.x && (e.nativeEvent.buttons == 1)){
 			var location = windowToCanvas(this.state.canvas, e.nativeEvent);
-			var x = this.props.selected.x + (location.x - this.state.lastdrag.x),
-				y = this.props.selected.y + (location.y - this.state.lastdrag.y);
-			this.props.updateSeatLocation(this.props.selected.id, x, y);
+			var x = this.props.selectedSeat.x + (location.x - this.state.lastdrag.x),
+				y = this.props.selectedSeat.y + (location.y - this.state.lastdrag.y);
+			this.props.updateSeatLocation(this.props.selectedSeat.id, x, y);
 		}
 	}
     render() {
@@ -43,7 +45,7 @@ class Canvas extends React.Component {
 			this.drawShapes();
         }
         return (
-            <canvas id="canvas" width="800" height="500" ref="canvas"
+            <canvas id="canvas" ref="canvas" height="500" width="900"
 				onMouseDown = {this.selectSeat} onMouseMove = {this.seatLocationUpdate}>
 				Canvas not supported
 			</canvas>
@@ -54,8 +56,9 @@ class Canvas extends React.Component {
 function mapStateToProps(state, ownProps){
     return {
 		seats: state.arrSeatsReducer,
-		selected: state.selectSeatReducer
+		selectedSeat: state.selectSeatReducer,
+		selectedUser: state.selectUserReducer
     };
 }
-export default connect(mapStateToProps, {selectSeat, updateSeatLocation})(Canvas);
+export default connect(mapStateToProps, {selectSeat, updateSeatLocation, selectUser})(Canvas);
 

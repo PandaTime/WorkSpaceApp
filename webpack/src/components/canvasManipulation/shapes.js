@@ -1,3 +1,4 @@
+import defaultValues from '../../components/home/initValues';
 
 class Shape {
 	constructor(){
@@ -56,13 +57,15 @@ class Shape {
 
 class Seat extends Shape{
 	constructor(seat){
+		console.log('seat', seat);
 		super();
 		this.id = seat.newId ? seat.id() : seat.id; // that's the function for random generator!
 		this.x = seat.x;
 		this.y = seat.y;
-		this.radius = seat.radius;
+		this.radius = seat.radius || defaultValues.newSeatForm.radius;
+		this.assignedTo = Object.assign({}, seat.assignedTo);
 		this.strokeStyle = 'rgba(255, 253, 208, 0.9)';
-		this.fillStyle = 'rgba(147, 197, 114, 0.8)';
+		this.fillStyle = seat.fillStyle || defaultValues.newSeatForm.fillStyle;
 	}
 	collidesWith(shape) {
 		var point, length, min=10000, v1, v2,

@@ -19,7 +19,6 @@ class HomePage extends React.Component {
             <div>
 			    <Canvas />
                 <Info />
-                <Search />
             </div>
         );
     }

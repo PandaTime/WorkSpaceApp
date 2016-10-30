@@ -17,8 +17,8 @@ let webpackConfig = {
     },
     module: {
         loaders: [
-            {test: /\.scss$/, loader:  ExtractTextPlugin.extract('style-loader', 'css-loader!sass-loader')},
-			{test: /\.css$/, loader:  ExtractTextPlugin.extract('style-loader', 'css-loader!sass-loader')},
+            {test: /\.scss$/, loader:  'style-loader!css-loader!sass-loader'},
+			{test: /\.css$/, loader:  'style-loader!css-loader!sass-loader'},
             {test: /\.gif$/, loader: 'url-loader?limit=10000&mimetype=image/gif'},
             {test: /\.jpg$/, loader: 'url-loader?limit=10000&mimetype=image/jpg'},
             {test: /\.png$/, loader: 'url-loader?limit=10000&mimetype=image/png'},
@@ -26,10 +26,8 @@ let webpackConfig = {
             {test: /\.js$/, loader: 'babel', exclude: [/node_modules/]},
             {test: /\.json$/, loader: 'json-loader'},
             {test: /\.html$/, loader: 'raw'},
-			{test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file"},
-			{test: /\.(woff|woff2)$/, loader: "url?prefix=font/&limit=5000"},
-			{test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=application/octet-stream"},
-			{test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=image/svg+xml"}
+            {test: /\.(svg|woff|woff2)?(\?v=\d+.\d+.\d+)?$/, loader: 'url-loader?limit=8192'},
+            {test: /\.(eot|ttf)$/, loader: 'file-loader'}
         ]
     },
     resolve: {
@@ -42,7 +40,7 @@ let webpackConfig = {
             css: [ "main.css" ],
             template: 'index.html'
         }),
-        new ExtractTextPlugin('/css/[name].css')
+        new ExtractTextPlugin('/css/[name].[ext]')
     ]
 };
 
