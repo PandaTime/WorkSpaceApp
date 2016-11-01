@@ -49086,6 +49086,14 @@
 
 	var _seatsActions = __webpack_require__(730);
 
+	var _selectElement = __webpack_require__(744);
+
+	var _selectElement2 = _interopRequireDefault(_selectElement);
+
+	var _assignUser = __webpack_require__(764);
+
+	var _assignUser2 = _interopRequireDefault(_assignUser);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -49106,9 +49114,13 @@
 				optShow: false,
 				showUsed: false,
 				selectBy: 'users',
-				temp_seat_id: 'TEMP_SEAT'
+				temp_seat_id: 'TEMP_SEAT',
+				showSelectElementFrom: false,
+				hoverSeatID: ''
+
 			};
 			_this.toggleSeatOptions = _this.toggleSeatOptions.bind(_this);
+			_this.toggleFormShow = _this.toggleFormShow.bind(_this);
 			return _this;
 		}
 
@@ -49123,19 +49135,33 @@
 				this.setState({ optShow: !this.state.optShow });
 			}
 		}, {
+			key: 'toggleFormShow',
+			value: function toggleFormShow() {
+				this.setState({ showSelectElementFrom: !this.state.showSelectElementFrom });
+			}
+		}, {
 			key: 'hoverSeat',
 			value: function hoverSeat(x, y, id) {
+				if (this.state.showSelectElementFrom) return;
 				var seat = {
 					x: x, y: y,
 					id: this.state.temp_seat_id + id,
 					fillStyle: 'rgba(255, 0, 0, 1)'
 				};
+				this.setState({ hoverSeatID: id });
 				this.props.addNewSeat(seat);
 			}
 		}, {
 			key: 'unhoverSeat',
 			value: function unhoverSeat(id) {
+				if (this.state.showSelectElementFrom) return;
+				this.setState({ hoverSeatID: '' });
 				this.props.deleteSeat(this.state.temp_seat_id + id);
+			}
+		}, {
+			key: 'assignUser',
+			value: function assignUser(assign) {
+				if (assign) this.toggleFormShow();else console.log('delete');
 			}
 		}, {
 			key: 'render',
@@ -49176,17 +49202,26 @@
 				} else if (this.state.selectBy == 'seats') {
 					list = this.props.seats.map(function (v, i) {
 						if (v.id.startsWith(temp_seat_id)) return;
-						if (showUsed) return _react2.default.createElement(
-							'div',
-							{ key: i },
-							v.id
-						);else if (!v.assignedTo.id) return _react2.default.createElement(
-							'div',
-							{ key: i,
-								onMouseEnter: _this2.hoverSeat.bind(_this2, v.x, v.y, v.id),
-								onMouseOut: _this2.unhoverSeat.bind(_this2, v.id) },
-							v.id
-						);
+						if (showUsed || !v.assignedTo.id) {
+							var text = v.id + ' - ' + (v.assignedTo.id ? 'taken by ' + v.assignedTo.firstName + ' ' + v.assignedTo.surName : 'free');
+							return _react2.default.createElement(
+								'li',
+								{ key: i, className: 'list-group-item',
+									onMouseEnter: _this2.hoverSeat.bind(_this2, v.x, v.y, v.id),
+									onMouseLeave: _this2.unhoverSeat.bind(_this2, v.id) },
+								text,
+								_react2.default.createElement(
+									'div',
+									{ className: 'col-xs-1' },
+									_react2.default.createElement('span', { className: 'glyphicon glyphicon-remove pointer-cursor', 'aria-hidden': 'true', onClick: _this2.assignUser.bind(_this2, false) })
+								),
+								_react2.default.createElement(
+									'div',
+									{ className: 'col-xs-1 col-xs-offset-2', on: true },
+									_react2.default.createElement('span', { className: 'glyphicon glyphicon-map-marker pointer-cursor', 'aria-hidden': 'true', onClick: _this2.assignUser.bind(_this2, true) })
+								)
+							);
+						}
 					});
 				}
 				return _react2.default.createElement(
@@ -49214,6 +49249,11 @@
 									this.state.selectBy == 'users' ? this.state.showUsed ? 'All Users' : 'Non-assigned Users' : this.state.showUsed ? 'All Seats' : 'Free Seats',
 									_react2.default.createElement('span', { className: 'caret' })
 								)
+							),
+							_react2.default.createElement(
+								'div',
+								{ className: (0, _classnames2.default)(this.state.showSelectElementFrom ? '' : 'hidden') },
+								_react2.default.createElement(_assignUser2.default, { toggleFormShow: this.toggleFormShow, hoverSeatID: this.state.hoverSeatID })
 							),
 							_react2.default.createElement(
 								'ul',
@@ -49257,8 +49297,8 @@
 							)
 						),
 						_react2.default.createElement(
-							'div',
-							null,
+							'ul',
+							{ className: 'list-group' },
 							list[0] ? list : 'No seats are available'
 						)
 					)
@@ -49724,7 +49764,7 @@
 
 
 	// module
-	exports.push([module.id, ".info-box, .search-box {\n  right: 15px;\n  top: 112px;\n  height: 300px;\n  width: 29%;\n  position: absolute;\n  border: 1px solid #ddd;\n  border-top: 0px; }\n  .info-box .input-group, .search-box .input-group {\n    padding: 0% 5%; }\n  .info-box .search-element-input, .search-box .search-element-input {\n    padding: 6px 10px;\n    border-radius: 0px 4px 4px 0px; }\n\n.info-select-user {\n  position: absolute;\n  overflow-y: overlay;\n  height: 250px;\n  width: 300px;\n  top: 50px;\n  z-index: 100;\n  padding: 20px 40px 40px;\n  text-align: center;\n  background: #fff;\n  border: 1px solid #ccc; }\n  .info-select-user .search-element-input {\n    padding: 9px 12px;\n    border-radius: 0px 4px 4px 0px; }\n\n.dropdown-menu.info-box-search {\n  left: 50px; }\n\n.dropdown-menu.search-box-search {\n  left: 207px; }\n\n.search-element-exit {\n  position: relative;\n  float: right;\n  left: 10px;\n  top: -10px; }\n", ""]);
+	exports.push([module.id, ".info-box, .search-box {\n  right: 15px;\n  top: 112px;\n  height: 300px;\n  width: 29%;\n  position: absolute;\n  border: 1px solid #ddd;\n  border-top: 0px;\n  padding: 0% 1.2%; }\n  .info-box .search-element-input, .search-box .search-element-input {\n    padding: 6px 10px;\n    border-radius: 0px 4px 4px 0px; }\n  .info-box .col-xs-1, .search-box .col-xs-1 {\n    float: right; }\n\n.info-select-user {\n  position: absolute;\n  overflow-y: overlay;\n  height: 250px;\n  width: 300px;\n  left: 0px;\n  top: 50px;\n  z-index: 100;\n  padding: 20px 40px 40px;\n  text-align: center;\n  background: #fff;\n  border: 1px solid #ccc; }\n  .info-select-user .search-element-input {\n    padding: 9px 12px;\n    border-radius: 0px 4px 4px 0px; }\n  .info-select-user .list-group {\n    width: 96%; }\n  .info-select-user .select-user-name {\n    text-align: start; }\n  .info-select-user .select-user-seat {\n    font-size: 11px;\n    vertical-align: bottom;\n    font-style: italic;\n    text-align: end; }\n\n.dropdown-menu.info-box-search {\n  left: 50px; }\n\n.dropdown-menu.search-box-search {\n  left: 207px; }\n\n.search-element-exit {\n  position: relative;\n  float: right;\n  left: 10px;\n  top: -10px; }\n", ""]);
 
 	// exports
 
@@ -49838,6 +49878,301 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "89889688147bd7575d6327160d64e760.svg";
+
+/***/ },
+/* 764 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(298);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactRedux = __webpack_require__(518);
+
+	var _classnames = __webpack_require__(729);
+
+	var _classnames2 = _interopRequireDefault(_classnames);
+
+	var _usersActions = __webpack_require__(732);
+
+	var _seatsActions = __webpack_require__(730);
+
+	var _confirmCheck = __webpack_require__(765);
+
+	var _confirmCheck2 = _interopRequireDefault(_confirmCheck);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var AssignUser = function (_React$Component) {
+	    _inherits(AssignUser, _React$Component);
+
+	    function AssignUser(props) {
+	        _classCallCheck(this, AssignUser);
+
+	        var _this = _possibleConstructorReturn(this, (AssignUser.__proto__ || Object.getPrototypeOf(AssignUser)).call(this, props));
+
+	        _this.state = {
+	            optShow: false,
+	            showAssignedUsersFn: false,
+	            temp_seat_id: 'TEMP_SEAT',
+	            confirmUserAssign: false
+	        };
+	        _this.toggleUserOptions = _this.toggleUserOptions.bind(_this);
+	        _this.confirmAssignment = _this.confirmAssignment.bind(_this);
+	        return _this;
+	    }
+
+	    _createClass(AssignUser, [{
+	        key: 'toggleUserOptions',
+	        value: function toggleUserOptions() {
+	            this.setState({ optShow: !this.state.optShow });
+	        }
+	    }, {
+	        key: 'showAssignedUsersFn',
+	        value: function showAssignedUsersFn(show) {
+	            this.setState({ showAssignedUsersFn: show, optShow: false });
+	        }
+	    }, {
+	        key: 'confirmAssignment',
+	        value: function confirmAssignment() {
+	            this.setState({ confirmUserAssign: true });
+	        }
+	    }, {
+	        key: 'assignUser',
+	        value: function assignUser(id) {
+	            this.setState({ confirmUserAssign: false });
+	            var seat = { id: id };
+	            var user = Object.assign({}, this.props.selectedUser);
+	            user.seat = seat;
+	            // owning seat by a user(Seat: userid);
+	            this.props.updateSeatUser({ id: id, assignedTo: {
+	                    id: this.props.selectedUser.id,
+	                    firstName: this.props.selectedUser.firstName,
+	                    surName: this.props.selectedUser.surName
+	                } });
+	            // assigning user to a seat(User: seatid);
+	            this.props.updateUserLocation({ id: this.props.selectedUser.id, seat: seat });
+	            // changing selected user
+	            this.props.selectUser(user);
+	            // deleting temp seat
+	            this.unhoverSeat(id);
+	            // hiding unneeded tabs
+	            this.toggleUserOptions();
+	            this.props.toggleUserOptions();
+	        }
+	    }, {
+	        key: 'hoverSeat',
+	        value: function hoverSeat(x, y, id) {
+	            var seat = {
+	                x: x, y: y,
+	                id: this.state.temp_seat_id + id,
+	                fillStyle: 'rgba(255, 0, 0, 1)'
+	            };
+	            this.props.addNewSeat(seat);
+	        }
+	    }, {
+	        key: 'unhoverSeat',
+	        value: function unhoverSeat(id) {
+	            this.props.deleteSeat(this.state.temp_seat_id + id);
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var _this2 = this;
+
+	            var showAssigned = this.state.showAssignedUsersFn,
+	                temp_seat_id = this.state.temp_seat_id;
+	            var users = this.props.users.map(function (v, i) {
+	                if (v.id.startsWith(temp_seat_id)) return;
+	                var name = v.firstName + ' ' + v.surName;
+	                if (showAssigned) return _react2.default.createElement(
+	                    'li',
+	                    { key: i, className: 'list-group-item', onClick: _this2.confirmAssignment },
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'select-user-name' },
+	                        name
+	                    ),
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'select-user-seat' },
+	                        v.seat.id ? v.seat.id : 'No seat assigned',
+	                        '.'
+	                    )
+	                );else if (!v.seat.id) return _react2.default.createElement(
+	                    'li',
+	                    { key: i, className: 'list-group-item', onClick: _this2.confirmAssignment },
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'select-user-name' },
+	                        name
+	                    ),
+	                    ' ',
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'select-user-seat' },
+	                        'No seat assigned.'
+	                    )
+	                );
+	            });
+
+	            return _react2.default.createElement(
+	                'div',
+	                null,
+	                _react2.default.createElement(
+	                    'div',
+	                    { className: 'info-select-user' },
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'search-element-exit pointer-cursor', onClick: this.props.toggleFormShow },
+	                        'X'
+	                    ),
+	                    _react2.default.createElement(
+	                        'div',
+	                        null,
+	                        'Seat: ',
+	                        this.props.hoverSeatID
+	                    ),
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'form-box' },
+	                        _react2.default.createElement(
+	                            'div',
+	                            { className: 'input-group ' },
+	                            _react2.default.createElement('input', { type: 'text', className: 'form-control', 'aria-label': '...' }),
+	                            _react2.default.createElement(
+	                                'div',
+	                                { className: 'input-group-btn' },
+	                                _react2.default.createElement(
+	                                    'button',
+	                                    { type: 'button', className: 'btn btn-default search-element-input', onClick: this.toggleUserOptions },
+	                                    this.state.showAssignedUsersFn ? 'w/' : 'w/o',
+	                                    _react2.default.createElement('span', { className: 'caret' })
+	                                )
+	                            ),
+	                            _react2.default.createElement(
+	                                'ul',
+	                                { className: (0, _classnames2.default)('dropdown-menu info-box-search react-toggle', this.state.optShow ? '' : 'hidden') },
+	                                _react2.default.createElement(
+	                                    'li',
+	                                    null,
+	                                    _react2.default.createElement(
+	                                        'a',
+	                                        { onClick: this.showAssignedUsersFn.bind(this, true) },
+	                                        'w/ assigned Users'
+	                                    )
+	                                ),
+	                                _react2.default.createElement(
+	                                    'li',
+	                                    null,
+	                                    _react2.default.createElement(
+	                                        'a',
+	                                        { onClick: this.showAssignedUsersFn.bind(this, false) },
+	                                        'w/o assigned Users'
+	                                    )
+	                                )
+	                            )
+	                        ),
+	                        _react2.default.createElement(_confirmCheck2.default, null),
+	                        _react2.default.createElement(
+	                            'ul',
+	                            { className: 'list-group' },
+	                            users[0] ? users : 'There\'re no available users'
+	                        )
+	                    )
+	                )
+	            );
+	        }
+	    }]);
+
+	    return AssignUser;
+	}(_react2.default.Component);
+
+	function mapStateToProps(state, ownProps) {
+	    return {
+	        seats: state.arrSeatsReducer,
+	        selectedSeat: state.selectSeatReducer,
+	        users: state.arrUsersReducer,
+	        selectedUser: state.selectUserReducer
+	    };
+	}
+	//export default Information;
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, { addNewSeat: _seatsActions.addNewSeat, updateSeatUser: _seatsActions.updateSeatUser, deleteSeat: _seatsActions.deleteSeat, selectUser: _usersActions.selectUser, updateUserLocation: _usersActions.updateUserLocation })(AssignUser);
+
+/***/ },
+/* 765 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(298);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _classnames = __webpack_require__(729);
+
+	var _classnames2 = _interopRequireDefault(_classnames);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var ConfirmCheck = function (_React$Component) {
+	    _inherits(ConfirmCheck, _React$Component);
+
+	    function ConfirmCheck(props) {
+	        _classCallCheck(this, ConfirmCheck);
+
+	        var _this = _possibleConstructorReturn(this, (ConfirmCheck.__proto__ || Object.getPrototypeOf(ConfirmCheck)).call(this, props));
+
+	        _this.state = {
+	            optShow: false,
+	            showAssignedUsersFn: false,
+	            temp_seat_id: 'TEMP_SEAT',
+	            confirmUserAssign: false
+	        };
+	        return _this;
+	    }
+
+	    _createClass(ConfirmCheck, [{
+	        key: 'render',
+	        value: function render() {
+	            return _react2.default.createElement(
+	                'div',
+	                null,
+	                'awdafebkopabkapofbmkaposfbmasombaopsmbsa'
+	            );
+	        }
+	    }]);
+
+	    return ConfirmCheck;
+	}(_react2.default.Component);
+
+	exports.default = ConfirmCheck;
 
 /***/ }
 /******/ ]);

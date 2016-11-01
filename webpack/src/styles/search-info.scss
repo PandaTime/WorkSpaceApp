@@ -6,12 +6,13 @@
 	position: absolute;
 	border: 1px solid #ddd;
 	border-top: 0px;
-	.input-group{
-		padding: 0% 5%;
-	}
+	padding: 0% 1.2%;
 	.search-element-input{
 		padding: 6px 10px;		
 		border-radius: 0px 4px 4px 0px;
+	}
+	.col-xs-1{
+		float: right;
 	}
 }
 .info-select-user{
@@ -19,6 +20,7 @@
   overflow-y: overlay;
   height: 250px;
   width: 300px;
+  left: 0px;
   top: 50px;
   z-index: 100;
   padding: 20px 40px 40px;
@@ -28,6 +30,18 @@
   .search-element-input{
 	  padding: 9px 12px;
 	  border-radius: 0px 4px 4px 0px;
+  }
+  .list-group{
+	width: 96%;
+  }
+  .select-user-name{
+	text-align: start;
+  }
+  .select-user-seat{
+	font-size: 11px;
+	vertical-align: bottom;
+	font-style: italic;
+	text-align: end;
   }
 }
 .dropdown-menu.info-box-search{
