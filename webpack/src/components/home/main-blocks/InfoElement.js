@@ -26,7 +26,6 @@ class Information extends React.Component {
     render() {
         var selectedSeat = this.props.selectedSeat;
         var selectedUser = this.props.selectedUser;
-        console.log(this.props.seats);
         return (
             <div className="info-box">
                 <div className={classNames(selectedUser.firstName ? '' : 'hidden')}>

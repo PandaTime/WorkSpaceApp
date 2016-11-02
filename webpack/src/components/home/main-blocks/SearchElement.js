@@ -1,7 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import {addNewSeat, deleteSeat} from '../../../actions/seatsActions';
+import {selectSeat, deleteSeat, addNewSeat} from '../../../actions/seatsActions';
+import {selectUser} from '../../../actions/usersActions';
 import SelectElement from './body-blocks/selectElement';
 import AssignUser from './body-blocks/assignUser'
 
@@ -13,12 +14,13 @@ class Search extends React.Component {
 			showUsed : false,
 			selectBy: 'users',
 			temp_seat_id: 'TEMP_SEAT',
-			showSelectElementFrom: false,
-			hoverSeatID: '',
-			
+			showAssignUserForm: false,
+			showSelectSeatForm: false,
+			hoverSeatID: ''
 		};
 		this.toggleSeatOptions = this.toggleSeatOptions.bind(this);
-		this.toggleFormShow = this.toggleFormShow.bind(this);
+		this.toggleUserAssign = this.toggleUserAssign.bind(this);
+		this.toggleSeatSelect = this.toggleSeatSelect.bind(this);
     }
 	showUsedSeatsFn(selectBy, ifAll){
 		this.setState({showUsed : ifAll, selectBy, optShow : false});
@@ -26,11 +28,14 @@ class Search extends React.Component {
 	toggleSeatOptions(){
 		this.setState({optShow:!this.state.optShow})
 	}
-	toggleFormShow(){
-        this.setState({showSelectElementFrom : !this.state.showSelectElementFrom});
+	toggleUserAssign(){
+        this.setState({showAssignUserForm : !this.state.showAssignUserForm});
     }
+	toggleSeatSelect(){
+		this.setState({showSelectSeatForm : !this.state.showSelectSeatForm});
+	}
 	hoverSeat(x, y, id){
-		if(this.state.showSelectElementFrom) return;
+		if(this.state.showAssignUserForm) return;
 		var seat = {
 			x, y,
 			id: this.state.temp_seat_id + id,
@@ -40,46 +45,69 @@ class Search extends React.Component {
 		this.props.addNewSeat(seat);
 	}
 	unhoverSeat(id){
-		if(this.state.showSelectElementFrom) return;
+		if(this.state.showAssignUserForm) return;
 		this.setState({hoverSeatID: ''});
 		this.props.deleteSeat(this.state.temp_seat_id + id);
 	}
-	assignUser(assign){
+	assignUser(assign, seat_id){
+		var seat = this.props.seats.filter((v)=>v.id===seat_id)[0];
+		if(!seat) return;
+		this.props.selectSeat(seat);
 		if(assign)
-            this.toggleFormShow();
+            this.toggleUserAssign();
         else
             console.log('delete');
+	}
+	selectSeat(assign, user_id){
+		var user = this.props.users.filter((v)=>v.id===user_id)[0];
+		if(!user) return;
+		this.props.selectUser(user);
+		if(assign)
+			this.toggleSeatSelect();
+		else
+			console.log('delete');			
 	}
     render() {
 		var showUsed = this.state.showUsed,
 			temp_seat_id = this.state.temp_seat_id;
-		var list = [];
+		var list = [], text;
 		if(this.state.selectBy == 'users'){
 			list = this.props.users.map((v, i)=>{
-				if(showUsed)
-					return (<div key={i}>{v.firstName} {v.surName} - <span className="add-info">{v.seat.id ? v.seat.id : 'Don\'t have seat'}</span></div>);
+				if(showUsed || !v.seat.id)
+					return (
+						<li key={i} className={classNames("list-group-item", v.seat.id == this.props.selectedSeat.id ? 'list-group-item-warning' : '')}>
+							{v.firstName + ' ' + v.surName} - <span className="add-info">{v.seat.id ? v.seat.name : 'Don\'t have a seat'} </span>
+							<div className="col-xs-1">
+								<span className="glyphicon glyphicon-remove pointer-cursor" aria-hidden="true" onClick={this.selectSeat.bind(this, false, v.id)}></span>
+							</div>
+							<div className="col-xs-1">
+								<span className="glyphicon glyphicon-map-marker pointer-cursor" aria-hidden="true" onClick={this.selectSeat.bind(this, true, v.id)}></span>
+							</div>
+						</li>);
 				else if(!v.seat.id)
-					return (<div key={i}>{v.firstName} {v.surName} - <span className="add-info">{v.seat.id ? v.seat.id : 'Don\'t have seat'}</span></div>);
-			});
+					return (<div key={i}>{v.firstName} {v.surName} - <span className="add-info">{v.seat.id ? v.seat.id : 'Don\'t have a seat'}</span></div>);
+				});
 		}else if(this.state.selectBy == 'seats'){
 			list = this.props.seats.map((v, i)=>{
 				if(v.id.startsWith(temp_seat_id)) return;
 				if(showUsed || !v.assignedTo.id){
-					var text = v.id + ' - ' +  (v.assignedTo.id ? ('taken by ' + v.assignedTo.firstName + ' ' + v.assignedTo.surName) : 'free');
-					return (<li key={i} className="list-group-item"
+					text = v.name + ' - ' +  (v.assignedTo.id ? ('taken by ' + v.assignedTo.firstName + ' ' + v.assignedTo.surName) : 'free');
+					return (<li key={i} className={classNames("list-group-item", v.id == this.props.selectedSeat.id ? 'list-group-item-warning' : '')}
 								 onMouseEnter={this.hoverSeat.bind(this, v.x, v.y, v.id)}
 								 onMouseLeave={this.unhoverSeat.bind(this, v.id)}>
 								 {text}
 								<div className="col-xs-1">
-									<span className="glyphicon glyphicon-remove pointer-cursor" aria-hidden="true" onClick={this.assignUser.bind(this, false)}></span>
+									<span className="glyphicon glyphicon-remove pointer-cursor" aria-hidden="true" onClick={this.assignUser.bind(this, false, v.id)}></span>
 								</div>
-								<div className="col-xs-1 col-xs-offset-2" on>
-									<span className="glyphicon glyphicon-map-marker pointer-cursor" aria-hidden="true" onClick={this.assignUser.bind(this, true)}></span>
+								<div className="col-xs-1">
+									<span className="glyphicon glyphicon-map-marker pointer-cursor" aria-hidden="true" onClick={this.assignUser.bind(this, true, v.id)}></span>
 								</div>
 							 </li>);
 				}
 			});
 		}
+		// filtering null values;
+		list = list.filter((v)=>!!v);
 		return (
             <div className="search-box">
 				<div>Search</div>
@@ -92,8 +120,11 @@ class Search extends React.Component {
 								{this.state.selectBy == 'users' ? (this.state.showUsed ? 'All Users' : 'Non-assigned Users') : (this.state.showUsed ? 'All Seats' : 'Free Seats')}
 							<span className="caret"></span></button>
 						</div>
-						<div className={classNames(this.state.showSelectElementFrom ? '' : 'hidden')}>
-							<AssignUser toggleFormShow={this.toggleFormShow} hoverSeatID={this.state.hoverSeatID}/>
+						<div className={classNames(this.state.showAssignUserForm ? '' : 'hidden')}>
+							<AssignUser toggleFormShow={this.toggleUserAssign}/>
+						</div>
+						<div className={classNames(this.state.showSelectSeatForm ? '' : 'hidden')}>
+							<SelectElement toggleSeatFormShow={this.toggleSeatSelect}/>
 						</div>
 						<ul className={classNames('dropdown-menu search-box-search react-toggle', this.state.optShow ? '' : 'hidden')}>
 							<li><a onClick={this.showUsedSeatsFn.bind(this, 'seats', false)}>Free Seats</a></li>
@@ -120,5 +151,5 @@ function mapStateToProps(state, ownProps){
     };
 }
 //export default Search;
-export default connect(mapStateToProps, {addNewSeat, deleteSeat})(Search);
+export default connect(mapStateToProps, {selectUser, selectSeat, deleteSeat, addNewSeat})(Search);
 

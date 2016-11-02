@@ -14,6 +14,6 @@ export default {
 		id: ()=>{return Math.random().toString(36).substr(2, 9)},
 		firstName: '',
 		surName: '',
-		seat: {id: null, firstName: null, surName: null}
+		seat: {id: null, name: null}
 	}
 }

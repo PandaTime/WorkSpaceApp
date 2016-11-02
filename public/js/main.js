@@ -35061,7 +35061,7 @@
 			},
 			firstName: '',
 			surName: '',
-			seat: { id: null, firstName: null, surName: null }
+			seat: { id: null, name: null }
 		}
 	};
 
@@ -35275,8 +35275,6 @@
 		function Seat(seat) {
 			_classCallCheck(this, Seat);
 
-			console.log('seat', seat);
-
 			var _this = _possibleConstructorReturn(this, (Seat.__proto__ || Object.getPrototypeOf(Seat)).call(this));
 
 			_this.id = seat.newId ? seat.id() : seat.id; // that's the function for random generator!
@@ -35393,7 +35391,6 @@
 	                return Object.assign({}, v);
 	            })), [newUser]);
 	        case types.UPDATE_USER_SEAT:
-	            console.log(action);
 	            var i = getIndex(state, action.user);
 	            if (i < 0) return state;
 	            var el = Object.assign({}, state[i]);
@@ -48780,7 +48777,6 @@
 	        value: function render() {
 	            var selectedSeat = this.props.selectedSeat;
 	            var selectedUser = this.props.selectedUser;
-	            console.log(this.props.seats);
 	            return _react2.default.createElement(
 	                'div',
 	                { className: 'info-box' },
@@ -48924,10 +48920,11 @@
 	        }
 	    }, {
 	        key: 'assignSeat',
-	        value: function assignSeat(id) {
-	            var seat = { id: id };
+	        value: function assignSeat(id, name) {
+	            var seat = { id: id, name: name };
 	            var user = Object.assign({}, this.props.selectedUser);
 	            user.seat = seat;
+	            console.log('user', user);
 	            // owning seat by a user(Seat: userid);
 	            this.props.updateSeatUser({ id: id, assignedTo: {
 	                    id: this.props.selectedUser.id,
@@ -48977,8 +48974,8 @@
 	                    { key: i,
 	                        onMouseEnter: _this2.hoverSeat.bind(_this2, v.x, v.y, v.id),
 	                        onMouseOut: _this2.unhoverSeat.bind(_this2, v.id),
-	                        onClick: _this2.assignSeat.bind(_this2, v.id) },
-	                    v.id
+	                        onClick: _this2.assignSeat.bind(_this2, v.id, v.name) },
+	                    v.name
 	                );
 	            });
 
@@ -49087,6 +49084,8 @@
 
 	var _seatsActions = __webpack_require__(730);
 
+	var _usersActions = __webpack_require__(732);
+
 	var _selectElement = __webpack_require__(744);
 
 	var _selectElement2 = _interopRequireDefault(_selectElement);
@@ -49116,12 +49115,13 @@
 				showUsed: false,
 				selectBy: 'users',
 				temp_seat_id: 'TEMP_SEAT',
-				showSelectElementFrom: false,
+				showAssignUserForm: false,
+				showSelectSeatForm: false,
 				hoverSeatID: ''
-
 			};
 			_this.toggleSeatOptions = _this.toggleSeatOptions.bind(_this);
-			_this.toggleFormShow = _this.toggleFormShow.bind(_this);
+			_this.toggleUserAssign = _this.toggleUserAssign.bind(_this);
+			_this.toggleSeatSelect = _this.toggleSeatSelect.bind(_this);
 			return _this;
 		}
 
@@ -49136,14 +49136,19 @@
 				this.setState({ optShow: !this.state.optShow });
 			}
 		}, {
-			key: 'toggleFormShow',
-			value: function toggleFormShow() {
-				this.setState({ showSelectElementFrom: !this.state.showSelectElementFrom });
+			key: 'toggleUserAssign',
+			value: function toggleUserAssign() {
+				this.setState({ showAssignUserForm: !this.state.showAssignUserForm });
+			}
+		}, {
+			key: 'toggleSeatSelect',
+			value: function toggleSeatSelect() {
+				this.setState({ showSelectSeatForm: !this.state.showSelectSeatForm });
 			}
 		}, {
 			key: 'hoverSeat',
 			value: function hoverSeat(x, y, id) {
-				if (this.state.showSelectElementFrom) return;
+				if (this.state.showAssignUserForm) return;
 				var seat = {
 					x: x, y: y,
 					id: this.state.temp_seat_id + id,
@@ -49155,14 +49160,29 @@
 		}, {
 			key: 'unhoverSeat',
 			value: function unhoverSeat(id) {
-				if (this.state.showSelectElementFrom) return;
+				if (this.state.showAssignUserForm) return;
 				this.setState({ hoverSeatID: '' });
 				this.props.deleteSeat(this.state.temp_seat_id + id);
 			}
 		}, {
 			key: 'assignUser',
-			value: function assignUser(assign) {
-				if (assign) this.toggleFormShow();else console.log('delete');
+			value: function assignUser(assign, seat_id) {
+				var seat = this.props.seats.filter(function (v) {
+					return v.id === seat_id;
+				})[0];
+				if (!seat) return;
+				this.props.selectSeat(seat);
+				if (assign) this.toggleUserAssign();else console.log('delete');
+			}
+		}, {
+			key: 'selectSeat',
+			value: function selectSeat(assign, user_id) {
+				var user = this.props.users.filter(function (v) {
+					return v.id === user_id;
+				})[0];
+				if (!user) return;
+				this.props.selectUser(user);
+				if (assign) this.toggleSeatSelect();else console.log('delete');
 			}
 		}, {
 			key: 'render',
@@ -49171,20 +49191,30 @@
 
 				var showUsed = this.state.showUsed,
 				    temp_seat_id = this.state.temp_seat_id;
-				var list = [];
+				var list = [],
+				    text;
 				if (this.state.selectBy == 'users') {
 					list = this.props.users.map(function (v, i) {
-						if (showUsed) return _react2.default.createElement(
-							'div',
-							{ key: i },
-							v.firstName,
-							' ',
-							v.surName,
+						if (showUsed || !v.seat.id) return _react2.default.createElement(
+							'li',
+							{ key: i, className: (0, _classnames2.default)("list-group-item", v.seat.id == _this2.props.selectedSeat.id ? 'list-group-item-warning' : '') },
+							v.firstName + ' ' + v.surName,
 							' - ',
 							_react2.default.createElement(
 								'span',
 								{ className: 'add-info' },
-								v.seat.id ? v.seat.id : 'Don\'t have seat'
+								v.seat.id ? v.seat.name : 'Don\'t have a seat',
+								' '
+							),
+							_react2.default.createElement(
+								'div',
+								{ className: 'col-xs-1' },
+								_react2.default.createElement('span', { className: 'glyphicon glyphicon-remove pointer-cursor', 'aria-hidden': 'true', onClick: _this2.selectSeat.bind(_this2, false, v.id) })
+							),
+							_react2.default.createElement(
+								'div',
+								{ className: 'col-xs-1' },
+								_react2.default.createElement('span', { className: 'glyphicon glyphicon-map-marker pointer-cursor', 'aria-hidden': 'true', onClick: _this2.selectSeat.bind(_this2, true, v.id) })
 							)
 						);else if (!v.seat.id) return _react2.default.createElement(
 							'div',
@@ -49196,7 +49226,7 @@
 							_react2.default.createElement(
 								'span',
 								{ className: 'add-info' },
-								v.seat.id ? v.seat.id : 'Don\'t have seat'
+								v.seat.id ? v.seat.id : 'Don\'t have a seat'
 							)
 						);
 					});
@@ -49204,27 +49234,31 @@
 					list = this.props.seats.map(function (v, i) {
 						if (v.id.startsWith(temp_seat_id)) return;
 						if (showUsed || !v.assignedTo.id) {
-							var text = v.id + ' - ' + (v.assignedTo.id ? 'taken by ' + v.assignedTo.firstName + ' ' + v.assignedTo.surName : 'free');
+							text = v.name + ' - ' + (v.assignedTo.id ? 'taken by ' + v.assignedTo.firstName + ' ' + v.assignedTo.surName : 'free');
 							return _react2.default.createElement(
 								'li',
-								{ key: i, className: 'list-group-item',
+								{ key: i, className: (0, _classnames2.default)("list-group-item", v.id == _this2.props.selectedSeat.id ? 'list-group-item-warning' : ''),
 									onMouseEnter: _this2.hoverSeat.bind(_this2, v.x, v.y, v.id),
 									onMouseLeave: _this2.unhoverSeat.bind(_this2, v.id) },
 								text,
 								_react2.default.createElement(
 									'div',
 									{ className: 'col-xs-1' },
-									_react2.default.createElement('span', { className: 'glyphicon glyphicon-remove pointer-cursor', 'aria-hidden': 'true', onClick: _this2.assignUser.bind(_this2, false) })
+									_react2.default.createElement('span', { className: 'glyphicon glyphicon-remove pointer-cursor', 'aria-hidden': 'true', onClick: _this2.assignUser.bind(_this2, false, v.id) })
 								),
 								_react2.default.createElement(
 									'div',
-									{ className: 'col-xs-1 col-xs-offset-2', on: true },
-									_react2.default.createElement('span', { className: 'glyphicon glyphicon-map-marker pointer-cursor', 'aria-hidden': 'true', onClick: _this2.assignUser.bind(_this2, true) })
+									{ className: 'col-xs-1' },
+									_react2.default.createElement('span', { className: 'glyphicon glyphicon-map-marker pointer-cursor', 'aria-hidden': 'true', onClick: _this2.assignUser.bind(_this2, true, v.id) })
 								)
 							);
 						}
 					});
 				}
+				// filtering null values;
+				list = list.filter(function (v) {
+					return !!v;
+				});
 				return _react2.default.createElement(
 					'div',
 					{ className: 'search-box' },
@@ -49253,8 +49287,13 @@
 							),
 							_react2.default.createElement(
 								'div',
-								{ className: (0, _classnames2.default)(this.state.showSelectElementFrom ? '' : 'hidden') },
-								_react2.default.createElement(_assignUser2.default, { toggleFormShow: this.toggleFormShow, hoverSeatID: this.state.hoverSeatID })
+								{ className: (0, _classnames2.default)(this.state.showAssignUserForm ? '' : 'hidden') },
+								_react2.default.createElement(_assignUser2.default, { toggleFormShow: this.toggleUserAssign })
+							),
+							_react2.default.createElement(
+								'div',
+								{ className: (0, _classnames2.default)(this.state.showSelectSeatForm ? '' : 'hidden') },
+								_react2.default.createElement(_selectElement2.default, { toggleSeatFormShow: this.toggleSeatSelect })
 							),
 							_react2.default.createElement(
 								'ul',
@@ -49319,7 +49358,7 @@
 		};
 	}
 	//export default Search;
-	exports.default = (0, _reactRedux.connect)(mapStateToProps, { addNewSeat: _seatsActions.addNewSeat, deleteSeat: _seatsActions.deleteSeat })(Search);
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, { selectUser: _usersActions.selectUser, selectSeat: _seatsActions.selectSeat, deleteSeat: _seatsActions.deleteSeat, addNewSeat: _seatsActions.addNewSeat })(Search);
 
 /***/ },
 /* 746 */
@@ -49373,8 +49412,7 @@
 	            temp_seat_id: 'TEMP_SEAT',
 	            confirmUserAssign: false,
 	            selectedUserId: '',
-	            confirmText: '',
-	            hoverSeatName: ''
+	            confirmText: ''
 	        };
 	        _this.toggleUserOptions = _this.toggleUserOptions.bind(_this);
 	        _this.confirmAssignment = _this.confirmAssignment.bind(_this);
@@ -49394,17 +49432,10 @@
 	    }, {
 	        key: 'confirmAssignment',
 	        value: function confirmAssignment(userName, id) {
-	            var _this2 = this;
-
-	            var hoverSeatName = this.props.seats.filter(function (v) {
-	                return v.id === _this2.props.hoverSeatID;
-	            })[0];
-	            console.log(hoverSeatName);
 	            this.setState({
 	                confirmUserAssign: true,
 	                selectedUserId: id,
-	                hoverSeatName: hoverSeatName,
-	                confirmText: 'Assign ' + userName + ' to ' + hoverSeatName + '?'
+	                confirmText: 'Assign ' + userName + ' to ' + this.props.selectedSeat.name + '?'
 	            });
 	        }
 	    }, {
@@ -49419,30 +49450,34 @@
 	    }, {
 	        key: 'assignUser',
 	        value: function assignUser() {
+	            var _this2 = this;
+
 	            this.setState({ confirmUserAssign: false });
+
+	            // assigning user to a seat
 	            var user = {
 	                id: this.state.selectedUserId,
 	                seat: {
-	                    id: this.props.hoverSeatID,
-	                    firstName: this.state.hoverSeatName.firstName,
-	                    surName: this.state.hoverSeatName.surName
+	                    id: this.props.selectedSeat.id,
+	                    name: this.props.selectedSeat.name
 	                }
 	            };
-	            console.log('users', user);
-	            // assigning user to a seat
 	            this.props.updateUserLocation(user);
 	            // occupying seat by a user
+	            var userData = this.props.users.filter(function (v) {
+	                return v.id === _this2.state.selectedUserId;
+	            })[0];
 	            this.props.updateSeatUser({
-	                id: this.props.hoverSeatID, assignedTo: {
-	                    id: this.state.hoverSeatName.id,
-	                    firstName: this.state.hoverSeatName.firstName,
-	                    surName: this.state.hoverSeatName.surName
+	                id: this.props.selectedSeat.id,
+	                assignedTo: {
+	                    id: userData.id,
+	                    firstName: userData.firstName,
+	                    surName: userData.surName
 	                }
 	            });
-	            console.log('123123', this.state.hoverSeatName);
-	            // hiding unneeded tabs
+	            // closing undeeded tabs
 	            this.toggleUserOptions();
-	            this.props.toggleUserOptions();
+	            this.props.toggleUserAssign();
 	        }
 	    }, {
 	        key: 'hoverSeat',
@@ -49514,7 +49549,7 @@
 	                        'div',
 	                        null,
 	                        'Seat: ',
-	                        this.props.hoverSeatID
+	                        this.props.selectedSeat.name
 	                    ),
 	                    _react2.default.createElement(
 	                        'div',

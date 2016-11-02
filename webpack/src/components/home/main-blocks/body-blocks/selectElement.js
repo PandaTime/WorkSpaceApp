@@ -22,10 +22,11 @@ class SelectElement extends React.Component {
     showUsedSeatsFn(show){
         this.setState({showUsedSeats : show, optShow : false});
     }
-    assignSeat(id){
-        var seat = {id};
+    assignSeat(id, name){
+        var seat = {id, name};
         var user = Object.assign({}, this.props.selectedUser);
         user.seat = seat;
+        console.log('user', user);
         // owning seat by a user(Seat: userid);
         this.props.updateSeatUser({id:id, assignedTo: {
             id: this.props.selectedUser.id,
@@ -64,7 +65,7 @@ class SelectElement extends React.Component {
                 return (<div key={i}
                              onMouseEnter={this.hoverSeat.bind(this, v.x, v.y, v.id)}
                              onMouseOut={this.unhoverSeat.bind(this, v.id)}
-                             onClick={this.assignSeat.bind(this, v.id)}>{v.id}</div>);
+                             onClick={this.assignSeat.bind(this, v.id, v.name)}>{v.name}</div>);
         });
 
         return (

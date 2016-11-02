@@ -16,8 +16,7 @@ class AssignUser extends React.Component {
             temp_seat_id: 'TEMP_SEAT',
 			confirmUserAssign: false,
             selectedUserId: '',
-            confirmText: '',
-			hoverSeatName: ''
+            confirmText: ''
         };
         this.toggleUserOptions = this.toggleUserOptions.bind(this);
 		this.confirmAssignment = this.confirmAssignment.bind(this);
@@ -29,13 +28,10 @@ class AssignUser extends React.Component {
         this.setState({showAssignedUsersFn : show, optShow : false});
     }
 	confirmAssignment(userName, id){
-		var hoverSeatName =  this.props.seats.filter((v)=>v.id === this.props.hoverSeatID)[0];
-		console.log(hoverSeatName);
 		this.setState({
             confirmUserAssign: true,
             selectedUserId: id,
-			hoverSeatName: hoverSeatName,
-            confirmText: 'Assign ' + userName + ' to ' + hoverSeatName + '?'
+            confirmText: 'Assign ' + userName + ' to ' + this.props.selectedSeat.name + '?'
         });
 	}
     rejectUserAssignment(){
@@ -47,29 +43,29 @@ class AssignUser extends React.Component {
     }
     assignUser(){
 		this.setState({confirmUserAssign: false});
+
+        // assigning user to a seat
 		var user = {
 			id: this.state.selectedUserId,
 			seat: {
-				id: this.props.hoverSeatID,
-				firstName: this.state.hoverSeatName.firstName,
-				surName: this.state.hoverSeatName.surName
+				id: this.props.selectedSeat.id,
+				name: this.props.selectedSeat.name
 			}
-		}
-		console.log('users', user);
-		// assigning user to a seat
+		};
 		this.props.updateUserLocation(user);
 		// occupying seat by a user
+        var userData = this.props.users.filter((v)=>v.id === this.state.selectedUserId)[0];
 		this.props.updateSeatUser({
-			id:this.props.hoverSeatID, assignedTo: {
-				id: this.state.hoverSeatName.id,
-				firstName: this.state.hoverSeatName.firstName,
-				surName: this.state.hoverSeatName.surName
+			id: this.props.selectedSeat.id,
+            assignedTo: {
+				id: userData.id,
+				firstName: userData.firstName,
+				surName: userData.surName
 			}
 		});
-		console.log('123123', this.state.hoverSeatName);
-        // hiding unneeded tabs
+        // closing undeeded tabs
         this.toggleUserOptions();
-        this.props.toggleUserOptions();
+        this.props.toggleUserAssign();
     }
     hoverSeat(x, y, id){
         var seat = {
@@ -98,7 +94,7 @@ class AssignUser extends React.Component {
             <div>
                 <div className="info-select-user">
                     <div className="search-element-exit pointer-cursor" onClick={this.props.toggleFormShow}>X</div>
-                    <div>Seat: {this.props.hoverSeatID}</div>
+                    <div>Seat: {this.props.selectedSeat.name}</div>
                     <div className="form-box">
 						<div className="input-group">
 							<input type="text" className="form-control" aria-label="..."/>
