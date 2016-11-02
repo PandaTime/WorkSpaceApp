@@ -15,6 +15,27 @@
 		float: right;
 	}
 }
+.confirm-check{
+  position: absolute;
+  z-index: 9999;
+  height: 80px;
+  width: 225px;
+  background-color: white;
+  border: 1px solid #ccc;
+  .confirm-text{
+    height: 40px;
+  }
+  .confirm-accept{
+    padding: 10px 0px;
+    background-color: #b3ffb3;
+    cursor: pointer
+  }
+  .confirm-reject{
+    cursor: pointer;
+    padding: 10px 0px;
+    background-color: #ffb3b3;
+  }
+}
 .info-select-user{
   position: absolute;
   overflow-y: overlay;

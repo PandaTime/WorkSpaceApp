@@ -14,7 +14,9 @@ class AssignUser extends React.Component {
             optShow : false,
             showAssignedUsersFn : false,
             temp_seat_id: 'TEMP_SEAT',
-			confirmUserAssign: false
+			confirmUserAssign: false,
+            selectedUserId: '',
+            confirmText: ''
         };
         this.toggleUserOptions = this.toggleUserOptions.bind(this);
 		this.confirmAssignment = this.confirmAssignment.bind(this);
@@ -25,29 +27,28 @@ class AssignUser extends React.Component {
     showAssignedUsersFn(show){
         this.setState({showAssignedUsersFn : show, optShow : false});
     }
-	confirmAssignment(){
-		this.setState({confirmUserAssign: true});
+	confirmAssignment(userName, id){
+		this.setState({
+            confirmUserAssign: true,
+            selectedUserId: id,
+            confirmText: 'Assign ' + userName + ' to ' + this.props.hoverSeatID + '?'
+        });
 	}
-    assignUser(id){
+    rejectUserAssignment(){
+        this.setState({
+            confirmUserAssign: false,
+            selectedUserId: '',
+            confirmText: ''
+        })
+    }
+    assignUser(){
 		this.setState({confirmUserAssign: false});
-        var seat = {id};
-        var user = Object.assign({}, this.props.selectedUser);
-        user.seat = seat;
-        // owning seat by a user(Seat: userid);
-        this.props.updateSeatUser({id:id, assignedTo: {
-            id: this.props.selectedUser.id,
-            firstName: this.props.selectedUser.firstName,
-            surName: this.props.selectedUser.surName
-        }});
-        // assigning user to a seat(User: seatid);
-        this.props.updateUserLocation({id: this.props.selectedUser.id, seat});
-        // changing selected user
-        this.props.selectUser(user);
-        // deleting temp seat
-        this.unhoverSeat(id);
+        console.log(this.state.selectedUserId);
+
+
         // hiding unneeded tabs
-        this.toggleUserOptions();
-        this.props.toggleUserOptions();
+        //this.toggleUserOptions();
+        //this.props.toggleUserOptions();
     }
     hoverSeat(x, y, id){
         var seat = {
@@ -67,9 +68,9 @@ class AssignUser extends React.Component {
             if(v.id.startsWith(temp_seat_id)) return;
 			var name = v.firstName + ' ' + v.surName;
             if(showAssigned)
-				return (<li key={i} className="list-group-item" onClick={this.confirmAssignment}><div className="select-user-name">{name}</div><div className="select-user-seat">{v.seat.id ? v.seat.id : 'No seat assigned'}.</div></li>);
+				return (<li key={i} className="list-group-item" onClick={this.confirmAssignment.bind(this, name, v.id)}><div className="select-user-name">{name}</div><div className="select-user-seat">{v.seat.id ? v.seat.id : 'No seat assigned'}.</div></li>);
             else if(!v.seat.id)
-                return (<li key={i} className="list-group-item" onClick={this.confirmAssignment}><div className="select-user-name">{name}</div> <div className="select-user-seat">No seat assigned.</div></li>);
+                return (<li key={i} className="list-group-item" onClick={this.confirmAssignment.bind(this, name, v.id)}><div className="select-user-name">{name}</div> <div className="select-user-seat">No seat assigned.</div></li>);
         });
 
         return (
@@ -78,7 +79,7 @@ class AssignUser extends React.Component {
                     <div className="search-element-exit pointer-cursor" onClick={this.props.toggleFormShow}>X</div>
                     <div>Seat: {this.props.hoverSeatID}</div>
                     <div className="form-box">
-						<div className="input-group ">
+						<div className="input-group">
 							<input type="text" className="form-control" aria-label="..."/>
 							<div className="input-group-btn">
 								<button type="button" className="btn btn-default search-element-input" onClick={this.toggleUserOptions}>{this.state.showAssignedUsersFn ? 'w/' : 'w/o'}<span className="caret"></span></button>
@@ -88,7 +89,9 @@ class AssignUser extends React.Component {
 								<li><a onClick={this.showAssignedUsersFn.bind(this, false)}>w/o assigned Users</a></li>
 							</ul>
 						</div>
-						<ConfirmCheck />
+                        <div className={classNames(this.state.confirmUserAssign ? '' : 'hidden')}>
+						    <ConfirmCheck text={this.state.confirmText} accept={this.assignUser.bind(this)} reject={this.rejectUserAssignment.bind(this)}/>
+                        </div>
                         <ul className="list-group">
                             {users[0] ? users : 'There\'re no available users'}
                         </ul>
