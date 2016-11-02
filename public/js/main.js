@@ -35061,7 +35061,7 @@
 			},
 			firstName: '',
 			surName: '',
-			seat: { id: null, name: null }
+			seat: { id: null, firstName: null, surName: null }
 		}
 	};
 
@@ -35282,6 +35282,7 @@
 			_this.id = seat.newId ? seat.id() : seat.id; // that's the function for random generator!
 			_this.x = seat.x;
 			_this.y = seat.y;
+			_this.name = seat.name;
 			_this.radius = seat.radius || _initValues2.default.newSeatForm.radius;
 			_this.assignedTo = Object.assign({}, seat.assignedTo);
 			_this.strokeStyle = 'rgba(255, 253, 208, 0.9)';
@@ -49372,7 +49373,8 @@
 	            temp_seat_id: 'TEMP_SEAT',
 	            confirmUserAssign: false,
 	            selectedUserId: '',
-	            confirmText: ''
+	            confirmText: '',
+	            hoverSeatName: ''
 	        };
 	        _this.toggleUserOptions = _this.toggleUserOptions.bind(_this);
 	        _this.confirmAssignment = _this.confirmAssignment.bind(_this);
@@ -49392,10 +49394,17 @@
 	    }, {
 	        key: 'confirmAssignment',
 	        value: function confirmAssignment(userName, id) {
+	            var _this2 = this;
+
+	            var hoverSeatName = this.props.seats.filter(function (v) {
+	                return v.id === _this2.props.hoverSeatID;
+	            })[0];
+	            console.log(hoverSeatName);
 	            this.setState({
 	                confirmUserAssign: true,
 	                selectedUserId: id,
-	                confirmText: 'Assign ' + userName + ' to ' + this.props.hoverSeatID + '?'
+	                hoverSeatName: hoverSeatName,
+	                confirmText: 'Assign ' + userName + ' to ' + hoverSeatName + '?'
 	            });
 	        }
 	    }, {
@@ -49411,11 +49420,29 @@
 	        key: 'assignUser',
 	        value: function assignUser() {
 	            this.setState({ confirmUserAssign: false });
-	            console.log(this.state.selectedUserId);
-
+	            var user = {
+	                id: this.state.selectedUserId,
+	                seat: {
+	                    id: this.props.hoverSeatID,
+	                    firstName: this.state.hoverSeatName.firstName,
+	                    surName: this.state.hoverSeatName.surName
+	                }
+	            };
+	            console.log('users', user);
+	            // assigning user to a seat
+	            this.props.updateUserLocation(user);
+	            // occupying seat by a user
+	            this.props.updateSeatUser({
+	                id: this.props.hoverSeatID, assignedTo: {
+	                    id: this.state.hoverSeatName.id,
+	                    firstName: this.state.hoverSeatName.firstName,
+	                    surName: this.state.hoverSeatName.surName
+	                }
+	            });
+	            console.log('123123', this.state.hoverSeatName);
 	            // hiding unneeded tabs
-	            //this.toggleUserOptions();
-	            //this.props.toggleUserOptions();
+	            this.toggleUserOptions();
+	            this.props.toggleUserOptions();
 	        }
 	    }, {
 	        key: 'hoverSeat',
@@ -49435,7 +49462,7 @@
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var _this2 = this;
+	            var _this3 = this;
 
 	            var showAssigned = this.state.showAssignedUsersFn,
 	                temp_seat_id = this.state.temp_seat_id;
@@ -49444,7 +49471,7 @@
 	                var name = v.firstName + ' ' + v.surName;
 	                if (showAssigned) return _react2.default.createElement(
 	                    'li',
-	                    { key: i, className: 'list-group-item', onClick: _this2.confirmAssignment.bind(_this2, name, v.id) },
+	                    { key: i, className: 'list-group-item', onClick: _this3.confirmAssignment.bind(_this3, name, v.id) },
 	                    _react2.default.createElement(
 	                        'div',
 	                        { className: 'select-user-name' },
@@ -49453,12 +49480,11 @@
 	                    _react2.default.createElement(
 	                        'div',
 	                        { className: 'select-user-seat' },
-	                        v.seat.id ? v.seat.id : 'No seat assigned',
-	                        '.'
+	                        v.seat.id ? v.seat.name : 'No seat assigned'
 	                    )
 	                );else if (!v.seat.id) return _react2.default.createElement(
 	                    'li',
-	                    { key: i, className: 'list-group-item', onClick: _this2.confirmAssignment.bind(_this2, name, v.id) },
+	                    { key: i, className: 'list-group-item', onClick: _this3.confirmAssignment.bind(_this3, name, v.id) },
 	                    _react2.default.createElement(
 	                        'div',
 	                        { className: 'select-user-name' },
@@ -49468,7 +49494,7 @@
 	                    _react2.default.createElement(
 	                        'div',
 	                        { className: 'select-user-seat' },
-	                        'No seat assigned.'
+	                        'No seat assigned'
 	                    )
 	                );
 	            });
@@ -49558,7 +49584,7 @@
 	    };
 	}
 	//export default Information;
-	exports.default = (0, _reactRedux.connect)(mapStateToProps, { addNewSeat: _seatsActions.addNewSeat, updateSeatUser: _seatsActions.updateSeatUser, deleteSeat: _seatsActions.deleteSeat, selectUser: _usersActions.selectUser, updateUserLocation: _usersActions.updateUserLocation })(AssignUser);
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, { updateSeatUser: _seatsActions.updateSeatUser, deleteSeat: _seatsActions.deleteSeat, selectUser: _usersActions.selectUser, updateUserLocation: _usersActions.updateUserLocation })(AssignUser);
 
 /***/ },
 /* 747 */

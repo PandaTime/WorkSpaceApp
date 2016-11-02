@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import classNames from 'classnames';
 import {selectUser, updateUserLocation} from '../../../../actions/usersActions';
-import {addNewSeat, updateSeatUser, deleteSeat} from '../../../../actions/seatsActions';
+import {updateSeatUser, deleteSeat} from '../../../../actions/seatsActions';
 import ConfirmCheck from './confirmCheck';
 
 
@@ -16,7 +16,8 @@ class AssignUser extends React.Component {
             temp_seat_id: 'TEMP_SEAT',
 			confirmUserAssign: false,
             selectedUserId: '',
-            confirmText: ''
+            confirmText: '',
+			hoverSeatName: ''
         };
         this.toggleUserOptions = this.toggleUserOptions.bind(this);
 		this.confirmAssignment = this.confirmAssignment.bind(this);
@@ -28,10 +29,13 @@ class AssignUser extends React.Component {
         this.setState({showAssignedUsersFn : show, optShow : false});
     }
 	confirmAssignment(userName, id){
+		var hoverSeatName =  this.props.seats.filter((v)=>v.id === this.props.hoverSeatID)[0];
+		console.log(hoverSeatName);
 		this.setState({
             confirmUserAssign: true,
             selectedUserId: id,
-            confirmText: 'Assign ' + userName + ' to ' + this.props.hoverSeatID + '?'
+			hoverSeatName: hoverSeatName,
+            confirmText: 'Assign ' + userName + ' to ' + hoverSeatName + '?'
         });
 	}
     rejectUserAssignment(){
@@ -43,12 +47,29 @@ class AssignUser extends React.Component {
     }
     assignUser(){
 		this.setState({confirmUserAssign: false});
-        console.log(this.state.selectedUserId);
-
-
+		var user = {
+			id: this.state.selectedUserId,
+			seat: {
+				id: this.props.hoverSeatID,
+				firstName: this.state.hoverSeatName.firstName,
+				surName: this.state.hoverSeatName.surName
+			}
+		}
+		console.log('users', user);
+		// assigning user to a seat
+		this.props.updateUserLocation(user);
+		// occupying seat by a user
+		this.props.updateSeatUser({
+			id:this.props.hoverSeatID, assignedTo: {
+				id: this.state.hoverSeatName.id,
+				firstName: this.state.hoverSeatName.firstName,
+				surName: this.state.hoverSeatName.surName
+			}
+		});
+		console.log('123123', this.state.hoverSeatName);
         // hiding unneeded tabs
-        //this.toggleUserOptions();
-        //this.props.toggleUserOptions();
+        this.toggleUserOptions();
+        this.props.toggleUserOptions();
     }
     hoverSeat(x, y, id){
         var seat = {
@@ -68,9 +89,9 @@ class AssignUser extends React.Component {
             if(v.id.startsWith(temp_seat_id)) return;
 			var name = v.firstName + ' ' + v.surName;
             if(showAssigned)
-				return (<li key={i} className="list-group-item" onClick={this.confirmAssignment.bind(this, name, v.id)}><div className="select-user-name">{name}</div><div className="select-user-seat">{v.seat.id ? v.seat.id : 'No seat assigned'}.</div></li>);
+				return (<li key={i} className="list-group-item" onClick={this.confirmAssignment.bind(this, name, v.id)}><div className="select-user-name">{name}</div><div className="select-user-seat">{v.seat.id ? v.seat.name : 'No seat assigned'}</div></li>);
             else if(!v.seat.id)
-                return (<li key={i} className="list-group-item" onClick={this.confirmAssignment.bind(this, name, v.id)}><div className="select-user-name">{name}</div> <div className="select-user-seat">No seat assigned.</div></li>);
+                return (<li key={i} className="list-group-item" onClick={this.confirmAssignment.bind(this, name, v.id)}><div className="select-user-name">{name}</div> <div className="select-user-seat">No seat assigned</div></li>);
         });
 
         return (
@@ -111,5 +132,5 @@ function mapStateToProps(state, ownProps){
     };
 }
 //export default Information;
-export default connect(mapStateToProps, {addNewSeat, updateSeatUser, deleteSeat, selectUser, updateUserLocation})(AssignUser);
+export default connect(mapStateToProps, {updateSeatUser, deleteSeat, selectUser, updateUserLocation})(AssignUser);
 

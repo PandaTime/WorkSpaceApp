@@ -62,6 +62,7 @@ class Seat extends Shape{
 		this.id = seat.newId ? seat.id() : seat.id; // that's the function for random generator!
 		this.x = seat.x;
 		this.y = seat.y;
+		this.name = seat.name;
 		this.radius = seat.radius || defaultValues.newSeatForm.radius;
 		this.assignedTo = Object.assign({}, seat.assignedTo);
 		this.strokeStyle = 'rgba(255, 253, 208, 0.9)';
