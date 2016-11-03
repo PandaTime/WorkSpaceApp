@@ -4,7 +4,8 @@ import classNames from 'classnames';
 import {selectSeat, deleteSeat, addNewSeat} from '../../../actions/seatsActions';
 import {selectUser} from '../../../actions/usersActions';
 import SelectElement from './body-blocks/selectElement';
-import AssignUser from './body-blocks/assignUser'
+import AssignUser from './body-blocks/assignUser';
+import {changeShown} from '../../../actions/showActions';
 
 class Search extends React.Component {
     constructor(props){
@@ -16,7 +17,8 @@ class Search extends React.Component {
 			temp_seat_id: 'TEMP_SEAT',
 			showAssignUserForm: false,
 			showSelectSeatForm: false,
-			hoverSeatID: ''
+			hoverSeatID: '',
+			swapToInfo: {searchElement: false, infoElement: true}
 		};
 		this.toggleSeatOptions = this.toggleSeatOptions.bind(this);
 		this.toggleUserAssign = this.toggleUserAssign.bind(this);
@@ -67,6 +69,21 @@ class Search extends React.Component {
 		else
 			console.log('delete');			
 	}
+	seatInfo(_, seat){
+		console.log(seat, this.props.seats);
+		if(seat){
+			this.props.selectSeat(seat);
+			this.props.selectUser({});
+			this.props.changeShown(this.state.swapToInfo); // selecting "Info" tab
+		}
+	}
+	userInfo(_, user){
+		if(user){
+			this.props.selectSeat({});
+			this.props.selectUser(user);
+			this.props.changeShown(this.state.swapToInfo); // selecting "Info" tab
+		}
+	}
     render() {
 		var showUsed = this.state.showUsed,
 			temp_seat_id = this.state.temp_seat_id;
@@ -75,13 +92,18 @@ class Search extends React.Component {
 			list = this.props.users.map((v, i)=>{
 				if(showUsed || !v.seat.id)
 					return (
-						<li key={i} className={classNames("list-group-item", v.seat.id == this.props.selectedSeat.id ? 'list-group-item-warning' : '')}>
+						<li key={i} className={classNames("list-group-item", ((v.seat.id && v.seat.id == this.props.selectedSeat.id) || v.id == this.props.selectedUser.id) ? 'list-group-item-warning' : '')}>
 							{v.firstName + ' ' + v.surName} - <span className="add-info">{v.seat.id ? v.seat.name : 'Don\'t have a seat'} </span>
-							<div className="col-xs-1">
-								<span className="glyphicon glyphicon-remove pointer-cursor" aria-hidden="true" onClick={this.selectSeat.bind(this, false, v.id)}></span>
-							</div>
-							<div className="col-xs-1">
-								<span className="glyphicon glyphicon-map-marker pointer-cursor" aria-hidden="true" onClick={this.selectSeat.bind(this, true, v.id)}></span>
+							<div className="element-setup-panel">
+								<div className="col-xs-1">
+									<span className="glyphicon glyphicon-remove pointer-cursor" aria-hidden="true" onClick={this.selectSeat.bind(this, false, v.id)}></span>
+								</div>
+								<div className="col-xs-1">
+									<span className="glyphicon glyphicon-map-marker pointer-cursor" aria-hidden="true" onClick={this.selectSeat.bind(this, true, v.id)}></span>
+								</div>
+								<div className="col-xs-1">
+									<span className="glyphicon glyphicon-wrench pointer-cursor" aria-hidden="true" onClick={this.userInfo.bind(this, true, v)}></span>
+								</div>
 							</div>
 						</li>);
 				else if(!v.seat.id)
@@ -92,15 +114,20 @@ class Search extends React.Component {
 				if(v.id.startsWith(temp_seat_id)) return;
 				if(showUsed || !v.assignedTo.id){
 					text = v.name + ' - ' +  (v.assignedTo.id ? ('taken by ' + v.assignedTo.firstName + ' ' + v.assignedTo.surName) : 'free');
-					return (<li key={i} className={classNames("list-group-item", v.id == this.props.selectedSeat.id ? 'list-group-item-warning' : '')}
+					return (<li key={i} className={classNames("list-group-item", (v.id == this.props.selectedSeat.id || (this.props.selectUser.seat && v.id == this.props.selectUser.seat.id)) ? 'list-group-item-warning' : '')}
 								 onMouseEnter={this.hoverSeat.bind(this, v.x, v.y, v.id)}
 								 onMouseLeave={this.unhoverSeat.bind(this, v.id)}>
 								 {text}
-								<div className="col-xs-1">
-									<span className="glyphicon glyphicon-remove pointer-cursor" aria-hidden="true" onClick={this.assignUser.bind(this, false, v.id)}></span>
-								</div>
-								<div className="col-xs-1">
-									<span className="glyphicon glyphicon-map-marker pointer-cursor" aria-hidden="true" onClick={this.assignUser.bind(this, true, v.id)}></span>
+								<div className="element-setup-panel">
+									<div className="col-xs-1">
+										<span className="glyphicon glyphicon-remove pointer-cursor" aria-hidden="true" onClick={this.assignUser.bind(this, false, v.id)}></span>
+									</div>
+									<div className="col-xs-1">
+										<span className="glyphicon glyphicon-map-marker pointer-cursor" aria-hidden="true" onClick={this.assignUser.bind(this, true, v.id)}></span>
+									</div>
+									<div className="col-xs-1">
+										<span className="glyphicon glyphicon-wrench pointer-cursor" aria-hidden="true" onClick={this.seatInfo.bind(this, true, v)}></span>
+									</div>
 								</div>
 							 </li>);
 				}
@@ -110,8 +137,6 @@ class Search extends React.Component {
 		list = list.filter((v)=>!!v);
 		return (
             <div className="search-box">
-				<div>Search</div>
-				<div></div>
 				<div>
 					<div className="input-group">
 						<input type="text" className="form-control" aria-label="..."/>
@@ -151,5 +176,5 @@ function mapStateToProps(state, ownProps){
     };
 }
 //export default Search;
-export default connect(mapStateToProps, {selectUser, selectSeat, deleteSeat, addNewSeat})(Search);
+export default connect(mapStateToProps, {selectUser, selectSeat, deleteSeat, addNewSeat, changeShown})(Search);
 

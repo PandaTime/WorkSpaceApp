@@ -6,13 +6,18 @@
 	position: absolute;
 	border: 1px solid #ddd;
 	border-top: 0px;
-	padding: 0% 1.2%;
+	padding: 1.2%;
 	.search-element-input{
 		padding: 6px 10px;		
 		border-radius: 0px 4px 4px 0px;
 	}
 	.col-xs-1{
 		float: right;
+	}
+	.element-setup-panel{
+		position: absolute;
+		top: 12px;
+		right: 11px;
 	}
 }
 .confirm-check{

@@ -64,7 +64,7 @@ class Seat extends Shape{
 		this.name = seat.name;
 		this.radius = seat.radius || defaultValues.newSeatForm.radius;
 		this.assignedTo = Object.assign({}, seat.assignedTo);
-		this.strokeStyle = 'rgba(255, 253, 208, 0.9)';
+		this.strokeStyle = seat.strokeStyle || 'rgba(255, 253, 208, 0.9)';
 		this.fillStyle = seat.fillStyle || defaultValues.newSeatForm.fillStyle;
 	}
 	collidesWith(shape) {

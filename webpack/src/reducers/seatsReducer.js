@@ -7,21 +7,19 @@ export function arrSeatsReducer(state = initialState.seats, action) {
         case types.NEW_SEAT:
             return [...state, new Seat(action.seat)];
 		case types.UPDATE_SEAT_INFO:
-			return state;
-		case types.UPDATE_SEAT_USER:
 			var i = getIndex(state, action.seat);
 			if(i < 0)
 				return state;
 			var el = state[i];
 			var newSeatOpt = {
-				id: el.id,
-				x : el.x,
-				y : el.y,
-				name: el.name,
-				radius: el.radius,
-				floor: el.floor,
-				assignedTo: Object.assign({}, action.seat.assignedTo),
-				fillStyle: el.fillStyle
+				id: action.seat.id || el.id,
+				x : action.seat.x || el.x,
+				y : action.seat.y || el.y,
+				name: action.seat.name || el.name,
+				radius: action.seat.radius || el.radius,
+				floor: action.seat.floor || el.floor,
+				assignedTo: Object.assign({}, action.seat ? action.seat.assignedTo : el.assignedTo),
+				fillStyle: action.seat.fillStyle || state.fillStyle
 			};
 			return [...state.slice(0, i), new Seat(newSeatOpt), ...state.slice(i+1)];
 		case types.UPDATE_SEAT_LOCATION:

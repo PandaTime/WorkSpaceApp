@@ -35053,6 +35053,7 @@
 			radius: 20,
 			floor: 8,
 			fillStyle: 'rgba(147, 197, 114, 0.8)',
+			selected: false,
 			assignedTo: { id: null, firstName: null, surName: null }
 		},
 		newUserForm: {
@@ -35103,20 +35104,18 @@
 			case types.NEW_SEAT:
 				return [].concat(_toConsumableArray(state), [new _shapes2.default(action.seat)]);
 			case types.UPDATE_SEAT_INFO:
-				return state;
-			case types.UPDATE_SEAT_USER:
 				var i = getIndex(state, action.seat);
 				if (i < 0) return state;
 				var el = state[i];
 				var newSeatOpt = {
-					id: el.id,
-					x: el.x,
-					y: el.y,
-					name: el.name,
-					radius: el.radius,
-					floor: el.floor,
-					assignedTo: Object.assign({}, action.seat.assignedTo),
-					fillStyle: el.fillStyle
+					id: action.seat.id || el.id,
+					x: action.seat.x || el.x,
+					y: action.seat.y || el.y,
+					name: action.seat.name || el.name,
+					radius: action.seat.radius || el.radius,
+					floor: action.seat.floor || el.floor,
+					assignedTo: Object.assign({}, action.seat ? action.seat.assignedTo : el.assignedTo),
+					fillStyle: action.seat.fillStyle || state.fillStyle
 				};
 				return [].concat(_toConsumableArray(state.slice(0, i)), [new _shapes2.default(newSeatOpt)], _toConsumableArray(state.slice(i + 1)));
 			case types.UPDATE_SEAT_LOCATION:
@@ -35283,7 +35282,7 @@
 			_this.name = seat.name;
 			_this.radius = seat.radius || _initValues2.default.newSeatForm.radius;
 			_this.assignedTo = Object.assign({}, seat.assignedTo);
-			_this.strokeStyle = 'rgba(255, 253, 208, 0.9)';
+			_this.strokeStyle = seat.strokeStyle || 'rgba(255, 253, 208, 0.9)';
 			_this.fillStyle = seat.fillStyle || _initValues2.default.newSeatForm.fillStyle;
 			return _this;
 		}
@@ -35385,7 +35384,7 @@
 	    switch (action.type) {
 	        case types.NEW_USER:
 	            var newUser = action.user;
-	            newUser.seat = '';
+	            newUser.seat = Object.assign({}, _initValues2.default.newUserForm.seat);
 	            newUser.id = _initValues2.default.newUserForm.id();
 	            return [].concat(_toConsumableArray(state.map(function (v) {
 	                return Object.assign({}, v);
@@ -47226,7 +47225,6 @@
 	}
 
 	function selectSeat(seat) {
-
 		return { type: types.SELECT_SEAT, seat: seat };
 	}
 	function deleteSeat(id) {
@@ -47235,11 +47233,11 @@
 	function updateSeatLocation(id, x, y) {
 		return { type: types.UPDATE_SEAT_LOCATION, id: id, x: x, y: y };
 	}
-	function updateSeatInfo(info) {
-		return { type: types.UPDATE_SEAT_INFO, info: info };
+	function updateSeatInfo(seat) {
+		return { type: types.UPDATE_SEAT_INFO, seat: seat };
 	}
 	function updateSeatUser(seat) {
-		return { type: types.UPDATE_SEAT_USER, seat: seat };
+		return { type: types.UPDATE_SEAT_INFO, seat: seat };
 	}
 
 /***/ },
@@ -48619,7 +48617,7 @@
 		}, {
 			key: 'drawShapes',
 			value: function drawShapes() {
-				(0, _canvasManipulation.drawShapes)(this.state, this.props.seats);
+				(0, _canvasManipulation.drawShapes)(this.state, this.props.seats, this.props.selectedSeat);
 			}
 		}, {
 			key: 'selectSeat',
@@ -48629,10 +48627,19 @@
 				    lastdrag = _selectElement.lastdrag;
 
 				if (shapeBeingDragged || this.props.selectedSeat.x) {
+					this.selectedSeatColor(shapeBeingDragged);
 					this.props.selectSeat(shapeBeingDragged || {});
 					this.props.selectUser({});
 					this.state.lastdrag = lastdrag;
 				}
+			}
+		}, {
+			key: 'selectedSeatColor',
+			value: function selectedSeatColor(shapeBeingDragged) {
+				/*if(shapeBeingDragged) // coloring new node
+	   	this.props.updateSeatInfo({id: shapeBeingDragged.id, fillStyle: 'rgba(244, 209, 66, 0.8)'});
+	   if(this.props.selectedSeat.id) // uncoloring old node
+	   	this.props.updateSeatInfo({id: this.props.selectedSeat.id, fillStyle: 'rgba(147, 197, 114, 0.8)'});	*/
 			}
 		}, {
 			key: 'seatLocationUpdate',
@@ -48673,13 +48680,13 @@
 			selectedUser: state.selectUserReducer
 		};
 	}
-	exports.default = (0, _reactRedux.connect)(mapStateToProps, { selectSeat: _seatsActions.selectSeat, updateSeatLocation: _seatsActions.updateSeatLocation, selectUser: _usersActions.selectUser })(Canvas);
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, { selectSeat: _seatsActions.selectSeat, updateSeatLocation: _seatsActions.updateSeatLocation, updateSeatInfo: _seatsActions.updateSeatInfo, selectUser: _usersActions.selectUser })(Canvas);
 
 /***/ },
 /* 742 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 		value: true
@@ -48687,6 +48694,14 @@
 	exports.windowToCanvas = windowToCanvas;
 	exports.selectElement = selectElement;
 	exports.drawShapes = drawShapes;
+	exports.copyShape = copyShape;
+
+	var _shapes = __webpack_require__(548);
+
+	var _shapes2 = _interopRequireDefault(_shapes);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 	function windowToCanvas(canvas, e) {
 		var x = e.x || e.clientX,
 		    y = e.y || e.clientY,
@@ -48710,11 +48725,26 @@
 		return { shapeBeingDragged: shapeBeingDragged, lastdrag: lastdrag };
 	}
 
-	function drawShapes(state, seats) {
+	function drawShapes(state, seats, selected) {
 		seats.forEach(function (seat) {
-			seat.stroke(state.context);
-			seat.fill(state.context);
+			if (seat.id == selected.id) {
+				var obj = copyShape(seat);
+				obj.fillStyle = 'rgba(244, 209, 66, 0.8)';
+				var el = new _shapes2.default(obj);
+				el.stroke(state.context);
+				el.fill(state.context);
+			} else {
+				seat.stroke(state.context);
+				seat.fill(state.context);
+			}
 		});
+	}
+	function copyShape(el) {
+		var seat = {};
+		Object.keys(el).forEach(function (v) {
+			seat[v] = el[v];
+		});
+		return seat;
 	}
 
 /***/ },
@@ -48724,7 +48754,7 @@
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
-	    value: true
+		value: true
 	});
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -48745,6 +48775,8 @@
 
 	var _selectElement2 = _interopRequireDefault(_selectElement);
 
+	var _showActions = __webpack_require__(748);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -48754,114 +48786,295 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var Information = function (_React$Component) {
-	    _inherits(Information, _React$Component);
+		_inherits(Information, _React$Component);
 
-	    function Information(props) {
-	        _classCallCheck(this, Information);
+		function Information(props) {
+			_classCallCheck(this, Information);
 
-	        var _this = _possibleConstructorReturn(this, (Information.__proto__ || Object.getPrototypeOf(Information)).call(this, props));
+			var _this = _possibleConstructorReturn(this, (Information.__proto__ || Object.getPrototypeOf(Information)).call(this, props));
 
-	        _this.state = {
-	            showSelectElementFrom: false
-	        };
-	        _this.toggleSeatFormShow = _this.toggleSeatFormShow.bind(_this);
-	        return _this;
-	    }
+			_this.state = {
+				showSelectElementFrom: false,
+				swapToInfo: { searchElement: true, infoElement: false }
+			};
+			_this.toggleSeatFormShow = _this.toggleSeatFormShow.bind(_this);
+			return _this;
+		}
 
-	    _createClass(Information, [{
-	        key: 'assignSeat',
-	        value: function assignSeat(assign) {
-	            if (assign) this.toggleSeatFormShow();else console.log('delete');
-	        }
-	    }, {
-	        key: 'toggleSeatFormShow',
-	        value: function toggleSeatFormShow() {
-	            this.setState({ showSelectElementFrom: !this.state.showSelectElementFrom });
-	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
-	            var selectedSeat = this.props.selectedSeat;
-	            var selectedUser = this.props.selectedUser;
-	            return _react2.default.createElement(
-	                'div',
-	                { className: 'info-box' },
-	                _react2.default.createElement(
-	                    'div',
-	                    { className: (0, _classnames2.default)(selectedUser.firstName ? '' : 'hidden') },
-	                    _react2.default.createElement(
-	                        'div',
-	                        { className: 'col-md-6' },
-	                        'Full Name: ',
-	                        selectedUser.firstName,
-	                        ' ',
-	                        selectedUser.surName
-	                    ),
-	                    _react2.default.createElement('div', { className: 'row' }),
-	                    _react2.default.createElement(
-	                        'div',
-	                        null,
-	                        _react2.default.createElement(
-	                            'div',
-	                            { className: 'col-md-6' },
-	                            'Sitting at: ',
-	                            selectedUser.seat ? selectedUser.seat.id : 'Don\'t have seat'
-	                        ),
-	                        _react2.default.createElement(
-	                            'div',
-	                            { className: 'col-xs-1 col-xs-offset-2', on: true },
-	                            _react2.default.createElement('span', { className: 'glyphicon glyphicon-map-marker pointer-cursor', 'aria-hidden': 'true', onClick: this.assignSeat.bind(this, true) })
-	                        ),
-	                        _react2.default.createElement(
-	                            'div',
-	                            { className: 'col-xs-1' },
-	                            _react2.default.createElement('span', { className: 'glyphicon glyphicon-remove pointer-cursor', 'aria-hidden': 'true', onClick: this.assignSeat.bind(this, false) })
-	                        )
-	                    )
-	                ),
-	                _react2.default.createElement(
-	                    'div',
-	                    { className: (0, _classnames2.default)(this.state.showSelectElementFrom ? '' : 'hidden') },
-	                    _react2.default.createElement(_selectElement2.default, { toggleSeatFormShow: this.toggleSeatFormShow })
-	                ),
-	                _react2.default.createElement(
-	                    'div',
-	                    { className: (0, _classnames2.default)(!selectedUser.firstName && selectedSeat.id ? '' : 'hidden') },
-	                    _react2.default.createElement(
-	                        'div',
-	                        null,
-	                        'Seat Name: ',
-	                        selectedSeat.id
-	                    ),
-	                    _react2.default.createElement(
-	                        'div',
-	                        null,
-	                        'Assigned to: ',
-	                        selectedSeat.assignedTo && selectedSeat.assignedTo.id ? selectedSeat.assignedTo.firstName + ' ' + selectedSeat.assignedTo.surName : 'Click to assign user'
-	                    )
-	                ),
-	                _react2.default.createElement(
-	                    'div',
-	                    { className: (0, _classnames2.default)(!selectedUser.firstName && !selectedSeat.id ? '' : 'hidden') },
-	                    'No user or a a seat is selected.'
-	                )
-	            );
-	        }
-	    }]);
+		_createClass(Information, [{
+			key: 'assignSeat',
+			value: function assignSeat(assign) {
+				if (assign) this.toggleSeatFormShow();else console.log('delete');
+			}
+		}, {
+			key: 'toggleSeatFormShow',
+			value: function toggleSeatFormShow() {
+				this.setState({ showSelectElementFrom: !this.state.showSelectElementFrom });
+			}
+		}, {
+			key: 'render',
+			value: function render() {
+				var selectedSeat = this.props.selectedSeat;
+				var selectedUser = this.props.selectedUser;
 
-	    return Information;
+				var data;
+				// We have only seat selected. In case both seat and user is selected - we're showing user info 
+				console.log('selectedUser', selectedUser);
+				if (selectedSeat.id) {
+					data = _react2.default.createElement(
+						'table',
+						{ className: 'table' },
+						_react2.default.createElement(
+							'tbody',
+							null,
+							_react2.default.createElement(
+								'tr',
+								null,
+								_react2.default.createElement(
+									'td',
+									null,
+									'Seat ID: '
+								),
+								_react2.default.createElement(
+									'td',
+									null,
+									selectedSeat.id
+								),
+								_react2.default.createElement(
+									'td',
+									null,
+									_react2.default.createElement('span', { className: 'glyphicon glyphicon-wrench pointer-cursor', 'aria-hidden': 'true' })
+								)
+							),
+							_react2.default.createElement(
+								'tr',
+								null,
+								_react2.default.createElement(
+									'td',
+									null,
+									'Seat Name:'
+								),
+								_react2.default.createElement(
+									'td',
+									null,
+									selectedSeat.name
+								),
+								_react2.default.createElement(
+									'td',
+									null,
+									_react2.default.createElement('span', { className: 'glyphicon glyphicon-wrench pointer-cursor', 'aria-hidden': 'true' })
+								)
+							),
+							_react2.default.createElement(
+								'tr',
+								null,
+								_react2.default.createElement(
+									'td',
+									null,
+									'Assigned to:'
+								),
+								_react2.default.createElement(
+									'td',
+									null,
+									selectedSeat.assignedTo.id ? selectedSeat.assignedTo.firstName + ' ' + selectedSeat.assignedTo.surName : 'No user is assigned'
+								),
+								_react2.default.createElement(
+									'td',
+									null,
+									_react2.default.createElement('span', { className: 'glyphicon glyphicon-wrench pointer-cursor', 'aria-hidden': 'true' })
+								)
+							),
+							_react2.default.createElement(
+								'tr',
+								null,
+								_react2.default.createElement(
+									'td',
+									null,
+									'Floor:'
+								),
+								_react2.default.createElement(
+									'td',
+									null,
+									selectedSeat.floor
+								),
+								_react2.default.createElement(
+									'td',
+									null,
+									_react2.default.createElement('span', { className: 'glyphicon glyphicon-wrench pointer-cursor', 'aria-hidden': 'true' })
+								)
+							),
+							_react2.default.createElement(
+								'tr',
+								null,
+								_react2.default.createElement(
+									'td',
+									null,
+									'Color:'
+								),
+								_react2.default.createElement(
+									'td',
+									null,
+									selectedSeat.fillStyle
+								),
+								_react2.default.createElement(
+									'td',
+									null,
+									_react2.default.createElement('span', { className: 'glyphicon glyphicon-wrench pointer-cursor', 'aria-hidden': 'true' })
+								)
+							),
+							_react2.default.createElement(
+								'tr',
+								null,
+								_react2.default.createElement(
+									'td',
+									null,
+									'Size:'
+								),
+								_react2.default.createElement(
+									'td',
+									null,
+									selectedSeat.radius
+								),
+								_react2.default.createElement(
+									'td',
+									null,
+									_react2.default.createElement('span', { className: 'glyphicon glyphicon-wrench pointer-cursor', 'aria-hidden': 'true' })
+								)
+							)
+						)
+					);
+				} else if (selectedUser.id) {
+					data = _react2.default.createElement(
+						'table',
+						{ className: 'table' },
+						_react2.default.createElement(
+							'tbody',
+							null,
+							_react2.default.createElement(
+								'tr',
+								null,
+								_react2.default.createElement(
+									'td',
+									null,
+									'Employee ID:'
+								),
+								_react2.default.createElement(
+									'td',
+									null,
+									selectedUser.id
+								),
+								_react2.default.createElement(
+									'td',
+									null,
+									_react2.default.createElement('span', { className: 'glyphicon glyphicon-wrench pointer-cursor', 'aria-hidden': 'true' })
+								)
+							),
+							_react2.default.createElement(
+								'tr',
+								null,
+								_react2.default.createElement(
+									'td',
+									null,
+									'First Name:'
+								),
+								_react2.default.createElement(
+									'td',
+									null,
+									selectedUser.firstName
+								),
+								_react2.default.createElement(
+									'td',
+									null,
+									_react2.default.createElement('span', { className: 'glyphicon glyphicon-wrench pointer-cursor', 'aria-hidden': 'true' })
+								)
+							),
+							_react2.default.createElement(
+								'tr',
+								null,
+								_react2.default.createElement(
+									'td',
+									null,
+									'Surname:'
+								),
+								_react2.default.createElement(
+									'td',
+									null,
+									selectedUser.surName
+								),
+								_react2.default.createElement(
+									'td',
+									null,
+									_react2.default.createElement('span', { className: 'glyphicon glyphicon-wrench pointer-cursor', 'aria-hidden': 'true' })
+								)
+							),
+							_react2.default.createElement(
+								'tr',
+								null,
+								_react2.default.createElement(
+									'td',
+									null,
+									'Taken seat name:'
+								),
+								_react2.default.createElement(
+									'td',
+									null,
+									selectedUser.seat.name || 'No seat is taken'
+								),
+								_react2.default.createElement(
+									'td',
+									null,
+									_react2.default.createElement('span', { className: 'glyphicon glyphicon-wrench pointer-cursor', 'aria-hidden': 'true' })
+								)
+							),
+							_react2.default.createElement(
+								'tr',
+								null,
+								_react2.default.createElement(
+									'td',
+									null,
+									'Taken seat ID:'
+								),
+								_react2.default.createElement(
+									'td',
+									null,
+									selectedUser.seat.id || 'No seat is taken'
+								),
+								_react2.default.createElement(
+									'td',
+									null,
+									_react2.default.createElement('span', { className: 'glyphicon glyphicon-wrench pointer-cursor', 'aria-hidden': 'true' })
+								)
+							)
+						)
+					);
+				} else {
+					data = _react2.default.createElement(
+						'div',
+						null,
+						'No User or Seat is selected.'
+					);
+				}
+				return _react2.default.createElement(
+					'div',
+					{ className: 'info-box' },
+					data
+				);
+			}
+		}]);
+
+		return Information;
 	}(_react2.default.Component);
 
 	function mapStateToProps(state, ownProps) {
-	    return {
-	        seats: state.arrSeatsReducer,
-	        selectedSeat: state.selectSeatReducer,
-	        users: state.arrUsersReducer,
-	        selectedUser: state.selectUserReducer
-	    };
+		return {
+			seats: state.arrSeatsReducer,
+			selectedSeat: state.selectSeatReducer,
+			users: state.arrUsersReducer,
+			selectedUser: state.selectUserReducer
+		};
 	}
 	//export default Information;
-	exports.default = (0, _reactRedux.connect)(mapStateToProps, { updateSeatInfo: _seatsActions.updateSeatInfo })(Information);
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, { updateSeatInfo: _seatsActions.updateSeatInfo, changeShown: _showActions.changeShown })(Information);
 
 /***/ },
 /* 744 */
@@ -49100,6 +49313,8 @@
 
 	var _assignUser2 = _interopRequireDefault(_assignUser);
 
+	var _showActions = __webpack_require__(748);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -49123,7 +49338,8 @@
 				temp_seat_id: 'TEMP_SEAT',
 				showAssignUserForm: false,
 				showSelectSeatForm: false,
-				hoverSeatID: ''
+				hoverSeatID: '',
+				swapToInfo: { searchElement: false, infoElement: true }
 			};
 			_this.toggleSeatOptions = _this.toggleSeatOptions.bind(_this);
 			_this.toggleUserAssign = _this.toggleUserAssign.bind(_this);
@@ -49191,6 +49407,25 @@
 				if (assign) this.toggleSeatSelect();else console.log('delete');
 			}
 		}, {
+			key: 'seatInfo',
+			value: function seatInfo(_, seat) {
+				console.log(seat, this.props.seats);
+				if (seat) {
+					this.props.selectSeat(seat);
+					this.props.selectUser({});
+					this.props.changeShown(this.state.swapToInfo); // selecting "Info" tab
+				}
+			}
+		}, {
+			key: 'userInfo',
+			value: function userInfo(_, user) {
+				if (user) {
+					this.props.selectSeat({});
+					this.props.selectUser(user);
+					this.props.changeShown(this.state.swapToInfo); // selecting "Info" tab
+				}
+			}
+		}, {
 			key: 'render',
 			value: function render() {
 				var _this2 = this;
@@ -49203,7 +49438,7 @@
 					list = this.props.users.map(function (v, i) {
 						if (showUsed || !v.seat.id) return _react2.default.createElement(
 							'li',
-							{ key: i, className: (0, _classnames2.default)("list-group-item", v.seat.id == _this2.props.selectedSeat.id ? 'list-group-item-warning' : '') },
+							{ key: i, className: (0, _classnames2.default)("list-group-item", v.seat.id && v.seat.id == _this2.props.selectedSeat.id || v.id == _this2.props.selectedUser.id ? 'list-group-item-warning' : '') },
 							v.firstName + ' ' + v.surName,
 							' - ',
 							_react2.default.createElement(
@@ -49214,13 +49449,22 @@
 							),
 							_react2.default.createElement(
 								'div',
-								{ className: 'col-xs-1' },
-								_react2.default.createElement('span', { className: 'glyphicon glyphicon-remove pointer-cursor', 'aria-hidden': 'true', onClick: _this2.selectSeat.bind(_this2, false, v.id) })
-							),
-							_react2.default.createElement(
-								'div',
-								{ className: 'col-xs-1' },
-								_react2.default.createElement('span', { className: 'glyphicon glyphicon-map-marker pointer-cursor', 'aria-hidden': 'true', onClick: _this2.selectSeat.bind(_this2, true, v.id) })
+								{ className: 'element-setup-panel' },
+								_react2.default.createElement(
+									'div',
+									{ className: 'col-xs-1' },
+									_react2.default.createElement('span', { className: 'glyphicon glyphicon-remove pointer-cursor', 'aria-hidden': 'true', onClick: _this2.selectSeat.bind(_this2, false, v.id) })
+								),
+								_react2.default.createElement(
+									'div',
+									{ className: 'col-xs-1' },
+									_react2.default.createElement('span', { className: 'glyphicon glyphicon-map-marker pointer-cursor', 'aria-hidden': 'true', onClick: _this2.selectSeat.bind(_this2, true, v.id) })
+								),
+								_react2.default.createElement(
+									'div',
+									{ className: 'col-xs-1' },
+									_react2.default.createElement('span', { className: 'glyphicon glyphicon-wrench pointer-cursor', 'aria-hidden': 'true', onClick: _this2.userInfo.bind(_this2, true, v) })
+								)
 							)
 						);else if (!v.seat.id) return _react2.default.createElement(
 							'div',
@@ -49243,19 +49487,28 @@
 							text = v.name + ' - ' + (v.assignedTo.id ? 'taken by ' + v.assignedTo.firstName + ' ' + v.assignedTo.surName : 'free');
 							return _react2.default.createElement(
 								'li',
-								{ key: i, className: (0, _classnames2.default)("list-group-item", v.id == _this2.props.selectedSeat.id ? 'list-group-item-warning' : ''),
+								{ key: i, className: (0, _classnames2.default)("list-group-item", v.id == _this2.props.selectedSeat.id || _this2.props.selectUser.seat && v.id == _this2.props.selectUser.seat.id ? 'list-group-item-warning' : ''),
 									onMouseEnter: _this2.hoverSeat.bind(_this2, v.x, v.y, v.id),
 									onMouseLeave: _this2.unhoverSeat.bind(_this2, v.id) },
 								text,
 								_react2.default.createElement(
 									'div',
-									{ className: 'col-xs-1' },
-									_react2.default.createElement('span', { className: 'glyphicon glyphicon-remove pointer-cursor', 'aria-hidden': 'true', onClick: _this2.assignUser.bind(_this2, false, v.id) })
-								),
-								_react2.default.createElement(
-									'div',
-									{ className: 'col-xs-1' },
-									_react2.default.createElement('span', { className: 'glyphicon glyphicon-map-marker pointer-cursor', 'aria-hidden': 'true', onClick: _this2.assignUser.bind(_this2, true, v.id) })
+									{ className: 'element-setup-panel' },
+									_react2.default.createElement(
+										'div',
+										{ className: 'col-xs-1' },
+										_react2.default.createElement('span', { className: 'glyphicon glyphicon-remove pointer-cursor', 'aria-hidden': 'true', onClick: _this2.assignUser.bind(_this2, false, v.id) })
+									),
+									_react2.default.createElement(
+										'div',
+										{ className: 'col-xs-1' },
+										_react2.default.createElement('span', { className: 'glyphicon glyphicon-map-marker pointer-cursor', 'aria-hidden': 'true', onClick: _this2.assignUser.bind(_this2, true, v.id) })
+									),
+									_react2.default.createElement(
+										'div',
+										{ className: 'col-xs-1' },
+										_react2.default.createElement('span', { className: 'glyphicon glyphicon-wrench pointer-cursor', 'aria-hidden': 'true', onClick: _this2.seatInfo.bind(_this2, true, v) })
+									)
 								)
 							);
 						}
@@ -49268,12 +49521,6 @@
 				return _react2.default.createElement(
 					'div',
 					{ className: 'search-box' },
-					_react2.default.createElement(
-						'div',
-						null,
-						'Search'
-					),
-					_react2.default.createElement('div', null),
 					_react2.default.createElement(
 						'div',
 						null,
@@ -49364,7 +49611,7 @@
 		};
 	}
 	//export default Search;
-	exports.default = (0, _reactRedux.connect)(mapStateToProps, { selectUser: _usersActions.selectUser, selectSeat: _seatsActions.selectSeat, deleteSeat: _seatsActions.deleteSeat, addNewSeat: _seatsActions.addNewSeat })(Search);
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, { selectUser: _usersActions.selectUser, selectSeat: _seatsActions.selectSeat, deleteSeat: _seatsActions.deleteSeat, addNewSeat: _seatsActions.addNewSeat, changeShown: _showActions.changeShown })(Search);
 
 /***/ },
 /* 746 */
@@ -50139,7 +50386,7 @@
 
 
 	// module
-	exports.push([module.id, ".info-box, .search-box {\n  right: 15px;\n  top: 112px;\n  height: 300px;\n  width: 29%;\n  position: absolute;\n  border: 1px solid #ddd;\n  border-top: 0px;\n  padding: 0% 1.2%; }\n  .info-box .search-element-input, .search-box .search-element-input {\n    padding: 6px 10px;\n    border-radius: 0px 4px 4px 0px; }\n  .info-box .col-xs-1, .search-box .col-xs-1 {\n    float: right; }\n\n.confirm-check {\n  position: absolute;\n  z-index: 9999;\n  height: 80px;\n  width: 225px;\n  background-color: white;\n  border: 1px solid #ccc; }\n  .confirm-check .confirm-text {\n    height: 40px; }\n  .confirm-check .confirm-accept {\n    padding: 10px 0px;\n    background-color: #b3ffb3;\n    cursor: pointer; }\n  .confirm-check .confirm-reject {\n    cursor: pointer;\n    padding: 10px 0px;\n    background-color: #ffb3b3; }\n\n.info-select-user {\n  position: absolute;\n  overflow-y: overlay;\n  height: 250px;\n  width: 300px;\n  left: 0px;\n  top: 50px;\n  z-index: 100;\n  padding: 20px 40px 40px;\n  text-align: center;\n  background: #fff;\n  border: 1px solid #ccc; }\n  .info-select-user .search-element-input {\n    padding: 9px 12px;\n    border-radius: 0px 4px 4px 0px; }\n  .info-select-user .list-group {\n    width: 96%; }\n  .info-select-user .select-user-name {\n    text-align: start; }\n  .info-select-user .select-user-seat {\n    font-size: 11px;\n    vertical-align: bottom;\n    font-style: italic;\n    text-align: end; }\n\n.dropdown-menu.info-box-search {\n  left: 50px; }\n\n.dropdown-menu.search-box-search {\n  left: 207px; }\n\n.search-element-exit {\n  position: relative;\n  float: right;\n  left: 10px;\n  top: -10px; }\n", ""]);
+	exports.push([module.id, ".info-box, .search-box {\n  right: 15px;\n  top: 112px;\n  height: 300px;\n  width: 29%;\n  position: absolute;\n  border: 1px solid #ddd;\n  border-top: 0px;\n  padding: 1.2%; }\n  .info-box .search-element-input, .search-box .search-element-input {\n    padding: 6px 10px;\n    border-radius: 0px 4px 4px 0px; }\n  .info-box .col-xs-1, .search-box .col-xs-1 {\n    float: right; }\n  .info-box .element-setup-panel, .search-box .element-setup-panel {\n    position: absolute;\n    top: 12px;\n    right: 11px; }\n\n.confirm-check {\n  position: absolute;\n  z-index: 9999;\n  height: 80px;\n  width: 225px;\n  background-color: white;\n  border: 1px solid #ccc; }\n  .confirm-check .confirm-text {\n    height: 40px; }\n  .confirm-check .confirm-accept {\n    padding: 10px 0px;\n    background-color: #b3ffb3;\n    cursor: pointer; }\n  .confirm-check .confirm-reject {\n    cursor: pointer;\n    padding: 10px 0px;\n    background-color: #ffb3b3; }\n\n.info-select-user {\n  position: absolute;\n  overflow-y: overlay;\n  height: 250px;\n  width: 300px;\n  left: 0px;\n  top: 50px;\n  z-index: 100;\n  padding: 20px 40px 40px;\n  text-align: center;\n  background: #fff;\n  border: 1px solid #ccc; }\n  .info-select-user .search-element-input {\n    padding: 9px 12px;\n    border-radius: 0px 4px 4px 0px; }\n  .info-select-user .list-group {\n    width: 96%; }\n  .info-select-user .select-user-name {\n    text-align: start; }\n  .info-select-user .select-user-seat {\n    font-size: 11px;\n    vertical-align: bottom;\n    font-style: italic;\n    text-align: end; }\n\n.dropdown-menu.info-box-search {\n  left: 50px; }\n\n.dropdown-menu.search-box-search {\n  left: 207px; }\n\n.search-element-exit {\n  position: relative;\n  float: right;\n  left: 10px;\n  top: -10px; }\n", ""]);
 
 	// exports
 

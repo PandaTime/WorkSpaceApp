@@ -5,12 +5,14 @@ import classNames from 'classnames';
 import {updateSeatInfo} from '../../../actions/seatsActions';
 
 import SelectElement from './body-blocks/selectElement'
+import {changeShown} from '../../../actions/showActions';
 
 class Information extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            showSelectElementFrom: false
+            showSelectElementFrom: false,
+			swapToInfo: {searchElement: true, infoElement: false}
         };
         this.toggleSeatFormShow = this.toggleSeatFormShow.bind(this);
     }
@@ -26,31 +28,87 @@ class Information extends React.Component {
     render() {
         var selectedSeat = this.props.selectedSeat;
         var selectedUser = this.props.selectedUser;
+		
+		var data;
+		// We have only seat selected. In case both seat and user is selected - we're showing user info 
+		console.log('selectedUser', selectedUser);
+		if(selectedSeat.id){
+			data = (
+				<table className="table">
+					<tbody>
+						<tr>
+							<td>Seat ID: </td>
+							<td>{selectedSeat.id}</td>
+							<td><span className="glyphicon glyphicon-wrench pointer-cursor" aria-hidden="true"></span></td>
+						</tr>
+						<tr>
+							<td>Seat Name:</td>
+							<td>{selectedSeat.name}</td>
+							<td><span className="glyphicon glyphicon-wrench pointer-cursor" aria-hidden="true"></span></td>
+						</tr>
+						<tr>
+							<td>Assigned to:</td>
+							<td>{selectedSeat.assignedTo.id ? (selectedSeat.assignedTo.firstName + ' ' + selectedSeat.assignedTo.surName) : 'No user is assigned'}</td>
+							<td><span className="glyphicon glyphicon-wrench pointer-cursor" aria-hidden="true"></span></td>
+						</tr>
+						<tr>
+							<td>Floor:</td>
+							<td>{selectedSeat.floor}</td>
+							<td><span className="glyphicon glyphicon-wrench pointer-cursor" aria-hidden="true"></span></td>
+						</tr>
+						<tr>
+							<td>Color:</td>
+							<td>{selectedSeat.fillStyle}</td>
+							<td><span className="glyphicon glyphicon-wrench pointer-cursor" aria-hidden="true"></span></td>
+						</tr>
+						<tr>
+							<td>Size:</td>
+							<td>{selectedSeat.radius}</td>
+							<td><span className="glyphicon glyphicon-wrench pointer-cursor" aria-hidden="true"></span></td>
+						</tr>
+					</tbody>
+				</table>
+			);
+		}else if(selectedUser.id){
+			data = (
+				<table className="table">
+					<tbody>
+						<tr>
+							<td>Employee ID:</td>
+							<td>{selectedUser.id}</td>
+							<td><span className="glyphicon glyphicon-wrench pointer-cursor" aria-hidden="true"></span></td>
+						</tr>
+						<tr>
+							<td>First Name:</td>
+							<td>{selectedUser.firstName}</td>
+							<td><span className="glyphicon glyphicon-wrench pointer-cursor" aria-hidden="true"></span></td>
+						</tr>
+						<tr>
+							<td>Surname:</td>
+							<td>{selectedUser.surName}</td>
+							<td><span className="glyphicon glyphicon-wrench pointer-cursor" aria-hidden="true"></span></td>
+						</tr>
+						<tr>
+							<td>Taken seat name:</td>
+							<td>{selectedUser.seat.name || 'No seat is taken'}</td>
+							<td><span className="glyphicon glyphicon-wrench pointer-cursor" aria-hidden="true"></span></td>
+						</tr>
+						<tr>
+							<td>Taken seat ID:</td>
+							<td>{selectedUser.seat.id || 'No seat is taken'}</td>
+							<td><span className="glyphicon glyphicon-wrench pointer-cursor" aria-hidden="true"></span></td>
+						</tr>
+					</tbody>
+				</table>
+			);
+		}else{
+			data =(
+				<div>No User or Seat is selected.</div>
+			)
+		}
         return (
             <div className="info-box">
-                <div className={classNames(selectedUser.firstName ? '' : 'hidden')}>
-                    <div className="col-md-6">Full Name: {selectedUser.firstName} {selectedUser.surName}</div>
-                    <div className="row"></div>
-                    <div>
-                        <div className="col-md-6">Sitting at: {selectedUser.seat ? selectedUser.seat.id : 'Don\'t have seat'}</div>
-                        <div className="col-xs-1 col-xs-offset-2" on>
-                            <span className="glyphicon glyphicon-map-marker pointer-cursor" aria-hidden="true" onClick={this.assignSeat.bind(this, true)}></span>
-                        </div>
-                        <div className="col-xs-1">
-                            <span className="glyphicon glyphicon-remove pointer-cursor" aria-hidden="true" onClick={this.assignSeat.bind(this, false)}></span>
-                        </div>
-                    </div>
-                </div>
-                <div className={classNames(this.state.showSelectElementFrom ? '' : 'hidden')}>
-                    <SelectElement toggleSeatFormShow={this.toggleSeatFormShow}/>
-                </div>
-                <div className={classNames(!selectedUser.firstName && selectedSeat.id ? '' : 'hidden')}>
-                    <div>Seat Name: {selectedSeat.id}</div>
-                    <div>Assigned to: {selectedSeat.assignedTo && selectedSeat.assignedTo.id ? (selectedSeat.assignedTo.firstName + ' ' + selectedSeat.assignedTo.surName) : 'Click to assign user'}</div>
-                </div>
-                <div className={classNames(!selectedUser.firstName && !selectedSeat.id ? '' : 'hidden')}>
-                    No user or a a seat is selected.
-                </div>
+				{data}
             </div>
         );
     }
@@ -65,5 +123,5 @@ function mapStateToProps(state, ownProps){
     };
 }
 //export default Information;
-export default connect(mapStateToProps, {updateSeatInfo})(Information);
+export default connect(mapStateToProps, {updateSeatInfo, changeShown})(Information);
 

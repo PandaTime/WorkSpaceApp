@@ -6,7 +6,7 @@ export function arrUsersReducer(state = initialState.users, action){
     switch (action.type) {
         case types.NEW_USER:
             var newUser = action.user;
-            newUser.seat = '';
+            newUser.seat = Object.assign({}, defaultValues.newUserForm.seat);
             newUser.id = defaultValues.newUserForm.id();
             return [...state.map((v)=>Object.assign({}, v)), newUser];
         case types.UPDATE_USER_SEAT:

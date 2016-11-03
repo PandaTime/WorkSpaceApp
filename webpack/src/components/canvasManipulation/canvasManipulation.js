@@ -1,4 +1,5 @@
 
+import Seat from './shapes';
 
 export function windowToCanvas(canvas, e) {
    var x = e.x || e.clientX,
@@ -23,9 +24,24 @@ export function selectElement(state, shapes, e){
 	return {shapeBeingDragged, lastdrag};
 }
 
-export function drawShapes(state, seats) {
+export function drawShapes(state, seats, selected) {
 	seats.forEach((seat)=>{
-		seat.stroke(state.context);
-		seat.fill(state.context);
+		if(seat.id == selected.id){
+			var obj = copyShape(seat);
+			obj.fillStyle = 'rgba(244, 209, 66, 0.8)';
+			var el = new Seat(obj);
+			el.stroke(state.context);
+			el.fill(state.context);
+		}else{
+			seat.stroke(state.context);
+			seat.fill(state.context);
+		}
 	});
+}
+export function copyShape(el){
+	var seat = {};
+	Object.keys(el).forEach((v)=>{
+		seat[v] = el[v];
+	})
+	return seat;
 }

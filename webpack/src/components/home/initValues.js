@@ -8,6 +8,7 @@ export default {
 		radius: 20,
 		floor: 8,
 		fillStyle: 'rgba(147, 197, 114, 0.8)',
+		selected: false,
 		assignedTo: {id: null, firstName: null, surName: null}
 	},
 	newUserForm:{
