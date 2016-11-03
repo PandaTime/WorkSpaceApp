@@ -47212,6 +47212,7 @@
 	exports.selectSeat = selectSeat;
 	exports.deleteSeat = deleteSeat;
 	exports.updateSeatLocation = updateSeatLocation;
+	exports.updateSeatInfo = updateSeatInfo;
 	exports.updateSeatUser = updateSeatUser;
 
 	var _actionTypes = __webpack_require__(544);
@@ -47225,6 +47226,7 @@
 	}
 
 	function selectSeat(seat) {
+
 		return { type: types.SELECT_SEAT, seat: seat };
 	}
 	function deleteSeat(id) {
@@ -47232,6 +47234,9 @@
 	}
 	function updateSeatLocation(id, x, y) {
 		return { type: types.UPDATE_SEAT_LOCATION, id: id, x: x, y: y };
+	}
+	function updateSeatInfo(info) {
+		return { type: types.UPDATE_SEAT_INFO, info: info };
 	}
 	function updateSeatUser(seat) {
 		return { type: types.UPDATE_SEAT_USER, seat: seat };
@@ -48647,6 +48652,7 @@
 				if (canvas) {
 					context.clearRect(0, 0, canvas.width, canvas.height);
 					this.drawShapes();
+					// drawing selected seat
 				}
 				return _react2.default.createElement(
 					'canvas',

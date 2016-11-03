@@ -43,6 +43,8 @@ class Canvas extends React.Component {
         if(canvas){
 			context.clearRect(0,0,canvas.width,canvas.height);
 			this.drawShapes();
+			// drawing selected seat
+
         }
         return (
             <canvas id="canvas" ref="canvas" height="500" width="900"
