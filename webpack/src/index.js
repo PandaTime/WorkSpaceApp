@@ -10,9 +10,8 @@ import './styles/canvas.scss';
 import './styles/search-info.scss';
 import './styles/navbar.scss';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+import './components/ws/websocket';
 
-
-//const store = configureStore();
 
 ReactDOM.render(
     <Provider store={store}>

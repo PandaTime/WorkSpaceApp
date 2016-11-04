@@ -89,7 +89,6 @@ class Search extends React.Component {
 			temp_seat_id = this.state.temp_seat_id;
 		var list = [], text;
 		if(this.state.selectBy == 'users'){
-			console.log('users', this.props.users)
 			list = this.props.users.map((v, i)=>{
 				if(showUsed || !v.seat.id)
 					return (

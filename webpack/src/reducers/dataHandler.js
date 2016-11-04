@@ -1,12 +1,13 @@
 'use strict';
-import store from '../../store/configureStore';
-import defaultValues from './initValues'
+import store from '../store/configureStore';
+import defaultValues from '../components/home/initValues'
 
-import {selectSeat, updateSeatInfo} from '../../actions/seatsActions';
-import {updateUserLocation} from '../../actions/usersActions';
+import {selectSeat, updateSeatInfo, initSeats} from '../actions/seatsActions';
+import {updateUserLocation, initUsers} from '../actions/usersActions';
 
 var api = {};
 
+// currently w/o swapping
 api.assignUserSeat = function(seat_id, user_id){
     // getting seat and user info
     var {users, seats} = getUsersSeatsArr(store.getState());
@@ -54,12 +55,18 @@ api.changeSeatData = function(seat_id, newSeatData){
     store.dispatch(updateSeatInfo(newSeat));
 	if(seat.assignedTo.id && seat.name != newSeatData.name){
 		user = users.filter((v)=>v.id == seat.assignedTo.id)[0];
-		console.log('123', seat, users);
 		newUser = copyObj(user);
 		newUser.seat.name = newSeat.name;
 		store.dispatch(updateUserLocation(newUser));
 	}
 	store.dispatch(selectSeat(newSeat));
+};
+
+
+api.initialize = function(users, seats){
+    console.log(users, seats);
+    store.dispatch(initUsers(users));
+    store.dispatch(initSeats(seats));
 }
 
 
@@ -71,7 +78,6 @@ function getUsersSeatsArr(state){
 
 export function copyObj(el){
     var seat = {};
-	console.log('el', el);
     Object.keys(el).forEach((v)=>{
         seat[v] = (typeof(el[v]) == 'object' && !!el[v]) ? Object.assign({}, el[v]) : el[v];
     });

@@ -6,7 +6,7 @@ import {selectUser, updateUserLocation} from '../../../../actions/usersActions';
 import {addNewSeat, updateSeatUser, deleteSeat} from '../../../../actions/seatsActions';
 
 import ConfirmCheck from './confirmCheck';
-import dataHandler from '../../dataHandler';
+import dataHandler from '../../../../reducers/dataHandler';
 
 class SelectElement extends React.Component {
     constructor(props){

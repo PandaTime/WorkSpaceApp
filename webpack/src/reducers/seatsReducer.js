@@ -22,28 +22,15 @@ export function arrSeatsReducer(state = initialState.seats, action) {
 				fillStyle: action.seat.fillStyle || state.fillStyle
 			};
 			return [...state.slice(0, i), new Seat(newSeatOpt), ...state.slice(i+1)];
-		case types.UPDATE_SEAT_LOCATION:
-			var i = getIndex(state, action);
-			if(i < 0)
-				return state;
-			var el = state[i];
-			var newSeatOpt = {
-				id: el.id,
-				x : action.x,
-				y : action.y,
-				name: el.name,
-				radius: el.radius,
-				floor: el.floor,
-				assignedTo: el.assignedTo,
-				fillStyle: el.fillStyle
-			};
-            return [...state.slice(0, i), new Seat(newSeatOpt), ...state.slice(i+1)];
+		case types.INITIALIZE_SEATS:
+			var seats = action.seats.map((v)=>new Seat(v));
+			return seats;
 		case types.DELETE_SEAT:
 			return state.filter((v)=>v.id !== action.id);
         default:
             return state;
     }
-};
+}
 
 export function selectSeatReducer(state = initialState.selectedSeat, action){
 	switch (action.type) {

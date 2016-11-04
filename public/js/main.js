@@ -78,9 +78,9 @@
 
 	__webpack_require__(761);
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	__webpack_require__(768);
 
-	//const store = configureStore();
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	_reactDom2.default.render(_react2.default.createElement(
 	    _reactRedux.Provider,
@@ -34988,20 +34988,18 @@
 
 	var NEW_USER = exports.NEW_USER = 'NEW_USER';
 	var SELECT_USER = exports.SELECT_USER = 'SELECT_USER';
-	var ALLOCATE_USER = exports.ALLOCATE_USER = 'ALLOCATE_USER';
-	var DEALLOCATE_USER = exports.DEALLOCATE_USER = 'DEALLOCATE_USER';
 	var UPDATE_USER_INFO = exports.UPDATE_USER_INFO = 'UPDATE_USER_INFO';
 	var UPDATE_USER_SEAT = exports.UPDATE_USER_SEAT = 'UPDATE_USER_SEAT';
-	var SWAP_USERS = exports.SWAP_USERS = 'SWAP_USERS';
 
 	var NEW_SEAT = exports.NEW_SEAT = 'NEW_SEAT';
 	var SELECT_SEAT = exports.SELECT_SEAT = 'SELECT_SEAT';
 	var UPDATE_SEAT_INFO = exports.UPDATE_SEAT_INFO = 'UPDATE_SEAT_INFO';
-	var UPDATE_SEAT_USER = exports.UPDATE_SEAT_USER = 'UPDATE_SEAT_USER';
-	var UPDATE_SEAT_LOCATION = exports.UPDATE_SEAT_LOCATION = 'UPDATE_SEAT_LOCATION';
 	var DELETE_SEAT = exports.DELETE_SEAT = 'DELETE_SEAT';
 
 	var CHANGE_SHOW_BLOCKS = exports.CHANGE_SHOW_BLOCKS = 'CHANGE_SHOW_BLOCKS';
+
+	var INITIALIZE_USERS = exports.INITIALIZE_USERS = 'INITIALIZE_USERS';
+	var INITIALIZE_SEATS = exports.INITIALIZE_SEATS = 'INITIALIZE_SEATS';
 
 /***/ },
 /* 545 */
@@ -35119,21 +35117,11 @@
 					fillStyle: action.seat.fillStyle || state.fillStyle
 				};
 				return [].concat(_toConsumableArray(state.slice(0, i)), [new _shapes2.default(newSeatOpt)], _toConsumableArray(state.slice(i + 1)));
-			case types.UPDATE_SEAT_LOCATION:
-				var i = getIndex(state, action);
-				if (i < 0) return state;
-				var el = state[i];
-				var newSeatOpt = {
-					id: el.id,
-					x: action.x,
-					y: action.y,
-					name: el.name,
-					radius: el.radius,
-					floor: el.floor,
-					assignedTo: el.assignedTo,
-					fillStyle: el.fillStyle
-				};
-				return [].concat(_toConsumableArray(state.slice(0, i)), [new _shapes2.default(newSeatOpt)], _toConsumableArray(state.slice(i + 1)));
+			case types.INITIALIZE_SEATS:
+				var seats = action.seats.map(function (v) {
+					return new _shapes2.default(v);
+				});
+				return seats;
 			case types.DELETE_SEAT:
 				return state.filter(function (v) {
 					return v.id !== action.id;
@@ -35141,7 +35129,7 @@
 			default:
 				return state;
 		}
-	};
+	}
 
 	function selectSeatReducer() {
 		var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _initialState2.default.selectedSeat;
@@ -35390,7 +35378,8 @@
 	            return [].concat(_toConsumableArray(state.map(function (v) {
 	                return Object.assign({}, v);
 	            })), [newUser]);
-
+	        case types.INITIALIZE_USERS:
+	            return action.users;
 	        case types.UPDATE_USER_SEAT:
 	            var i = getIndex(state, action.user);
 	            if (i < 0) return state;
@@ -46780,13 +46769,24 @@
 	var App = function (_React$Component) {
 	    _inherits(App, _React$Component);
 
-	    function App() {
+	    function App(props) {
 	        _classCallCheck(this, App);
 
-	        return _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).apply(this, arguments));
+	        var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
+
+	        _this.state = {
+	            count: 90
+	        };
+	        return _this;
 	    }
 
 	    _createClass(App, [{
+	        key: 'handleData',
+	        value: function handleData(data) {
+	            var result = JSON.parse(data);
+	            console.log(result);
+	        }
+	    }, {
 	        key: 'render',
 	        value: function render() {
 	            return _react2.default.createElement(
@@ -46913,6 +46913,7 @@
 	        value: function render() {
 	            var _this2 = this;
 
+	            console.log('esats', this.props.seats);
 	            var searchList = this.state.searchByTypes.map(function (v, i) {
 	                return _react2.default.createElement(
 	                    'li',
@@ -47128,7 +47129,7 @@
 
 	function mapStateToProps(state, ownProps) {
 	    return {
-	        seats: state.seats,
+	        seats: state.arrSeatsReducer,
 	        block: state.changeShownReducer
 	    };
 	}
@@ -47200,9 +47201,9 @@
 	exports.addNewSeat = addNewSeat;
 	exports.selectSeat = selectSeat;
 	exports.deleteSeat = deleteSeat;
-	exports.updateSeatLocation = updateSeatLocation;
 	exports.updateSeatInfo = updateSeatInfo;
 	exports.updateSeatUser = updateSeatUser;
+	exports.initSeats = initSeats;
 
 	var _actionTypes = __webpack_require__(544);
 
@@ -47219,14 +47220,14 @@
 	function deleteSeat(id) {
 		return { type: types.DELETE_SEAT, id: id };
 	}
-	function updateSeatLocation(id, x, y) {
-		return { type: types.UPDATE_SEAT_LOCATION, id: id, x: x, y: y };
-	}
 	function updateSeatInfo(seat) {
 		return { type: types.UPDATE_SEAT_INFO, seat: seat };
 	}
 	function updateSeatUser(seat) {
 		return { type: types.UPDATE_SEAT_INFO, seat: seat };
+	}
+	function initSeats(seats) {
+		return { type: types.INITIALIZE_SEATS, seats: seats };
 	}
 
 /***/ },
@@ -47358,6 +47359,7 @@
 	exports.selectUser = selectUser;
 	exports.newUser = newUser;
 	exports.updateUserLocation = updateUserLocation;
+	exports.initUsers = initUsers;
 
 	var _actionTypes = __webpack_require__(544);
 
@@ -47374,6 +47376,10 @@
 	}
 	function updateUserLocation(user) {
 	    return { type: types.UPDATE_USER_SEAT, user: user };
+	}
+
+	function initUsers(users) {
+	    return { type: types.INITIALIZE_USERS, users: users };
 	}
 
 /***/ },
@@ -48661,7 +48667,7 @@
 					var location = (0, _canvasManipulation.windowToCanvas)(this.state.canvas, e.nativeEvent);
 					var x = this.props.selectedSeat.x + (location.x - this.state.lastdrag.x),
 					    y = this.props.selectedSeat.y + (location.y - this.state.lastdrag.y);
-					this.props.updateSeatLocation(this.props.selectedSeat.id, x, y);
+					this.props.updateSeatInfo({ id: this.props.selectedSeat.id, x: x, y: y });
 				}
 			}
 		}, {
@@ -48694,7 +48700,7 @@
 			block: state.changeShownReducer
 		};
 	}
-	exports.default = (0, _reactRedux.connect)(mapStateToProps, { selectSeat: _seatsActions.selectSeat, updateSeatLocation: _seatsActions.updateSeatLocation, updateSeatInfo: _seatsActions.updateSeatInfo, selectUser: _usersActions.selectUser })(Canvas);
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, { selectSeat: _seatsActions.selectSeat, updateSeatInfo: _seatsActions.updateSeatInfo, selectUser: _usersActions.selectUser })(Canvas);
 
 /***/ },
 /* 742 */
@@ -49078,7 +49084,7 @@
 
 	var _confirmCheck2 = _interopRequireDefault(_confirmCheck);
 
-	var _dataHandler = __webpack_require__(746);
+	var _dataHandler = __webpack_require__(769);
 
 	var _dataHandler2 = _interopRequireDefault(_dataHandler);
 
@@ -49366,130 +49372,7 @@
 	exports.default = ConfirmCheck;
 
 /***/ },
-/* 746 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-	exports.copyObj = copyObj;
-
-	var _configureStore = __webpack_require__(540);
-
-	var _configureStore2 = _interopRequireDefault(_configureStore);
-
-	var _initValues = __webpack_require__(546);
-
-	var _initValues2 = _interopRequireDefault(_initValues);
-
-	var _seatsActions = __webpack_require__(730);
-
-	var _usersActions = __webpack_require__(732);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var api = {};
-
-	api.assignUserSeat = function (seat_id, user_id) {
-	    // getting seat and user info
-	    var _getUsersSeatsArr = getUsersSeatsArr(_configureStore2.default.getState()),
-	        users = _getUsersSeatsArr.users,
-	        seats = _getUsersSeatsArr.seats;
-
-	    var seat = seats.filter(function (v) {
-	        return v.id == seat_id;
-	    })[0],
-	        user = users.filter(function (v) {
-	        return v.id == user_id;
-	    })[0],
-	        oldSeat,
-	        oldUser,
-	        newSeat,
-	        newUser;
-
-	    // checking in case user or seat were already assigned/taken
-	    if (user.seat.id) {
-	        oldSeat = copyObj(seats.filter(function (v) {
-	            return v.id == user.seat.id;
-	        })[0]);
-	        oldSeat.assignedTo = Object.assign({}, _initValues2.default.newSeatForm.assignedTo);
-	        _configureStore2.default.dispatch((0, _seatsActions.updateSeatInfo)(oldSeat));
-	    }
-	    // swapping seats
-	    if (seat.assignedTo.id) {
-	        oldUser = copyObj(users.filter(function (v) {
-	            return v.id == seat.assignedTo.id;
-	        })[0]);
-	        oldUser.seat = Object.assign({}, _initValues2.default.newUserForm.seat);
-	        _configureStore2.default.dispatch((0, _usersActions.updateUserLocation)(oldUser));
-	    }
-
-	    // updating values
-	    newSeat = copyObj(seat);
-	    newSeat.assignedTo = {
-	        id: user.id,
-	        firstName: user.firstName,
-	        surName: user.surName
-	    };
-	    newUser = copyObj(user);
-	    newUser.seat = {
-	        id: seat.id,
-	        name: seat.name
-	    };
-	    _configureStore2.default.dispatch((0, _seatsActions.updateSeatInfo)(newSeat));
-	    _configureStore2.default.dispatch((0, _usersActions.updateUserLocation)(newUser));
-	};
-
-	api.changeSeatData = function (seat_id, newSeatData) {
-	    var _getUsersSeatsArr2 = getUsersSeatsArr(_configureStore2.default.getState()),
-	        users = _getUsersSeatsArr2.users,
-	        seats = _getUsersSeatsArr2.seats;
-
-	    var seat = seats.filter(function (v) {
-	        return v.id == seat_id;
-	    })[0],
-	        user,
-	        newSeat,
-	        newUser;
-	    newSeat = copyObj(seat);
-	    Object.keys(newSeatData).forEach(function (v) {
-	        newSeat[v] = newSeatData[v];
-	    });
-	    _configureStore2.default.dispatch((0, _seatsActions.updateSeatInfo)(newSeat));
-	    if (seat.assignedTo.id && seat.name != newSeatData.name) {
-	        user = users.filter(function (v) {
-	            return v.id == seat.assignedTo.id;
-	        })[0];
-	        console.log('123', seat, users);
-	        newUser = copyObj(user);
-	        newUser.seat.name = newSeat.name;
-	        _configureStore2.default.dispatch((0, _usersActions.updateUserLocation)(newUser));
-	    }
-	    _configureStore2.default.dispatch((0, _seatsActions.selectSeat)(newSeat));
-	};
-
-	exports.default = api;
-
-
-	function getUsersSeatsArr(state) {
-	    return { users: state.arrUsersReducer, seats: state.arrSeatsReducer };
-	}
-
-	function copyObj(el) {
-	    var seat = {};
-	    console.log('el', el);
-	    Object.keys(el).forEach(function (v) {
-	        seat[v] = _typeof(el[v]) == 'object' && !!el[v] ? Object.assign({}, el[v]) : el[v];
-	    });
-	    return seat;
-	}
-
-/***/ },
+/* 746 */,
 /* 747 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -49666,7 +49549,6 @@
 				var list = [],
 				    text;
 				if (this.state.selectBy == 'users') {
-					console.log('users', this.props.users);
 					list = this.props.users.map(function (v, i) {
 						if (showUsed || !v.seat.id) return _react2.default.createElement(
 							'li',
@@ -49863,7 +49745,7 @@
 
 	var _confirmCheck2 = _interopRequireDefault(_confirmCheck);
 
-	var _dataHandler = __webpack_require__(746);
+	var _dataHandler = __webpack_require__(769);
 
 	var _dataHandler2 = _interopRequireDefault(_dataHandler);
 
@@ -50107,7 +49989,7 @@
 
 	var _showActions = __webpack_require__(747);
 
-	var _dataHandler = __webpack_require__(746);
+	var _dataHandler = __webpack_require__(769);
 
 	var _dataHandler2 = _interopRequireDefault(_dataHandler);
 
@@ -50165,7 +50047,6 @@
 	    }, {
 	        key: 'acceptModify',
 	        value: function acceptModify() {
-	            console.log('acc', this.state);
 	            if (this.state.modifyRecord) {
 	                _dataHandler2.default.changeSeatData(this.state.seatId, {
 	                    name: this.state.seatName
@@ -50215,7 +50096,6 @@
 	    }, {
 	        key: 'handleSeatNameChange',
 	        value: function handleSeatNameChange(e) {
-	            console.log(e.target.value);
 	            this.setState({ seatName: e.target.value });
 	        }
 	    }, {
@@ -50223,7 +50103,6 @@
 	        value: function render() {
 	            var selectedSeat = this.props.selectedSeat;
 	            var selectedUser = this.props.selectedUser;
-	            console.log();
 	            var data;
 	            // We have only seat selected. In case both seat and user is selected - we're showing user info 
 	            if (selectedSeat.id) {
@@ -50985,6 +50864,173 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "89889688147bd7575d6327160d64e760.svg";
+
+/***/ },
+/* 768 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _dataHandler = __webpack_require__(769);
+
+	var _dataHandler2 = _interopRequireDefault(_dataHandler);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var socket = new WebSocket('ws://localhost:8080/');
+
+	exports.default = socket;
+
+
+	socket.onopen = function () {
+	    // gonna send connection info in case there is token
+	    socket.send('connected');
+	    console.log('connected');
+	};
+	socket.onclose = function () {
+	    console.log('closed');
+	};
+	socket.onmessage = function (event) {
+	    var msg = JSON.parse(event.data);
+	    // initialize data;
+	    if (msg.type == 'initialize') {
+	        _dataHandler2.default.initialize(msg.initData.users, msg.initData.seats);
+	    }
+	    //console.log(msg);
+	};
+
+/***/ },
+/* 769 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+	exports.copyObj = copyObj;
+
+	var _configureStore = __webpack_require__(540);
+
+	var _configureStore2 = _interopRequireDefault(_configureStore);
+
+	var _initValues = __webpack_require__(546);
+
+	var _initValues2 = _interopRequireDefault(_initValues);
+
+	var _seatsActions = __webpack_require__(730);
+
+	var _usersActions = __webpack_require__(732);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var api = {};
+
+	// currently w/o swapping
+	api.assignUserSeat = function (seat_id, user_id) {
+	    // getting seat and user info
+	    var _getUsersSeatsArr = getUsersSeatsArr(_configureStore2.default.getState()),
+	        users = _getUsersSeatsArr.users,
+	        seats = _getUsersSeatsArr.seats;
+
+	    var seat = seats.filter(function (v) {
+	        return v.id == seat_id;
+	    })[0],
+	        user = users.filter(function (v) {
+	        return v.id == user_id;
+	    })[0],
+	        oldSeat,
+	        oldUser,
+	        newSeat,
+	        newUser;
+
+	    // checking in case user or seat were already assigned/taken
+	    if (user.seat.id) {
+	        oldSeat = copyObj(seats.filter(function (v) {
+	            return v.id == user.seat.id;
+	        })[0]);
+	        oldSeat.assignedTo = Object.assign({}, _initValues2.default.newSeatForm.assignedTo);
+	        _configureStore2.default.dispatch((0, _seatsActions.updateSeatInfo)(oldSeat));
+	    }
+	    // swapping seats
+	    if (seat.assignedTo.id) {
+	        oldUser = copyObj(users.filter(function (v) {
+	            return v.id == seat.assignedTo.id;
+	        })[0]);
+	        oldUser.seat = Object.assign({}, _initValues2.default.newUserForm.seat);
+	        _configureStore2.default.dispatch((0, _usersActions.updateUserLocation)(oldUser));
+	    }
+
+	    // updating values
+	    newSeat = copyObj(seat);
+	    newSeat.assignedTo = {
+	        id: user.id,
+	        firstName: user.firstName,
+	        surName: user.surName
+	    };
+	    newUser = copyObj(user);
+	    newUser.seat = {
+	        id: seat.id,
+	        name: seat.name
+	    };
+	    _configureStore2.default.dispatch((0, _seatsActions.updateSeatInfo)(newSeat));
+	    _configureStore2.default.dispatch((0, _usersActions.updateUserLocation)(newUser));
+	};
+
+	api.changeSeatData = function (seat_id, newSeatData) {
+	    var _getUsersSeatsArr2 = getUsersSeatsArr(_configureStore2.default.getState()),
+	        users = _getUsersSeatsArr2.users,
+	        seats = _getUsersSeatsArr2.seats;
+
+	    var seat = seats.filter(function (v) {
+	        return v.id == seat_id;
+	    })[0],
+	        user,
+	        newSeat,
+	        newUser;
+	    newSeat = copyObj(seat);
+	    Object.keys(newSeatData).forEach(function (v) {
+	        newSeat[v] = newSeatData[v];
+	    });
+	    _configureStore2.default.dispatch((0, _seatsActions.updateSeatInfo)(newSeat));
+	    if (seat.assignedTo.id && seat.name != newSeatData.name) {
+	        user = users.filter(function (v) {
+	            return v.id == seat.assignedTo.id;
+	        })[0];
+	        newUser = copyObj(user);
+	        newUser.seat.name = newSeat.name;
+	        _configureStore2.default.dispatch((0, _usersActions.updateUserLocation)(newUser));
+	    }
+	    _configureStore2.default.dispatch((0, _seatsActions.selectSeat)(newSeat));
+	};
+
+	api.initialize = function (users, seats) {
+	    console.log(users, seats);
+	    _configureStore2.default.dispatch((0, _usersActions.initUsers)(users));
+	    _configureStore2.default.dispatch((0, _seatsActions.initSeats)(seats));
+	};
+
+	exports.default = api;
+
+
+	function getUsersSeatsArr(state) {
+	    return { users: state.arrUsersReducer, seats: state.arrSeatsReducer };
+	}
+
+	function copyObj(el) {
+	    var seat = {};
+	    Object.keys(el).forEach(function (v) {
+	        seat[v] = _typeof(el[v]) == 'object' && !!el[v] ? Object.assign({}, el[v]) : el[v];
+	    });
+	    return seat;
+	}
 
 /***/ }
 /******/ ]);

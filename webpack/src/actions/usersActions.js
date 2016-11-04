@@ -10,3 +10,7 @@ export function newUser(user){
 export function updateUserLocation(user){
     return {type: types.UPDATE_USER_SEAT, user};
 }
+
+export function initUsers(users){
+    return {type: types.INITIALIZE_USERS, users}
+}

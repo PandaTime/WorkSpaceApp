@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 import {updateSeatInfo} from '../../../../actions/seatsActions';
 import {changeShown} from '../../../../actions/showActions';
-import dataHandler from '../../dataHandler';
+import dataHandler from '../../../../reducers/dataHandler';
 import ConfirmCheck from './confirmCheck';
 
 class ModifyForm extends React.Component {
@@ -38,7 +38,6 @@ class ModifyForm extends React.Component {
 		}
 	}
 	acceptModify(){
-		console.log('acc', this.state);
 		if(this.state.modifyRecord){
 			dataHandler.changeSeatData(this.state.seatId, {
 				name: this.state.seatName
@@ -80,13 +79,11 @@ class ModifyForm extends React.Component {
 		}
     }
 	handleSeatNameChange(e){
-		console.log(e.target.value);
 		this.setState({seatName: e.target.value});
 	}
     render() {
         var selectedSeat = this.props.selectedSeat;
         var selectedUser = this.props.selectedUser;
-		console.log()
         var data;
         // We have only seat selected. In case both seat and user is selected - we're showing user info 
         if(selectedSeat.id){

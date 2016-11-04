@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import {selectSeat, updateSeatLocation, updateSeatInfo} from '../../../actions/seatsActions';
+import {selectSeat, updateSeatInfo} from '../../../actions/seatsActions';
 import {drawShapes, selectElement, windowToCanvas} from '../../canvasManipulation/canvasManipulation';
 import {selectUser} from '../../../actions/usersActions'
 
@@ -48,7 +48,7 @@ class Canvas extends React.Component {
 			var location = windowToCanvas(this.state.canvas, e.nativeEvent);
 			var x = this.props.selectedSeat.x + (location.x - this.state.lastdrag.x),
 				y = this.props.selectedSeat.y + (location.y - this.state.lastdrag.y);
-			this.props.updateSeatLocation(this.props.selectedSeat.id, x, y);
+			this.props.updateSeatInfo({id : this.props.selectedSeat.id, x, y});
 		}
 	}
     render() {
@@ -77,5 +77,5 @@ function mapStateToProps(state, ownProps){
 		block: state.changeShownReducer
     };
 }
-export default connect(mapStateToProps, {selectSeat, updateSeatLocation, updateSeatInfo, selectUser})(Canvas);
+export default connect(mapStateToProps, {selectSeat, updateSeatInfo, selectUser})(Canvas);
 

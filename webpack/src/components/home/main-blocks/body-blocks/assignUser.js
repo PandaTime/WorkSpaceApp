@@ -6,7 +6,7 @@ import {selectUser} from '../../../../actions/usersActions';
 import {deleteSeat} from '../../../../actions/seatsActions';
 import ConfirmCheck from './confirmCheck';
 
-import dataHandler from '../../dataHandler';
+import dataHandler from '../../../../reducers/dataHandler';
 
 class AssignUser extends React.Component {
     constructor(props){
