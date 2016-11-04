@@ -89,6 +89,7 @@ class Search extends React.Component {
 			temp_seat_id = this.state.temp_seat_id;
 		var list = [], text;
 		if(this.state.selectBy == 'users'){
+			console.log('users', this.props.users)
 			list = this.props.users.map((v, i)=>{
 				if(showUsed || !v.seat.id)
 					return (
@@ -140,7 +141,7 @@ class Search extends React.Component {
 						<input type="text" className="form-control" aria-label="..."/>
 						<div className="input-group-btn">
 							<button type="button" className="btn btn-default search-element-input" onClick={this.toggleSeatOptions}>
-								{this.state.selectBy == 'users' ? (this.state.showUsed ? 'All Users' : 'Non-assigned Users') : (this.state.showUsed ? 'All Seats' : 'Free Seats')}
+								{this.state.selectBy == 'users' ? (this.state.showUsed ? 'All Users' : 'Free Users') : (this.state.showUsed ? 'All Seats' : 'Free Seats')}
 							<span className="caret"></span></button>
 						</div>
 						<div className={classNames(this.state.showAssignUserForm ? '' : 'hidden')}>

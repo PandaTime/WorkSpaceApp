@@ -70,11 +70,11 @@ class AssignUser extends React.Component {
             if(v.id.startsWith(temp_seat_id)) return;
 			var name = v.firstName + ' ' + v.surName;
             if(showAssigned)
-				return (<li key={i} className="list-group-item" onClick={this.confirmAssignment.bind(this, name, v.id)}><div className="select-user-name">{name}</div><div className="select-user-seat">{v.seat.id ? v.seat.name : 'No seat assigned'}</div></li>);
+				return (<li key={i} className="list-group-item" onClick={this.confirmAssignment.bind(this, name, v.id)}><div className="select-user-name">{name}</div><div className="select-user-seat">Seat: {v.seat.id ? v.seat.name : 'No seat assigned'}</div></li>);
             else if(!v.seat.id)
-                return (<li key={i} className="list-group-item" onClick={this.confirmAssignment.bind(this, name, v.id)}><div className="select-user-name">{name}</div> <div className="select-user-seat">No seat assigned</div></li>);
+                return (<li key={i} className="list-group-item" onClick={this.confirmAssignment.bind(this, name, v.id)}><div className="select-user-name">{name}</div> <div className="select-user-seat">Seat: No seat assigned</div></li>);
         });
-
+		users = users.filter((v)=>!!v);
         return (
             <div>
                 <div className="info-select-user">

@@ -28,6 +28,7 @@ class SelectElement extends React.Component {
     showUsedSeatsFn(show){
         this.setState({showUsedSeats : show, optShow : false});
     }
+	// creating confirmation message.
     confirmAssignment(id, name){
         this.setState({
             confirmSeatAssign: true,
@@ -36,6 +37,7 @@ class SelectElement extends React.Component {
             confirmText: 'Assign seat ' + name + ' to user ' + this.props.selectedUser.firstName + ' ' + this.props.selectedUser.surName + '?'
         });
     }
+	// getting back initial values from redux
     rejectSeatAssignment(){
         this.setState({
             confirmSeatAssign: false,
@@ -44,6 +46,7 @@ class SelectElement extends React.Component {
             confirmText: ''
         })
     }
+	// saving new values to redux
     assignSeat(){
         dataHandler.assignUserSeat(this.state.seatID, this.props.selectedUser.id);
         // changing selected user
@@ -52,6 +55,7 @@ class SelectElement extends React.Component {
         this.unhoverSeat(this.state.seatID);
         // hiding unneeded tabs
         this.toggleSeatOptions();
+		this.setState({confirmSeatAssign: false});
         this.props.toggleSeatFormShow();
     }
     hoverSeat(x, y, id){
@@ -70,18 +74,17 @@ class SelectElement extends React.Component {
             temp_seat_id = this.state.temp_seat_id;
         var seats = this.props.seats.map((v, i)=>{
             if(v.id.startsWith(temp_seat_id)) return;
-            //if(showUsed)
-            //    return (<div key={i}>{v.id}</div>);
+			
             if(showUsed || !v.assignedTo.id)
                 return (<li key={i} className="list-group-item"
                              onMouseEnter={this.hoverSeat.bind(this, v.x, v.y, v.id)}
                              onMouseOut={this.unhoverSeat.bind(this, v.id)}
                              onClick={this.confirmAssignment.bind(this, v.id, v.name)}>
                             <div className="select-user-name">{v.name}</div>
-                            <div className="select-user-seat">{v.assignedTo.id ? v.assignedTo.name : 'Seat isn\'t occupied'}</div>
+                            <div className="select-user-seat">User: {v.assignedTo.id ? (v.assignedTo.firstName + ' ' + v.assignedTo.surName ): 'Seat isn\'t assigned'}</div>
                         </li>);
         });
-
+		seats = seats.filter((v)=>!!v);
         return (
             <div>
                 <div className="info-select-user">

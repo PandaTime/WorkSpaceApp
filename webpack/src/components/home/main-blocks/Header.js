@@ -19,6 +19,7 @@ class Header extends React.Component{
         document.body.addEventListener('click', this.onClick.bind(this, -1));
     }
     onClick(id) {
+		if(this.props.block.modifyUserData || this.props.block.modifySeatData){return;}
         //console.log(id, this.state.showDropDown[id]);
         // клик по тому же элементу = закрытие его(мешает глобал листенер)
 		this.setState({showDropDown : this.state.showDropDown.map( this.state.showDropDown[id] ? (()=> false) : ((_, i)=>i===id))});
@@ -27,6 +28,7 @@ class Header extends React.Component{
 		this.setState({searchBy: type});
 	}
 	addSeat(){
+		if(this.props.block.modifyUserData || this.props.block.modifySeatData){return;}
         this.props.addNewSeat(config.newSeatForm);
 	}
     toggleUserForm(hideNewUser){ // т.к. дизейбл не исключает возможности нажатия, а я не хочу создавать 2 функции
@@ -74,7 +76,6 @@ class Header extends React.Component{
                                 </a>
                                 <ul className={classNames('dropdown-menu react-toggle', this.state.showDropDown[2] ? '' : 'hidden')}>
                                     <li><a onClick={this.addSeat} className={classNames(this.state.showDropDown ? 'disable' : '')}>Add Seat</a></li>
-                                    <li><Link to="/projects">Search Seat</Link></li>
                                 </ul>
                             </li>
                             <li className="dropdown nav-elements">
@@ -83,7 +84,6 @@ class Header extends React.Component{
                                 </a>
                                 <ul className={classNames('dropdown-menu react-toggle', this.state.showDropDown[3] ? '' : 'hidden')}>
                                     <li className={classNames(this.state.showNewUserBox ? 'disabled' : '')}><a onClick={this.toggleUserForm.bind(this, false)}>Add User</a></li>
-                                    <li><Link to="/projects">Search User</Link></li>
                                 </ul>
                             </li>
                         </div>
@@ -115,7 +115,8 @@ class Header extends React.Component{
 
 function mapStateToProps(state, ownProps){
     return {
-        seats: state.seats
+        seats: state.seats,
+		block: state.changeShownReducer
     };
 }
 export default connect(mapStateToProps, {addNewSeat})(Header);

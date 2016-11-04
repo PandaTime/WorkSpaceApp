@@ -5,7 +5,9 @@ export default {
 	users: [],
 	shownBlocks: {
 		infoElement: false,
-		searchElement: true
+		searchElement: true,
+		modifySeatData: false,
+		modifyUserData: false
 	},
 	selectedSeat: {},
 	selectedUser: {},

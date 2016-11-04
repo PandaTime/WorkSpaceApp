@@ -3,37 +3,90 @@ import { connect } from 'react-redux';
 
 import classNames from 'classnames';
 import {updateSeatInfo} from '../../../../actions/seatsActions';
-
 import {changeShown} from '../../../../actions/showActions';
+import dataHandler from '../../dataHandler';
+import ConfirmCheck from './confirmCheck';
 
 class ModifyForm extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            showSelectElementFrom: false,
-            swapToInfo: {searchElement: true, infoElement: false},
-            showModifyWindow: false
+            showConfirm: false,  // variable to show confirmation pop-up;
+			modifyRecord: false, // false - undo changes; true - modify record;
+			confirmText: '',     // confirmation text that we show in confirm window;
+			getProps: false, 	 // allowing state updation from nextProps
+			// seat
+			seatId: '', 
+			seatName: '',
+			seatColor: '',
+			seatFloor:'',
+			seatSize: ''
         };
-        this.toggleSeatFormShow = this.toggleSeatFormShow.bind(this);
-        this.modifyData = this.modifyData.bind(this);
+		//seat 
+		this.handleSeatNameChange = this.handleSeatNameChange.bind(this);
     }
-    assignSeat(assign){
-        if(assign)
-            this.toggleSeatFormShow();
-        else
-            console.log('delete');
+	componentWillUpdate(nextProps){
+		// to avoid inf loop;
+		if(!this.state.getProps && nextProps.selectedSeat.id == this.state.seatId) return;
+		
+		if(nextProps.selectedSeat.id){
+			this.setState({
+				getProps: false,
+				seatId: nextProps.selectedSeat.id,
+				seatName: nextProps.selectedSeat.name
+			});
+		}
+	}
+	acceptModify(){
+		console.log('acc', this.state);
+		if(this.state.modifyRecord){
+			dataHandler.changeSeatData(this.state.seatId, {
+				name: this.state.seatName
+			});
+		}else{
+			this.setState({
+				seatName: this.props.selectedSeat.name
+			})
+		}
+		this.setState({modifyRecord: false, getProps: true});
+		this.confirmWindow();
+		this.props.changeShown({modifyUserData: false, modifySeatData: false});
+	}
+	rejectModify(){
+		this.setState({
+			seatId: this.props.selectedSeat.id, 
+			seatName: this.props.selectedSeat.name,
+			modifyRecord: false
+		});
+		this.confirmWindow();
+		this.props.changeShown({modifyUserData: false, modifySeatData: false});
+	}
+	confirmWindow(){
+		this.setState({showConfirm: !this.state.showConfirm});
+	}
+    modifyData(modify){
+        if(!(this.props.selectedUser || this.props.selectedSeat)) return;
+		if(modify){
+			this.confirmWindow();
+			this.setState({
+				confirmText: 'Save changes?',
+				modifyRecord: true
+			});
+		}else{
+			this.confirmWindow();
+			this.setState({
+				confirmText: 'Undo changes?'
+			});
+		}
     }
-    toggleSeatFormShow(){
-        this.setState({showSelectElementFrom : !this.state.showSelectElementFrom});
-    }
-    modifyData(){
-        if(!(this.state.props.selectedUser || this.props.selectedSeat)) return;
-
-    }
+	handleSeatNameChange(e){
+		console.log(e.target.value);
+		this.setState({seatName: e.target.value});
+	}
     render() {
         var selectedSeat = this.props.selectedSeat;
         var selectedUser = this.props.selectedUser;
-
+		console.log()
         var data;
         // We have only seat selected. In case both seat and user is selected - we're showing user info 
         if(selectedSeat.id){
@@ -46,7 +99,10 @@ class ModifyForm extends React.Component {
                     </tr>
                     <tr>
                         <td>Seat Name:</td>
-                        <td>{selectedSeat.name}</td>
+                        <td className="form-td">
+							<input name="firstname" type="text" placeholder="First Name"value={this.state.seatName} onChange={this.handleSeatNameChange} />
+							<span className="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+						</td>
                     </tr>
                     <tr>
                         <td>Assigned to:</td>
@@ -100,11 +156,16 @@ class ModifyForm extends React.Component {
             )
         }
         return (
-            <div className="info-box">
-                <div>
-                    Modify: <span className="glyphicon glyphicon-wrench pointer-cursor" aria-hidden="true" onClick={this.modifyData}></span>
+            <div className="info-box confirm-position">
+				<div className={classNames(this.state.showConfirm ? '' : 'hidden')}>
+					<ConfirmCheck text={this.state.confirmText} accept={this.acceptModify.bind(this)} reject={this.rejectModify.bind(this)}/>
+				</div>
+				<div>
+                    Modify:
                 </div>
                 {data}
+                <div className="modify-accept col-xs-6 pointer-cursor" onClick={this.modifyData.bind(this, true)}>OK</div>
+                <div className="modify-reject col-xs-6 pointer-cursor" onClick={this.modifyData.bind(this, false)}>Cancel</div>
             </div>
         );
     }

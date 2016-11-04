@@ -22,6 +22,12 @@ class Canvas extends React.Component {
 		drawShapes(this.state, this.props.seats, this.props.selectedSeat);
 	}
 	selectSeat(e){
+		// not allowing to change in case we have modify window opened
+		if(this.props.block.modifyUserData || this.props.block.modifySeatData){
+			console.log('canvas select seat', this.props.block.modifyUserData, this.props.block.modifySeatData)
+			return;
+		}
+		
 		var {shapeBeingDragged, lastdrag} = selectElement(this.state, this.props.seats, e.nativeEvent);
 		if(shapeBeingDragged || this.props.selectedSeat.x){
 			this.selectedSeatColor(shapeBeingDragged);
@@ -37,6 +43,7 @@ class Canvas extends React.Component {
 			this.props.updateSeatInfo({id: this.props.selectedSeat.id, fillStyle: 'rgba(147, 197, 114, 0.8)'});	*/
 	}
 	seatLocationUpdate(e){
+		if(this.props.block.modifyUserData || this.props.block.modifySeatData){return;}
 		if(this.props.selectedSeat.x && (e.nativeEvent.buttons == 1)){
 			var location = windowToCanvas(this.state.canvas, e.nativeEvent);
 			var x = this.props.selectedSeat.x + (location.x - this.state.lastdrag.x),
@@ -66,7 +73,8 @@ function mapStateToProps(state, ownProps){
     return {
 		seats: state.arrSeatsReducer,
 		selectedSeat: state.selectSeatReducer,
-		selectedUser: state.selectUserReducer
+		selectedUser: state.selectUserReducer,
+		block: state.changeShownReducer
     };
 }
 export default connect(mapStateToProps, {selectSeat, updateSeatLocation, updateSeatInfo, selectUser})(Canvas);

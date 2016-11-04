@@ -7,6 +7,7 @@ import classNames from 'classnames';
 import Canvas from './main-blocks/canvasElement';
 import Info from './main-blocks/InfoElement';
 import Search from './main-blocks/SearchElement';
+import ModifyForm from './main-blocks/body-blocks/modifyWindow';
 
 import {changeShown} from '../../actions/showActions';
 
@@ -18,7 +19,9 @@ class HomePage extends React.Component {
 	navBarHandler(value){
 		var res = {
 			infoElement: false,
-			searchElement: false
+			searchElement: false,
+			modifyUserData: false,
+			modifySeatData: false
 		};
 		if(value == 'search'){
 			res.searchElement = true;
@@ -28,20 +31,26 @@ class HomePage extends React.Component {
 		this.props.changeShown(res);
 	}
     render() {
+		console.log(this.props.showData.modifyUserData || this.props.showData.modifySeatData);
         return (
-            <div>
-			    <Canvas />
-				<ul className="nav nav-tabs col-md-3 nav-menu-info-search">
-				  <li className={classNames(this.props.showData.searchElement ? 'active' : '', 'pointer-cursor')} onClick={this.navBarHandler.bind(this, 'search')}><a>Search</a></li>
-				  <li className={classNames(this.props.showData.infoElement ? 'active' : 'pointer-cursor')} onClick={this.navBarHandler.bind(this, 'info')}><a>Information</a></li>
-				</ul>
-				<div className={classNames(this.props.showData.infoElement ? '' : 'hidden')}>
-					<Info />
+			<div>
+				<div className={classNames(this.props.showData.modifyUserData || this.props.showData.modifySeatData ? '' : 'hidden')}>
+						<ModifyForm />
+					</div>
+				<div>
+					<Canvas />
+					<ul className="nav nav-tabs col-md-3 nav-menu-info-search">
+					  <li className={classNames(this.props.showData.searchElement ? 'active' : '', 'pointer-cursor')} onClick={this.navBarHandler.bind(this, 'search')}><a>Search</a></li>
+					  <li className={classNames(this.props.showData.infoElement ? 'active' : 'pointer-cursor')} onClick={this.navBarHandler.bind(this, 'info')}><a>Information</a></li>
+					</ul>
+					<div className={classNames(this.props.showData.infoElement ? '' : 'hidden')}>
+						<Info />
+					</div>
+					<div className={classNames(this.props.showData.searchElement ? '' : 'hidden')}>
+						<Search />
+					</div>
 				</div>
-				<div className={classNames(this.props.showData.searchElement ? '' : 'hidden')}>
-					<Search />
-				</div>
-            </div>			
+		</div>			
         );
     }
 }

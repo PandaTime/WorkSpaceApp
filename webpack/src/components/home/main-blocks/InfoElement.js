@@ -7,6 +7,7 @@ import {updateSeatInfo} from '../../../actions/seatsActions';
 import SelectElement from './body-blocks/selectElement'
 import {changeShown} from '../../../actions/showActions';
 
+
 class Information extends React.Component {
     constructor(props){
         super(props);
@@ -28,8 +29,8 @@ class Information extends React.Component {
         this.setState({showSelectElementFrom : !this.state.showSelectElementFrom});
     }
 	modifyData(){
-		if(!(this.state.props.selectedUser || this.props.selectedSeat)) return;
-		
+		if(!(this.props.selectedUser || this.props.selectedSeat)) return;
+		this.props.changeShown({modifyUserData: true, modifySeatData: false});
 	}
     render() {
         var selectedSeat = this.props.selectedSeat;
