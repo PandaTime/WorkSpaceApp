@@ -5,6 +5,8 @@ import classNames from 'classnames';
 import {selectUser, updateUserLocation} from '../../../../actions/usersActions';
 import {addNewSeat, updateSeatUser, deleteSeat} from '../../../../actions/seatsActions';
 
+import ConfirmCheck from './confirmCheck';
+import dataHandler from '../../dataHandler';
 
 class SelectElement extends React.Component {
     constructor(props){
@@ -12,7 +14,11 @@ class SelectElement extends React.Component {
         this.state = {
             optShow : false,
             showUsedSeats : false,
-            temp_seat_id: 'TEMP_SEAT'
+            temp_seat_id: 'TEMP_SEAT',
+            confirmSeatAssign: false,
+            seatID: '',
+            seatName: '',
+            confirmText: ''
         };
         this.toggleSeatOptions= this.toggleSeatOptions.bind(this);
     }
@@ -22,23 +28,28 @@ class SelectElement extends React.Component {
     showUsedSeatsFn(show){
         this.setState({showUsedSeats : show, optShow : false});
     }
-    assignSeat(id, name){
-        var seat = {id, name};
-        var user = Object.assign({}, this.props.selectedUser);
-        user.seat = seat;
-        console.log('user', user);
-        // owning seat by a user(Seat: userid);
-        this.props.updateSeatUser({id:id, assignedTo: {
-            id: this.props.selectedUser.id,
-            firstName: this.props.selectedUser.firstName,
-            surName: this.props.selectedUser.surName
-        }});
-        // assigning user to a seat(User: seatid);
-        this.props.updateUserLocation({id: this.props.selectedUser.id, seat});
+    confirmAssignment(id, name){
+        this.setState({
+            confirmSeatAssign: true,
+            seatID: id,
+            seatName: name,
+            confirmText: 'Assign seat ' + name + ' to user ' + this.props.selectedUser.firstName + ' ' + this.props.selectedUser.surName + '?'
+        });
+    }
+    rejectSeatAssignment(){
+        this.setState({
+            confirmSeatAssign: false,
+            seatID: '',
+            seatName: '',
+            confirmText: ''
+        })
+    }
+    assignSeat(){
+        dataHandler.assignUserSeat(this.state.seatID, this.props.selectedUser.id);
         // changing selected user
-        this.props.selectUser(user);
+        this.props.selectUser(this.props.users.filter((v)=>v.id == this.props.selectedUser.id)[0]);
         // deleting temp seat
-        this.unhoverSeat(id);
+        this.unhoverSeat(this.state.seatID);
         // hiding unneeded tabs
         this.toggleSeatOptions();
         this.props.toggleSeatFormShow();
@@ -59,13 +70,16 @@ class SelectElement extends React.Component {
             temp_seat_id = this.state.temp_seat_id;
         var seats = this.props.seats.map((v, i)=>{
             if(v.id.startsWith(temp_seat_id)) return;
-            if(showUsed)
-                return (<div key={i}>{v.id}</div>);
-            else if(!v.assignedTo.id)
-                return (<div key={i}
+            //if(showUsed)
+            //    return (<div key={i}>{v.id}</div>);
+            if(showUsed || !v.assignedTo.id)
+                return (<li key={i} className="list-group-item"
                              onMouseEnter={this.hoverSeat.bind(this, v.x, v.y, v.id)}
                              onMouseOut={this.unhoverSeat.bind(this, v.id)}
-                             onClick={this.assignSeat.bind(this, v.id, v.name)}>{v.name}</div>);
+                             onClick={this.confirmAssignment.bind(this, v.id, v.name)}>
+                            <div className="select-user-name">{v.name}</div>
+                            <div className="select-user-seat">{v.assignedTo.id ? v.assignedTo.name : 'Seat isn\'t occupied'}</div>
+                        </li>);
         });
 
         return (
@@ -87,9 +101,12 @@ class SelectElement extends React.Component {
                                 </ul>
                             </div>
                         </div>
-                        <div>
-                            {seats[0] ? seats : 'No seats are available'}
+                        <div className={classNames(this.state.confirmSeatAssign ? '' : 'hidden')}>
+                            <ConfirmCheck text={this.state.confirmText} accept={this.assignSeat.bind(this)} reject={this.rejectSeatAssignment.bind(this)}/>
                         </div>
+                        <ul className="list-group">
+                            {seats[0] ? seats : 'No seats are available'}
+                        </ul>
                     </div>
                 </div>
             </div>

@@ -4,7 +4,7 @@ import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'remote-redux-devtools';
 import * as actionCreators from '../actions/actionTypes';
 
-export default function configureStore(initialState) {
+export default (function store(initialState) {
     const composeEnhancers = composeWithDevTools({ realtime: true, actionCreators });
     return createStore(
         rootReducer,
@@ -13,4 +13,4 @@ export default function configureStore(initialState) {
             applyMiddleware(thunk)
         )
     );
-}
+})();

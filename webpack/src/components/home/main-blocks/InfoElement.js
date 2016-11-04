@@ -12,9 +12,11 @@ class Information extends React.Component {
         super(props);
         this.state = {
             showSelectElementFrom: false,
-			swapToInfo: {searchElement: true, infoElement: false}
+			swapToInfo: {searchElement: true, infoElement: false},
+			showModifyWindow: false
         };
         this.toggleSeatFormShow = this.toggleSeatFormShow.bind(this);
+		this.modifyData = this.modifyData.bind(this);
     }
     assignSeat(assign){
         if(assign)
@@ -25,13 +27,16 @@ class Information extends React.Component {
     toggleSeatFormShow(){
         this.setState({showSelectElementFrom : !this.state.showSelectElementFrom});
     }
+	modifyData(){
+		if(!(this.state.props.selectedUser || this.props.selectedSeat)) return;
+		
+	}
     render() {
         var selectedSeat = this.props.selectedSeat;
         var selectedUser = this.props.selectedUser;
 		
 		var data;
 		// We have only seat selected. In case both seat and user is selected - we're showing user info 
-		console.log('selectedUser', selectedUser);
 		if(selectedSeat.id){
 			data = (
 				<table className="table">
@@ -39,32 +44,26 @@ class Information extends React.Component {
 						<tr>
 							<td>Seat ID: </td>
 							<td>{selectedSeat.id}</td>
-							<td><span className="glyphicon glyphicon-wrench pointer-cursor" aria-hidden="true"></span></td>
 						</tr>
 						<tr>
 							<td>Seat Name:</td>
 							<td>{selectedSeat.name}</td>
-							<td><span className="glyphicon glyphicon-wrench pointer-cursor" aria-hidden="true"></span></td>
 						</tr>
 						<tr>
 							<td>Assigned to:</td>
 							<td>{selectedSeat.assignedTo.id ? (selectedSeat.assignedTo.firstName + ' ' + selectedSeat.assignedTo.surName) : 'No user is assigned'}</td>
-							<td><span className="glyphicon glyphicon-wrench pointer-cursor" aria-hidden="true"></span></td>
 						</tr>
 						<tr>
 							<td>Floor:</td>
 							<td>{selectedSeat.floor}</td>
-							<td><span className="glyphicon glyphicon-wrench pointer-cursor" aria-hidden="true"></span></td>
 						</tr>
 						<tr>
 							<td>Color:</td>
 							<td>{selectedSeat.fillStyle}</td>
-							<td><span className="glyphicon glyphicon-wrench pointer-cursor" aria-hidden="true"></span></td>
 						</tr>
 						<tr>
 							<td>Size:</td>
 							<td>{selectedSeat.radius}</td>
-							<td><span className="glyphicon glyphicon-wrench pointer-cursor" aria-hidden="true"></span></td>
 						</tr>
 					</tbody>
 				</table>
@@ -76,27 +75,22 @@ class Information extends React.Component {
 						<tr>
 							<td>Employee ID:</td>
 							<td>{selectedUser.id}</td>
-							<td><span className="glyphicon glyphicon-wrench pointer-cursor" aria-hidden="true"></span></td>
 						</tr>
 						<tr>
 							<td>First Name:</td>
 							<td>{selectedUser.firstName}</td>
-							<td><span className="glyphicon glyphicon-wrench pointer-cursor" aria-hidden="true"></span></td>
 						</tr>
 						<tr>
 							<td>Surname:</td>
 							<td>{selectedUser.surName}</td>
-							<td><span className="glyphicon glyphicon-wrench pointer-cursor" aria-hidden="true"></span></td>
 						</tr>
 						<tr>
 							<td>Taken seat name:</td>
 							<td>{selectedUser.seat.name || 'No seat is taken'}</td>
-							<td><span className="glyphicon glyphicon-wrench pointer-cursor" aria-hidden="true"></span></td>
 						</tr>
 						<tr>
 							<td>Taken seat ID:</td>
 							<td>{selectedUser.seat.id || 'No seat is taken'}</td>
-							<td><span className="glyphicon glyphicon-wrench pointer-cursor" aria-hidden="true"></span></td>
 						</tr>
 					</tbody>
 				</table>
@@ -108,6 +102,9 @@ class Information extends React.Component {
 		}
         return (
             <div className="info-box">
+				<div>
+					Modify: <span className="glyphicon glyphicon-wrench pointer-cursor" aria-hidden="true" onClick={this.modifyData}></span>
+				</div>
 				{data}
             </div>
         );

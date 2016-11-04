@@ -19,7 +19,7 @@ class HomePage extends React.Component {
 		var res = {
 			infoElement: false,
 			searchElement: false
-		}
+		};
 		if(value == 'search'){
 			res.searchElement = true;
 		}else if(value =='info'){

@@ -1,7 +1,7 @@
 import React, {PropTypes} from 'react';
 import { connect } from 'react-redux';
-import classNames from 'classnames';
 import {newUser, selectUser} from '../../../../actions/usersActions';
+import {selectSeat} from '../../../../actions/seatsActions';
 
 //http://bootsnipp.com/snippets/featured/login-form-layered
 class NewUserForm extends React.Component{
@@ -25,6 +25,7 @@ class NewUserForm extends React.Component{
         var newUser = {firstName : this.state.firstName, surName: this.state.surName};
         this.props.newUser(newUser);
         this.props.selectUser(newUser);
+        this.props.selectSeat({});
         this.setState({firstName: '',
                         surName : ''});
     }
@@ -53,4 +54,4 @@ function mapStateToProps(state, ownProps){
         selectedUser: state.selectUserReducer
     };
 }
-export default connect(mapStateToProps, {newUser, selectUser})(NewUserForm);
+export default connect(mapStateToProps, {newUser, selectUser, selectSeat})(NewUserForm);

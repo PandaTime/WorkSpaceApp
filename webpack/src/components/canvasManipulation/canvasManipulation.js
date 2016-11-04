@@ -42,6 +42,6 @@ export function copyShape(el){
 	var seat = {};
 	Object.keys(el).forEach((v)=>{
 		seat[v] = el[v];
-	})
+	});
 	return seat;
 }

@@ -80,11 +80,11 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var store = (0, _configureStore2.default)();
+	//const store = configureStore();
 
 	_reactDom2.default.render(_react2.default.createElement(
 	    _reactRedux.Provider,
-	    { store: store },
+	    { store: _configureStore2.default },
 	    _react2.default.createElement(_reactRouter.Router, { history: _reactRouter.browserHistory, routes: _routes2.default })
 	), document.getElementById('app'));
 
@@ -34874,7 +34874,6 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	exports.default = configureStore;
 
 	var _redux = __webpack_require__(525);
 
@@ -34896,10 +34895,10 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	function configureStore(initialState) {
+	exports.default = function store(initialState) {
 	    var composeEnhancers = (0, _remoteReduxDevtools.composeWithDevTools)({ realtime: true, actionCreators: actionCreators });
 	    return (0, _redux.createStore)(_reducers2.default, initialState, composeEnhancers((0, _redux.applyMiddleware)(_reduxThunk2.default)));
-	}
+	}();
 
 /***/ },
 /* 542 */
@@ -35389,12 +35388,12 @@
 	            return [].concat(_toConsumableArray(state.map(function (v) {
 	                return Object.assign({}, v);
 	            })), [newUser]);
+
 	        case types.UPDATE_USER_SEAT:
 	            var i = getIndex(state, action.user);
 	            if (i < 0) return state;
-	            var el = Object.assign({}, state[i]);
-	            el.seat = Object.assign({}, action.user.seat);
-	            return [].concat(_toConsumableArray(state.slice(0, i)), [el], _toConsumableArray(state.slice(i + 1)));
+	            return [].concat(_toConsumableArray(state.slice(0, i)), [action.user], _toConsumableArray(state.slice(i + 1)));
+
 	        default:
 	            return state;
 	    }
@@ -47223,7 +47222,6 @@
 	function addNewSeat(seat) {
 		return { type: types.NEW_SEAT, seat: seat };
 	}
-
 	function selectSeat(seat) {
 		return { type: types.SELECT_SEAT, seat: seat };
 	}
@@ -47258,11 +47256,9 @@
 
 	var _reactRedux = __webpack_require__(518);
 
-	var _classnames = __webpack_require__(729);
-
-	var _classnames2 = _interopRequireDefault(_classnames);
-
 	var _usersActions = __webpack_require__(732);
+
+	var _seatsActions = __webpack_require__(730);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -47307,6 +47303,7 @@
 	            var newUser = { firstName: this.state.firstName, surName: this.state.surName };
 	            this.props.newUser(newUser);
 	            this.props.selectUser(newUser);
+	            this.props.selectSeat({});
 	            this.setState({ firstName: '',
 	                surName: '' });
 	        }
@@ -47356,7 +47353,7 @@
 	        selectedUser: state.selectUserReducer
 	    };
 	}
-	exports.default = (0, _reactRedux.connect)(mapStateToProps, { newUser: _usersActions.newUser, selectUser: _usersActions.selectUser })(NewUserForm);
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, { newUser: _usersActions.newUser, selectUser: _usersActions.selectUser, selectSeat: _seatsActions.selectSeat })(NewUserForm);
 
 /***/ },
 /* 732 */
@@ -47420,11 +47417,11 @@
 
 	var _InfoElement2 = _interopRequireDefault(_InfoElement);
 
-	var _SearchElement = __webpack_require__(745);
+	var _SearchElement = __webpack_require__(746);
 
 	var _SearchElement2 = _interopRequireDefault(_SearchElement);
 
-	var _showActions = __webpack_require__(748);
+	var _showActions = __webpack_require__(745);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -48775,7 +48772,7 @@
 
 	var _selectElement2 = _interopRequireDefault(_selectElement);
 
-	var _showActions = __webpack_require__(748);
+	var _showActions = __webpack_require__(745);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -48795,9 +48792,11 @@
 
 			_this.state = {
 				showSelectElementFrom: false,
-				swapToInfo: { searchElement: true, infoElement: false }
+				swapToInfo: { searchElement: true, infoElement: false },
+				showModifyWindow: false
 			};
 			_this.toggleSeatFormShow = _this.toggleSeatFormShow.bind(_this);
+			_this.modifyData = _this.modifyData.bind(_this);
 			return _this;
 		}
 
@@ -48812,6 +48811,11 @@
 				this.setState({ showSelectElementFrom: !this.state.showSelectElementFrom });
 			}
 		}, {
+			key: 'modifyData',
+			value: function modifyData() {
+				if (!(this.state.props.selectedUser || this.props.selectedSeat)) return;
+			}
+		}, {
 			key: 'render',
 			value: function render() {
 				var selectedSeat = this.props.selectedSeat;
@@ -48819,7 +48823,6 @@
 
 				var data;
 				// We have only seat selected. In case both seat and user is selected - we're showing user info 
-				console.log('selectedUser', selectedUser);
 				if (selectedSeat.id) {
 					data = _react2.default.createElement(
 						'table',
@@ -48839,11 +48842,6 @@
 									'td',
 									null,
 									selectedSeat.id
-								),
-								_react2.default.createElement(
-									'td',
-									null,
-									_react2.default.createElement('span', { className: 'glyphicon glyphicon-wrench pointer-cursor', 'aria-hidden': 'true' })
 								)
 							),
 							_react2.default.createElement(
@@ -48858,11 +48856,6 @@
 									'td',
 									null,
 									selectedSeat.name
-								),
-								_react2.default.createElement(
-									'td',
-									null,
-									_react2.default.createElement('span', { className: 'glyphicon glyphicon-wrench pointer-cursor', 'aria-hidden': 'true' })
 								)
 							),
 							_react2.default.createElement(
@@ -48877,11 +48870,6 @@
 									'td',
 									null,
 									selectedSeat.assignedTo.id ? selectedSeat.assignedTo.firstName + ' ' + selectedSeat.assignedTo.surName : 'No user is assigned'
-								),
-								_react2.default.createElement(
-									'td',
-									null,
-									_react2.default.createElement('span', { className: 'glyphicon glyphicon-wrench pointer-cursor', 'aria-hidden': 'true' })
 								)
 							),
 							_react2.default.createElement(
@@ -48896,11 +48884,6 @@
 									'td',
 									null,
 									selectedSeat.floor
-								),
-								_react2.default.createElement(
-									'td',
-									null,
-									_react2.default.createElement('span', { className: 'glyphicon glyphicon-wrench pointer-cursor', 'aria-hidden': 'true' })
 								)
 							),
 							_react2.default.createElement(
@@ -48915,11 +48898,6 @@
 									'td',
 									null,
 									selectedSeat.fillStyle
-								),
-								_react2.default.createElement(
-									'td',
-									null,
-									_react2.default.createElement('span', { className: 'glyphicon glyphicon-wrench pointer-cursor', 'aria-hidden': 'true' })
 								)
 							),
 							_react2.default.createElement(
@@ -48934,11 +48912,6 @@
 									'td',
 									null,
 									selectedSeat.radius
-								),
-								_react2.default.createElement(
-									'td',
-									null,
-									_react2.default.createElement('span', { className: 'glyphicon glyphicon-wrench pointer-cursor', 'aria-hidden': 'true' })
 								)
 							)
 						)
@@ -48962,11 +48935,6 @@
 									'td',
 									null,
 									selectedUser.id
-								),
-								_react2.default.createElement(
-									'td',
-									null,
-									_react2.default.createElement('span', { className: 'glyphicon glyphicon-wrench pointer-cursor', 'aria-hidden': 'true' })
 								)
 							),
 							_react2.default.createElement(
@@ -48981,11 +48949,6 @@
 									'td',
 									null,
 									selectedUser.firstName
-								),
-								_react2.default.createElement(
-									'td',
-									null,
-									_react2.default.createElement('span', { className: 'glyphicon glyphicon-wrench pointer-cursor', 'aria-hidden': 'true' })
 								)
 							),
 							_react2.default.createElement(
@@ -49000,11 +48963,6 @@
 									'td',
 									null,
 									selectedUser.surName
-								),
-								_react2.default.createElement(
-									'td',
-									null,
-									_react2.default.createElement('span', { className: 'glyphicon glyphicon-wrench pointer-cursor', 'aria-hidden': 'true' })
 								)
 							),
 							_react2.default.createElement(
@@ -49019,11 +48977,6 @@
 									'td',
 									null,
 									selectedUser.seat.name || 'No seat is taken'
-								),
-								_react2.default.createElement(
-									'td',
-									null,
-									_react2.default.createElement('span', { className: 'glyphicon glyphicon-wrench pointer-cursor', 'aria-hidden': 'true' })
 								)
 							),
 							_react2.default.createElement(
@@ -49038,11 +48991,6 @@
 									'td',
 									null,
 									selectedUser.seat.id || 'No seat is taken'
-								),
-								_react2.default.createElement(
-									'td',
-									null,
-									_react2.default.createElement('span', { className: 'glyphicon glyphicon-wrench pointer-cursor', 'aria-hidden': 'true' })
 								)
 							)
 						)
@@ -49057,6 +49005,12 @@
 				return _react2.default.createElement(
 					'div',
 					{ className: 'info-box' },
+					_react2.default.createElement(
+						'div',
+						null,
+						'Modify: ',
+						_react2.default.createElement('span', { className: 'glyphicon glyphicon-wrench pointer-cursor', 'aria-hidden': 'true', onClick: this.modifyData })
+					),
 					data
 				);
 			}
@@ -49102,6 +49056,14 @@
 
 	var _seatsActions = __webpack_require__(730);
 
+	var _confirmCheck = __webpack_require__(748);
+
+	var _confirmCheck2 = _interopRequireDefault(_confirmCheck);
+
+	var _dataHandler = __webpack_require__(766);
+
+	var _dataHandler2 = _interopRequireDefault(_dataHandler);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -49121,7 +49083,11 @@
 	        _this.state = {
 	            optShow: false,
 	            showUsedSeats: false,
-	            temp_seat_id: 'TEMP_SEAT'
+	            temp_seat_id: 'TEMP_SEAT',
+	            confirmSeatAssign: false,
+	            seatID: '',
+	            seatName: '',
+	            confirmText: ''
 	        };
 	        _this.toggleSeatOptions = _this.toggleSeatOptions.bind(_this);
 	        return _this;
@@ -49138,24 +49104,37 @@
 	            this.setState({ showUsedSeats: show, optShow: false });
 	        }
 	    }, {
+	        key: 'confirmAssignment',
+	        value: function confirmAssignment(id, name) {
+	            this.setState({
+	                confirmSeatAssign: true,
+	                seatID: id,
+	                seatName: name,
+	                confirmText: 'Assign seat ' + name + ' to user ' + this.props.selectedUser.firstName + ' ' + this.props.selectedUser.surName + '?'
+	            });
+	        }
+	    }, {
+	        key: 'rejectSeatAssignment',
+	        value: function rejectSeatAssignment() {
+	            this.setState({
+	                confirmSeatAssign: false,
+	                seatID: '',
+	                seatName: '',
+	                confirmText: ''
+	            });
+	        }
+	    }, {
 	        key: 'assignSeat',
-	        value: function assignSeat(id, name) {
-	            var seat = { id: id, name: name };
-	            var user = Object.assign({}, this.props.selectedUser);
-	            user.seat = seat;
-	            console.log('user', user);
-	            // owning seat by a user(Seat: userid);
-	            this.props.updateSeatUser({ id: id, assignedTo: {
-	                    id: this.props.selectedUser.id,
-	                    firstName: this.props.selectedUser.firstName,
-	                    surName: this.props.selectedUser.surName
-	                } });
-	            // assigning user to a seat(User: seatid);
-	            this.props.updateUserLocation({ id: this.props.selectedUser.id, seat: seat });
+	        value: function assignSeat() {
+	            var _this2 = this;
+
+	            _dataHandler2.default.assignUserSeat(this.state.seatID, this.props.selectedUser.id);
 	            // changing selected user
-	            this.props.selectUser(user);
+	            this.props.selectUser(this.props.users.filter(function (v) {
+	                return v.id == _this2.props.selectedUser.id;
+	            })[0]);
 	            // deleting temp seat
-	            this.unhoverSeat(id);
+	            this.unhoverSeat(this.state.seatID);
 	            // hiding unneeded tabs
 	            this.toggleSeatOptions();
 	            this.props.toggleSeatFormShow();
@@ -49178,23 +49157,30 @@
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var _this2 = this;
+	            var _this3 = this;
 
 	            var showUsed = this.state.showUsedSeats,
 	                temp_seat_id = this.state.temp_seat_id;
 	            var seats = this.props.seats.map(function (v, i) {
 	                if (v.id.startsWith(temp_seat_id)) return;
-	                if (showUsed) return _react2.default.createElement(
-	                    'div',
-	                    { key: i },
-	                    v.id
-	                );else if (!v.assignedTo.id) return _react2.default.createElement(
-	                    'div',
-	                    { key: i,
-	                        onMouseEnter: _this2.hoverSeat.bind(_this2, v.x, v.y, v.id),
-	                        onMouseOut: _this2.unhoverSeat.bind(_this2, v.id),
-	                        onClick: _this2.assignSeat.bind(_this2, v.id, v.name) },
-	                    v.name
+	                //if(showUsed)
+	                //    return (<div key={i}>{v.id}</div>);
+	                if (showUsed || !v.assignedTo.id) return _react2.default.createElement(
+	                    'li',
+	                    { key: i, className: 'list-group-item',
+	                        onMouseEnter: _this3.hoverSeat.bind(_this3, v.x, v.y, v.id),
+	                        onMouseOut: _this3.unhoverSeat.bind(_this3, v.id),
+	                        onClick: _this3.confirmAssignment.bind(_this3, v.id, v.name) },
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'select-user-name' },
+	                        v.name
+	                    ),
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'select-user-seat' },
+	                        v.assignedTo.id ? v.assignedTo.name : 'Seat isn\'t occupied'
+	                    )
 	                );
 	            });
 
@@ -49256,7 +49242,12 @@
 	                        ),
 	                        _react2.default.createElement(
 	                            'div',
-	                            null,
+	                            { className: (0, _classnames2.default)(this.state.confirmSeatAssign ? '' : 'hidden') },
+	                            _react2.default.createElement(_confirmCheck2.default, { text: this.state.confirmText, accept: this.assignSeat.bind(this), reject: this.rejectSeatAssignment.bind(this) })
+	                        ),
+	                        _react2.default.createElement(
+	                            'ul',
+	                            { className: 'list-group' },
 	                            seats[0] ? seats : 'No seats are available'
 	                        )
 	                    )
@@ -49286,6 +49277,27 @@
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.changeShown = changeShown;
+
+	var _actionTypes = __webpack_require__(544);
+
+	var types = _interopRequireWildcard(_actionTypes);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function changeShown(blocks) {
+	    return { type: types.CHANGE_SHOW_BLOCKS, blocks: blocks };
+	}
+
+/***/ },
+/* 746 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
 
@@ -49309,11 +49321,11 @@
 
 	var _selectElement2 = _interopRequireDefault(_selectElement);
 
-	var _assignUser = __webpack_require__(746);
+	var _assignUser = __webpack_require__(747);
 
 	var _assignUser2 = _interopRequireDefault(_assignUser);
 
-	var _showActions = __webpack_require__(748);
+	var _showActions = __webpack_require__(745);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -49466,18 +49478,6 @@
 									_react2.default.createElement('span', { className: 'glyphicon glyphicon-wrench pointer-cursor', 'aria-hidden': 'true', onClick: _this2.userInfo.bind(_this2, true, v) })
 								)
 							)
-						);else if (!v.seat.id) return _react2.default.createElement(
-							'div',
-							{ key: i },
-							v.firstName,
-							' ',
-							v.surName,
-							' - ',
-							_react2.default.createElement(
-								'span',
-								{ className: 'add-info' },
-								v.seat.id ? v.seat.id : 'Don\'t have a seat'
-							)
 						);
 					});
 				} else if (this.state.selectBy == 'seats') {
@@ -49614,7 +49614,7 @@
 	exports.default = (0, _reactRedux.connect)(mapStateToProps, { selectUser: _usersActions.selectUser, selectSeat: _seatsActions.selectSeat, deleteSeat: _seatsActions.deleteSeat, addNewSeat: _seatsActions.addNewSeat, changeShown: _showActions.changeShown })(Search);
 
 /***/ },
-/* 746 */
+/* 747 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -49639,9 +49639,13 @@
 
 	var _seatsActions = __webpack_require__(730);
 
-	var _confirmCheck = __webpack_require__(747);
+	var _confirmCheck = __webpack_require__(748);
 
 	var _confirmCheck2 = _interopRequireDefault(_confirmCheck);
+
+	var _dataHandler = __webpack_require__(766);
+
+	var _dataHandler2 = _interopRequireDefault(_dataHandler);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -49669,6 +49673,7 @@
 	        };
 	        _this.toggleUserOptions = _this.toggleUserOptions.bind(_this);
 	        _this.confirmAssignment = _this.confirmAssignment.bind(_this);
+
 	        return _this;
 	    }
 
@@ -49703,34 +49708,13 @@
 	    }, {
 	        key: 'assignUser',
 	        value: function assignUser() {
-	            var _this2 = this;
-
 	            this.setState({ confirmUserAssign: false });
-
-	            // assigning user to a seat
-	            var user = {
-	                id: this.state.selectedUserId,
-	                seat: {
-	                    id: this.props.selectedSeat.id,
-	                    name: this.props.selectedSeat.name
-	                }
-	            };
-	            this.props.updateUserLocation(user);
-	            // occupying seat by a user
-	            var userData = this.props.users.filter(function (v) {
-	                return v.id === _this2.state.selectedUserId;
-	            })[0];
-	            this.props.updateSeatUser({
-	                id: this.props.selectedSeat.id,
-	                assignedTo: {
-	                    id: userData.id,
-	                    firstName: userData.firstName,
-	                    surName: userData.surName
-	                }
-	            });
+	            // assigning user
+	            _dataHandler2.default.assignUserSeat(this.props.selectedSeat.id, this.state.selectedUserId);
+	            this.unhoverSeat(this.props.selectedSeat.id);
 	            // closing undeeded tabs
 	            this.toggleUserOptions();
-	            this.props.toggleUserAssign();
+	            this.props.toggleFormShow();
 	        }
 	    }, {
 	        key: 'hoverSeat',
@@ -49750,7 +49734,7 @@
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var _this3 = this;
+	            var _this2 = this;
 
 	            var showAssigned = this.state.showAssignedUsersFn,
 	                temp_seat_id = this.state.temp_seat_id;
@@ -49759,7 +49743,7 @@
 	                var name = v.firstName + ' ' + v.surName;
 	                if (showAssigned) return _react2.default.createElement(
 	                    'li',
-	                    { key: i, className: 'list-group-item', onClick: _this3.confirmAssignment.bind(_this3, name, v.id) },
+	                    { key: i, className: 'list-group-item', onClick: _this2.confirmAssignment.bind(_this2, name, v.id) },
 	                    _react2.default.createElement(
 	                        'div',
 	                        { className: 'select-user-name' },
@@ -49772,7 +49756,7 @@
 	                    )
 	                );else if (!v.seat.id) return _react2.default.createElement(
 	                    'li',
-	                    { key: i, className: 'list-group-item', onClick: _this3.confirmAssignment.bind(_this3, name, v.id) },
+	                    { key: i, className: 'list-group-item', onClick: _this2.confirmAssignment.bind(_this2, name, v.id) },
 	                    _react2.default.createElement(
 	                        'div',
 	                        { className: 'select-user-name' },
@@ -49872,10 +49856,10 @@
 	    };
 	}
 	//export default Information;
-	exports.default = (0, _reactRedux.connect)(mapStateToProps, { updateSeatUser: _seatsActions.updateSeatUser, deleteSeat: _seatsActions.deleteSeat, selectUser: _usersActions.selectUser, updateUserLocation: _usersActions.updateUserLocation })(AssignUser);
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, { deleteSeat: _seatsActions.deleteSeat, selectUser: _usersActions.selectUser })(AssignUser);
 
 /***/ },
-/* 747 */
+/* 748 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -49941,27 +49925,6 @@
 	}(_react2.default.Component);
 
 	exports.default = ConfirmCheck;
-
-/***/ },
-/* 748 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.changeShown = changeShown;
-
-	var _actionTypes = __webpack_require__(544);
-
-	var types = _interopRequireWildcard(_actionTypes);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	function changeShown(blocks) {
-	    return { type: types.CHANGE_SHOW_BLOCKS, blocks: blocks };
-	}
 
 /***/ },
 /* 749 */
@@ -50500,6 +50463,97 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "89889688147bd7575d6327160d64e760.svg";
+
+/***/ },
+/* 766 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+	exports.copyObj = copyObj;
+
+	var _configureStore = __webpack_require__(540);
+
+	var _configureStore2 = _interopRequireDefault(_configureStore);
+
+	var _initValues = __webpack_require__(546);
+
+	var _initValues2 = _interopRequireDefault(_initValues);
+
+	var _seatsActions = __webpack_require__(730);
+
+	var _usersActions = __webpack_require__(732);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var api = {};
+
+	api.assignUserSeat = function (seat_id, user_id) {
+	    // getting seat and user info
+	    var _getUsersSeatsArr = getUsersSeatsArr(_configureStore2.default.getState()),
+	        users = _getUsersSeatsArr.users,
+	        seats = _getUsersSeatsArr.seats;
+
+	    var seat = seats.filter(function (v) {
+	        return v.id == seat_id;
+	    })[0],
+	        user = users.filter(function (v) {
+	        return v.id == user_id;
+	    })[0],
+	        oldSeat,
+	        oldUser,
+	        newSeat,
+	        newUser;
+
+	    // checking in case user or seat were already assigned/taken
+	    if (user.seat.id) {
+	        oldSeat = copyObj(seats.filter(function (v) {
+	            return v.id == user.seat.id;
+	        })[0]);
+	        oldSeat.assignedTo = Object.assign({}, _initValues2.default.newSeatForm.assignedTo);
+	        _configureStore2.default.dispatch((0, _seatsActions.updateSeatInfo)(oldSeat));
+	    } else if (seat.assignedTo.id) {
+	        oldUser = copyObj(users.filter(function (v) {
+	            return v.id == seat.assignedTo.id;
+	        })[0]);
+	        oldUser.seat = Object.assign({}, _initValues2.default.newUserForm.seat);
+	        _configureStore2.default.dispatch((0, _usersActions.updateUserLocation)(oldUser));
+	    }
+	    // updating values
+	    newSeat = copyObj(seat);
+	    newSeat.assignedTo = {
+	        id: user.id,
+	        firstName: user.firstName,
+	        surName: user.surName
+	    };
+	    newUser = copyObj(user);
+	    newUser.seat = {
+	        id: seat.id,
+	        name: seat.name
+	    };
+	    _configureStore2.default.dispatch((0, _seatsActions.updateSeatInfo)(newSeat));
+	    _configureStore2.default.dispatch((0, _usersActions.updateUserLocation)(newUser));
+	};
+	exports.default = api;
+
+
+	function getUsersSeatsArr(state) {
+	    return { users: state.arrUsersReducer, seats: state.arrSeatsReducer };
+	}
+
+	function copyObj(el) {
+	    var seat = {};
+	    Object.keys(el).forEach(function (v) {
+	        seat[v] = _typeof(el[v]) == 'object' ? Object.assign({}, el[v]) : el[v];
+	    });
+	    return seat;
+	}
 
 /***/ }
 /******/ ]);

@@ -2,10 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import classNames from 'classnames';
-import {selectUser, updateUserLocation} from '../../../../actions/usersActions';
-import {updateSeatUser, deleteSeat} from '../../../../actions/seatsActions';
+import {selectUser} from '../../../../actions/usersActions';
+import {deleteSeat} from '../../../../actions/seatsActions';
 import ConfirmCheck from './confirmCheck';
 
+import dataHandler from '../../dataHandler';
 
 class AssignUser extends React.Component {
     constructor(props){
@@ -20,6 +21,7 @@ class AssignUser extends React.Component {
         };
         this.toggleUserOptions = this.toggleUserOptions.bind(this);
 		this.confirmAssignment = this.confirmAssignment.bind(this);
+
     }
     toggleUserOptions(){
         this.setState({optShow:!this.state.optShow})
@@ -43,29 +45,12 @@ class AssignUser extends React.Component {
     }
     assignUser(){
 		this.setState({confirmUserAssign: false});
-
-        // assigning user to a seat
-		var user = {
-			id: this.state.selectedUserId,
-			seat: {
-				id: this.props.selectedSeat.id,
-				name: this.props.selectedSeat.name
-			}
-		};
-		this.props.updateUserLocation(user);
-		// occupying seat by a user
-        var userData = this.props.users.filter((v)=>v.id === this.state.selectedUserId)[0];
-		this.props.updateSeatUser({
-			id: this.props.selectedSeat.id,
-            assignedTo: {
-				id: userData.id,
-				firstName: userData.firstName,
-				surName: userData.surName
-			}
-		});
+        // assigning user
+        dataHandler.assignUserSeat(this.props.selectedSeat.id , this.state.selectedUserId);
+        this.unhoverSeat(this.props.selectedSeat.id);
         // closing undeeded tabs
         this.toggleUserOptions();
-        this.props.toggleUserAssign();
+        this.props.toggleFormShow();
     }
     hoverSeat(x, y, id){
         var seat = {
@@ -128,5 +113,5 @@ function mapStateToProps(state, ownProps){
     };
 }
 //export default Information;
-export default connect(mapStateToProps, {updateSeatUser, deleteSeat, selectUser, updateUserLocation})(AssignUser);
+export default connect(mapStateToProps, {deleteSeat, selectUser})(AssignUser);
 

@@ -9,13 +9,13 @@ export function arrUsersReducer(state = initialState.users, action){
             newUser.seat = Object.assign({}, defaultValues.newUserForm.seat);
             newUser.id = defaultValues.newUserForm.id();
             return [...state.map((v)=>Object.assign({}, v)), newUser];
+
         case types.UPDATE_USER_SEAT:
             var i = getIndex(state, action.user);
             if(i < 0)
                 return state;
-            var el = Object.assign({}, state[i]);
-            el.seat = Object.assign({}, action.user.seat);
-            return [...state.slice(0, i), el, ...state.slice(i+1)];
+            return [...state.slice(0, i), action.user, ...state.slice(i+1)];
+        
         default:
             return state;
     }

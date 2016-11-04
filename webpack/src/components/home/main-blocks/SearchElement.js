@@ -106,8 +106,6 @@ class Search extends React.Component {
 								</div>
 							</div>
 						</li>);
-				else if(!v.seat.id)
-					return (<div key={i}>{v.firstName} {v.surName} - <span className="add-info">{v.seat.id ? v.seat.id : 'Don\'t have a seat'}</span></div>);
 				});
 		}else if(this.state.selectBy == 'seats'){
 			list = this.props.seats.map((v, i)=>{
