@@ -18,11 +18,13 @@ class Search extends React.Component {
 			showAssignUserForm: false,
 			showSelectSeatForm: false,
 			hoverSeatID: '',
-			swapToInfo: {searchElement: false, infoElement: true}
+			swapToInfo: {searchElement: false, infoElement: true},
+			searchText: ''
 		};
 		this.toggleSeatOptions = this.toggleSeatOptions.bind(this);
 		this.toggleUserAssign = this.toggleUserAssign.bind(this);
 		this.toggleSeatSelect = this.toggleSeatSelect.bind(this);
+		this.handleSearchInput = this.handleSearchInput.bind(this);
     }
 	showUsedSeatsFn(selectBy, ifAll){
 		this.setState({showUsed : ifAll, selectBy, optShow : false});
@@ -84,13 +86,16 @@ class Search extends React.Component {
 			this.props.changeShown(this.state.swapToInfo); // selecting "Info" tab
 		}
 	}
+	handleSearchInput(e){
+		this.setState({searchText: e.target.value});
+	}
     render() {
 		var showUsed = this.state.showUsed,
 			temp_seat_id = this.state.temp_seat_id;
 		var list = [], text;
 		if(this.state.selectBy == 'users'){
 			list = this.props.users.map((v, i)=>{
-				if(showUsed || !v.seat.id)
+				if((showUsed || !v.seat.id) && ((v.firstName.indexOf(this.state.searchText) > -1) || (v.surName.indexOf(this.state.searchText) > -1)))
 					return (
 						<li key={i} className={classNames("list-group-item", ((v.seat.id && v.seat.id == this.props.selectedSeat.id) || v.id == this.props.selectedUser.id) ? 'list-group-item-warning' : '')}>
 							{v.firstName + ' ' + v.surName} - <span className="add-info">{v.seat.id ? v.seat.name : 'Don\'t have a seat'} </span>
@@ -110,7 +115,7 @@ class Search extends React.Component {
 		}else if(this.state.selectBy == 'seats'){
 			list = this.props.seats.map((v, i)=>{
 				if(v.id.startsWith(temp_seat_id)) return;
-				if(showUsed || !v.assignedTo.id){
+				if((showUsed || !v.assignedTo.id)  && (v.name.indexOf(this.state.searchText) > -1)){
 					text = v.name + ' - ' +  (v.assignedTo.id ? ('taken by ' + v.assignedTo.firstName + ' ' + v.assignedTo.surName) : 'free');
 					return (<li key={i} className={classNames("list-group-item", (v.id == this.props.selectedSeat.id || (this.props.selectUser.seat && v.id == this.props.selectUser.seat.id)) ? 'list-group-item-warning' : '')}
 								 onMouseEnter={this.hoverSeat.bind(this, v.x, v.y, v.id)}
@@ -137,7 +142,7 @@ class Search extends React.Component {
             <div className="search-box">
 				<div>
 					<div className="input-group">
-						<input type="text" className="form-control" aria-label="..."/>
+						<input type="text" className="form-control" aria-label="..." value={this.state.searchText} onChange={this.handleSearchInput} />
 						<div className="input-group-btn">
 							<button type="button" className="btn btn-default search-element-input" onClick={this.toggleSeatOptions}>
 								{this.state.selectBy == 'users' ? (this.state.showUsed ? 'All Users' : 'Free Users') : (this.state.showUsed ? 'All Seats' : 'Free Seats')}

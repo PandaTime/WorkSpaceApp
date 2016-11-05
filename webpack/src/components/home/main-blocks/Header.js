@@ -40,7 +40,6 @@ class Header extends React.Component{
             showDropDown: this.state.showDropDown.map(()=>false)});
     }
     render() {
-        console.log('esats', this.props.seats);
 		var searchList = this.state.searchByTypes.map((v, i)=>{
 			return(<li key={i}><a onClick={this.searchBySet.bind(this, v)}>By {v}</a></li>)
 		});

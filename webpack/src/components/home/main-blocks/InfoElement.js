@@ -103,7 +103,7 @@ class Information extends React.Component {
 		}
         return (
             <div className="info-box">
-				<div>
+				<div className={classNames(this.props.selectedUser.id || this.props.selectedSeat.id ? '' : 'hidden')}>
 					Modify: <span className="glyphicon glyphicon-wrench pointer-cursor" aria-hidden="true" onClick={this.modifyData}></span>
 				</div>
 				{data}

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import classNames from 'classnames';
 import {selectUser, updateUserLocation} from '../../../../actions/usersActions';
-import {addNewSeat, updateSeatUser, deleteSeat} from '../../../../actions/seatsActions';
+import {addNewSeat, deleteSeat} from '../../../../actions/seatsActions';
 
 import ConfirmCheck from './confirmCheck';
 import dataHandler from '../../../../reducers/dataHandler';
@@ -126,5 +126,5 @@ function mapStateToProps(state, ownProps){
     };
 }
 //export default Information;
-export default connect(mapStateToProps, {addNewSeat, updateSeatUser, deleteSeat, selectUser, updateUserLocation})(SelectElement);
+export default connect(mapStateToProps, {addNewSeat, deleteSeat, selectUser, updateUserLocation})(SelectElement);
 

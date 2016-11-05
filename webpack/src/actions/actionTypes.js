@@ -3,7 +3,6 @@ export const AJAX_CALL_ERROR = 'AJAX_CALL_ERROR';
 
 export const NEW_USER = 'NEW_USER';
 export const SELECT_USER = 'SELECT_USER';
-export const UPDATE_USER_INFO = 'UPDATE_USER_INFO';
 export const UPDATE_USER_SEAT = 'UPDATE_USER_SEAT';
 
 export const NEW_SEAT = 'NEW_SEAT';

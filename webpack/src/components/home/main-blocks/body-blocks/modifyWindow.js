@@ -97,7 +97,7 @@ class ModifyForm extends React.Component {
                     <tr>
                         <td>Seat Name:</td>
                         <td className="form-td">
-							<input name="firstname" type="text" placeholder="First Name"value={this.state.seatName} onChange={this.handleSeatNameChange} />
+							<input name="firstname" type="text" placeholder="First Name" value={this.state.seatName} onChange={this.handleSeatNameChange} />
 							<span className="glyphicon glyphicon-wrench" aria-hidden="true"></span>
 						</td>
                     </tr>

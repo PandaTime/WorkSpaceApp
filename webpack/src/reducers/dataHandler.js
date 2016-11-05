@@ -67,7 +67,7 @@ api.initialize = function(users, seats){
     console.log(users, seats);
     store.dispatch(initUsers(users));
     store.dispatch(initSeats(seats));
-}
+};
 
 
 export default api;

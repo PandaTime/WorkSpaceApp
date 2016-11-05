@@ -13,9 +13,6 @@ export function deleteSeat(id){
 export function updateSeatInfo(seat){
 	return {type: types.UPDATE_SEAT_INFO, seat};
 }
-export function updateSeatUser(seat){
-	return {type: types.UPDATE_SEAT_INFO, seat};
-}
 export function initSeats(seats){
 	return {type: types.INITIALIZE_SEATS, seats}
 }

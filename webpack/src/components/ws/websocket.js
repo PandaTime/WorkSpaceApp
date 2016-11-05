@@ -1,8 +1,14 @@
 import dataHandler from '../../reducers/dataHandler';
 
-var socket = new WebSocket('ws://localhost:8080/');
+var socket = new WebSocket('ws://localhost:8080/'),
+    api = {};
 
-export default socket;
+export default api;
+
+api.updateSeats = function(){
+    console.log('a', 1);
+};
+
 
 socket.onopen = () => {
     // gonna send connection info in case there is token
