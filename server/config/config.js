@@ -4,7 +4,7 @@ module.exports = {
     rootPath: path.normalize(__dirname + '/../../'),
 	publicPath : path.normalize(__dirname + '/../../public'),
     port: process.env.PORT || 8080,
-    db: 'mongodb://admin:admin@ds061076.mlab.com:61076/omdbfilms',
+    db: 'mongodb://admin:123@ds145997.mlab.com:45997/workspace',
     // needed values for correct omdb requests
     elemPerPage: 10, // omdb value
     maximumDelayTime: 5000,

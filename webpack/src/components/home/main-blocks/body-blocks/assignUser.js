@@ -113,5 +113,5 @@ function mapStateToProps(state, ownProps){
     };
 }
 //export default Information;
-export default connect(mapStateToProps, {deleteSeat, selectUser})(AssignUser);
+export default connect(mapStateToProps, {deleteSeat})(AssignUser);
 

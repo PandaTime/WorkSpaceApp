@@ -6,6 +6,8 @@ import {selectUser} from '../../../actions/usersActions';
 import SelectElement from './body-blocks/selectElement';
 import AssignUser from './body-blocks/assignUser';
 import {changeShown} from '../../../actions/showActions';
+import ConfirmCheck from './body-blocks/confirmCheck';
+import dataHandler from '../../../reducers/dataHandler';
 
 class Search extends React.Component {
     constructor(props){
@@ -19,12 +21,17 @@ class Search extends React.Component {
 			showSelectSeatForm: false,
 			hoverSeatID: '',
 			swapToInfo: {searchElement: false, infoElement: true},
-			searchText: ''
+			searchText: '',
+			deleteCheck: false,
+			confirmText: '',
+			deleteID: ''
 		};
 		this.toggleSeatOptions = this.toggleSeatOptions.bind(this);
 		this.toggleUserAssign = this.toggleUserAssign.bind(this);
 		this.toggleSeatSelect = this.toggleSeatSelect.bind(this);
 		this.handleSearchInput = this.handleSearchInput.bind(this);
+		this.acceptDelete = this.acceptDelete.bind(this);
+		this.rejectDelete = this.rejectDelete.bind(this);
     }
 	showUsedSeatsFn(selectBy, ifAll){
 		this.setState({showUsed : ifAll, selectBy, optShow : false});
@@ -48,6 +55,7 @@ class Search extends React.Component {
 		this.setState({hoverSeatID: id});
 		this.props.addNewSeat(seat);
 	}
+
 	unhoverSeat(id){
 		if(this.state.showAssignUserForm) return;
 		this.setState({hoverSeatID: ''});
@@ -59,8 +67,20 @@ class Search extends React.Component {
 		this.props.selectSeat(seat);
 		if(assign)
             this.toggleUserAssign();
-        else
-            console.log('delete');
+	}
+	toggleDeleteCheck(id){
+		this.setState({
+			deleteCheck: !this.state.deleteCheck,
+			deleteID: id,
+			confirmText: 'Are you sure you want to delete Seat ' + id + '?'
+		});
+	}
+	acceptDelete(){
+		dataHandler.deleteSeat(this.state.deleteID);
+		this.setState({deleteCheck: !this.state.deleteCheck, deleteID: '', confirmText: ''});
+	}
+	rejectDelete(){
+		this.setState({deleteCheck: !this.state.deleteCheck, deleteID: '', confirmText: ''});
 	}
 	selectSeat(assign, user_id){
 		var user = this.props.users.filter((v)=>v.id===user_id)[0];
@@ -100,10 +120,7 @@ class Search extends React.Component {
 						<li key={i} className={classNames("list-group-item", ((v.seat.id && v.seat.id == this.props.selectedSeat.id) || v.id == this.props.selectedUser.id) ? 'list-group-item-warning' : '')}>
 							{v.firstName + ' ' + v.surName} - <span className="add-info">{v.seat.id ? v.seat.name : 'Don\'t have a seat'} </span>
 							<div className="element-setup-panel">
-								<div className="col-xs-1">
-									<span className="glyphicon glyphicon-remove pointer-cursor" aria-hidden="true" onClick={this.selectSeat.bind(this, false, v.id)}></span>
-								</div>
-								<div className="col-xs-1">
+								<div className={classNames(this.props.loggedIn ? '' : 'hidden', "col-xs-1")}>
 									<span className="glyphicon glyphicon-map-marker pointer-cursor" aria-hidden="true" onClick={this.selectSeat.bind(this, true, v.id)}></span>
 								</div>
 								<div className="col-xs-1">
@@ -122,10 +139,10 @@ class Search extends React.Component {
 								 onMouseLeave={this.unhoverSeat.bind(this, v.id)}>
 								 {text}
 								<div className="element-setup-panel">
-									<div className="col-xs-1">
-										<span className="glyphicon glyphicon-remove pointer-cursor" aria-hidden="true" onClick={this.assignUser.bind(this, false, v.id)}></span>
+									<div className={classNames(this.props.loggedIn ? '' : 'hidden', "col-xs-1")}>
+										<span className="glyphicon glyphicon-remove pointer-cursor" aria-hidden="true" onClick={this.toggleDeleteCheck.bind(this, v.id)}></span>
 									</div>
-									<div className="col-xs-1">
+									<div className={classNames(this.props.loggedIn ? '' : 'hidden', "col-xs-1")}>
 										<span className="glyphicon glyphicon-map-marker pointer-cursor" aria-hidden="true" onClick={this.assignUser.bind(this, true, v.id)}></span>
 									</div>
 									<div className="col-xs-1">
@@ -140,6 +157,9 @@ class Search extends React.Component {
 		list = list.filter((v)=>!!v);
 		return (
             <div className="search-box">
+				<div className={classNames(this.state.deleteCheck ? '' : 'hidden')}>
+					<ConfirmCheck text={this.state.confirmText} accept={this.acceptDelete} reject={this.rejectDelete}/>
+				</div>
 				<div>
 					<div className="input-group">
 						<input type="text" className="form-control" aria-label="..." value={this.state.searchText} onChange={this.handleSearchInput} />
@@ -175,7 +195,8 @@ function mapStateToProps(state, ownProps){
 		users: state.arrUsersReducer,
 		selectedUser: state.selectUserReducer,
 		seats: state.arrSeatsReducer,
-		selectedSeat: state.selectSeatReducer
+		selectedSeat: state.selectSeatReducer,
+		loggedIn: state.authericationReducer
     };
 }
 //export default Search;

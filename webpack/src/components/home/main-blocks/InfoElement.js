@@ -103,7 +103,7 @@ class Information extends React.Component {
 		}
         return (
             <div className="info-box">
-				<div className={classNames(this.props.selectedUser.id || this.props.selectedSeat.id ? '' : 'hidden')}>
+				<div className={classNames((this.props.selectedUser.id || this.props.selectedSeat.id) && this.props.loggedIn ? '' : 'hidden')}>
 					Modify: <span className="glyphicon glyphicon-wrench pointer-cursor" aria-hidden="true" onClick={this.modifyData}></span>
 				</div>
 				{data}
@@ -117,7 +117,8 @@ function mapStateToProps(state, ownProps){
         seats: state.arrSeatsReducer,
         selectedSeat: state.selectSeatReducer,
         users: state.arrUsersReducer,
-        selectedUser: state.selectUserReducer
+        selectedUser: state.selectUserReducer,
+		loggedIn: state.authericationReducer
     };
 }
 //export default Information;

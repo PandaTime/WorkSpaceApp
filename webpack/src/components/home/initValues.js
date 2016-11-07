@@ -16,5 +16,9 @@ export default {
 		firstName: '',
 		surName: '',
 		seat: {id: null, name: null}
+	},
+	changeSource:{
+		user: 'user',
+		system: 'system'
 	}
 }

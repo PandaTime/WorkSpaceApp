@@ -2,7 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import {selectSeat, updateSeatInfo} from '../../../actions/seatsActions';
 import {drawShapes, selectElement, windowToCanvas} from '../../canvasManipulation/canvasManipulation';
-import {selectUser} from '../../../actions/usersActions'
+import {selectUser} from '../../../actions/usersActions';
+import {dataChangeSource} from '../../../actions/adminActions';
+
+import initValues from '../initValues';
 
 class Canvas extends React.Component {
     constructor(props){
@@ -30,21 +33,15 @@ class Canvas extends React.Component {
 		
 		var {shapeBeingDragged, lastdrag} = selectElement(this.state, this.props.seats, e.nativeEvent);
 		if(shapeBeingDragged || this.props.selectedSeat.x){
-			this.selectedSeatColor(shapeBeingDragged);
 			this.props.selectSeat(shapeBeingDragged || {});
 			this.props.selectUser({});
 			this.state.lastdrag = lastdrag;
 		}
 	}
-	selectedSeatColor(shapeBeingDragged){
-		/*if(shapeBeingDragged) // coloring new node
-			this.props.updateSeatInfo({id: shapeBeingDragged.id, fillStyle: 'rgba(244, 209, 66, 0.8)'});
-		if(this.props.selectedSeat.id) // uncoloring old node
-			this.props.updateSeatInfo({id: this.props.selectedSeat.id, fillStyle: 'rgba(147, 197, 114, 0.8)'});	*/
-	}
 	seatLocationUpdate(e){
-		if(this.props.block.modifyUserData || this.props.block.modifySeatData){return;}
+		if(this.props.block.modifyUserData || this.props.block.modifySeatData || !this.props.loggedIn){return;}
 		if(this.props.selectedSeat.x && (e.nativeEvent.buttons == 1)){
+			this.props.dataChangeSource(initValues.changeSource.user);
 			var location = windowToCanvas(this.state.canvas, e.nativeEvent);
 			var x = this.props.selectedSeat.x + (location.x - this.state.lastdrag.x),
 				y = this.props.selectedSeat.y + (location.y - this.state.lastdrag.y);
@@ -57,8 +54,6 @@ class Canvas extends React.Component {
         if(canvas){
 			context.clearRect(0,0,canvas.width,canvas.height);
 			this.drawShapes();
-			// drawing selected seat
-
         }
         return (
             <canvas id="canvas" ref="canvas" height="500" width="900"
@@ -74,8 +69,9 @@ function mapStateToProps(state, ownProps){
 		seats: state.arrSeatsReducer,
 		selectedSeat: state.selectSeatReducer,
 		selectedUser: state.selectUserReducer,
-		block: state.changeShownReducer
+		block: state.changeShownReducer,
+		loggedIn: state.authericationReducer
     };
 }
-export default connect(mapStateToProps, {selectSeat, updateSeatInfo, selectUser})(Canvas);
+export default connect(mapStateToProps, {selectSeat, updateSeatInfo, selectUser, dataChangeSource})(Canvas);
 

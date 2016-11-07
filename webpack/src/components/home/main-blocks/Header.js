@@ -1,10 +1,11 @@
-import React, {PropTypes} from 'react';
+import React from 'react';
 import { Link, IndexLink } from 'react-router';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import {addNewSeat} from '../../../actions/seatsActions';
 import config from '../initValues';
 import NewUserForm from './header-blocks/newUserForm';
+import ws from '../../ws/websocket';
 
 class Header extends React.Component{
     constructor(props){
@@ -12,11 +13,31 @@ class Header extends React.Component{
         this.state = {showDropDown : [false, false, false, false], // search bar DropDown = 0; //
 					  showNewUserBox : false,
                       searchByTypes: ['User', 'Seat', 'Floor'],
+                      loginForm : false,
+                      login: '',
+                      loggedUser: '',
+                      password: '',
 					  searchBy: 'Users'};
 		this.addSeat = this.addSeat.bind(this);
+        this.toggleLoginFrom = this.toggleLoginFrom.bind(this);
+        this.passwordChange = this.passwordChange.bind(this);
+        this.loginChange = this.loginChange.bind(this);
+        this.signIn = this.signIn.bind(this);
+        this.logOut = this.logOut.bind(this);
     }
 	componentDidMount() {
         document.body.addEventListener('click', this.onClick.bind(this, -1));
+    }
+    componentWillUpdate(nextProps){
+        if(nextProps.loggedIn != this.state.loggedUser){
+            this.toggleLoginFrom();
+            this.setState({
+                loggedUser: nextProps.loggedIn
+            })
+        }
+    }
+    logOut(){
+        ws.logout();
     }
     onClick(id) {
 		if(this.props.block.modifyUserData || this.props.block.modifySeatData){return;}
@@ -39,6 +60,23 @@ class Header extends React.Component{
         this.setState({showNewUserBox: hideNewUser ? false : true,
             showDropDown: this.state.showDropDown.map(()=>false)});
     }
+    toggleLoginFrom(){
+        this.setState({loginForm: !this.state.loginForm});
+    }
+    passwordChange(e){
+        this.setState({password: e.target.value});
+    }
+    loginChange(e){
+        this.setState({login: e.target.value});
+    }
+    signIn(e){
+        e.preventDefault();
+        this.setState({
+            login: '',
+            password: ''
+        });
+        ws.autherization(this.state.login, this.state.password);
+    }
     render() {
 		var searchList = this.state.searchByTypes.map((v, i)=>{
 			return(<li key={i}><a onClick={this.searchBySet.bind(this, v)}>By {v}</a></li>)
@@ -60,17 +98,7 @@ class Header extends React.Component{
                     </div>
                     <div className="navbar-collapse collapse">
                         <div className="nav navbar-nav">
-							<li className="dropdown nav-elements">
-                                <a id="projects" onClick={this.onClick.bind(this, 1)}>
-                                    <span>Floor</span><span className="caret"></span>
-                                </a>
-
-                                <ul className={classNames('dropdown-menu react-toggle', this.state.showDropDown[1] ? '' : 'hidden')}>
-                                    <li><Link to="#">Null</Link></li>
-                                    <li><Link to="#">Null</Link></li>
-                                </ul>
-                            </li>
-                            <li className="dropdown nav-elements">
+                            <li className={classNames(this.props.loggedIn ? '' : 'hidden', "dropdown nav-elements")}>
                                 <a id="projects" onClick={this.onClick.bind(this, 2)}>
                                     <span>Seats</span><span className="caret"></span>
                                 </a>
@@ -78,7 +106,7 @@ class Header extends React.Component{
                                     <li><a onClick={this.addSeat} className={classNames(this.state.showDropDown ? 'disable' : '')}>Add Seat</a></li>
                                 </ul>
                             </li>
-                            <li className="dropdown nav-elements">
+                            <li className={classNames(this.props.loggedIn ? '' : 'hidden', "dropdown nav-elements")}>
                                 <a id="projects" onClick={this.onClick.bind(this, 3)}>
                                     <span>Users</span><span className="caret"></span>
                                 </a>
@@ -88,24 +116,23 @@ class Header extends React.Component{
                             </li>
                         </div>
 						<div className="nav navbar-nav navbar-right">
-                            <li>
-                                <Link to="/contacts" id="contact"><span>Contact</span></Link>
+                            <li className={classNames(this.props.loggedIn ? 'hidden' : '', 'pointer-cursor')} onClick={this.toggleLoginFrom}>
+                                <a><span>Log In</span></a>
                             </li>
-                        </div>			
-						<div className="col-xs-6 navbar-nav navbar-right ">
-							<div className="input-group ">
-								<input type="text" className="form-control" aria-label="..."/>
-								<div className="input-group-btn">
-									<button type="button" className="btn btn-default" onClick={this.onClick.bind(this, 0)}>By {this.state.searchBy}<span className="caret"></span></button>
-									<ul className={classNames('dropdown-menu react-toggle', this.state.showDropDown[0] ? '' : 'hidden')}>
-										{searchList}
-										<li role="separator" className="divider"></li>
-										<li><a href="#">Lonely Users</a></li>
-										<li><a href="#">Empty Seats</a></li>
-									</ul>
-								</div>
-							</div>
-						</div>
+                            <li className={classNames(this.props.loggedIn ? '' : 'hidden', 'pointer-cursor')} onClick={this.logOut}>
+                                <a><span>Log Out</span></a>
+                            </li>
+                        </div>
+                        <div className={classNames('login-up-form', 'jumbotron', this.state.loginForm ? '' : 'hidden')}>
+                            <form onSubmit={this.signIn}>
+                                <div>Login</div>
+                                <input type="text" value={this.state.login} onChange={this.loginChange}/>
+                                <div>Password</div>
+                                <input type="password" value={this.state.password} onChange={this.passwordChange}/>
+                                <div></div>
+                                <input type="submit" value="Login"/>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </nav>
@@ -116,7 +143,8 @@ class Header extends React.Component{
 function mapStateToProps(state, ownProps){
     return {
         seats: state.arrSeatsReducer,
-		block: state.changeShownReducer
+		block: state.changeShownReducer,
+        loggedIn: state.authericationReducer
     };
 }
 export default connect(mapStateToProps, {addNewSeat})(Header);

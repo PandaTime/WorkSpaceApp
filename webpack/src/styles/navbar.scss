@@ -8,8 +8,12 @@
     position: relative;
     float: right;
 }
-.pointer-cursor{
-    cursor: pointer
+.login-up-form{
+  z-index: 100;
+  position: absolute;
+  padding: 50px;
+  right: 0px;
+  top: 50px;
 }
 .new-user-container{
     position: absolute;

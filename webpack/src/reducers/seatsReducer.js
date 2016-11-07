@@ -2,11 +2,9 @@ import * as types from '../actions/actionTypes';
 import initialState from './initialState';
 import Seat from '../components/canvasManipulation/shapes';
 
-import ws from '../components/ws/websocket';
-
 export function arrSeatsReducer(state = initialState.seats, action){
     switch (action.type) {
-        case types.NEW_SEAT:
+		case types.NEW_SEAT:
             return [...state, new Seat(action.seat)];
 		case types.UPDATE_SEAT_INFO:
 			var i = getIndex(state, action.seat);
@@ -20,7 +18,7 @@ export function arrSeatsReducer(state = initialState.seats, action){
 				name: action.seat.name || el.name,
 				radius: action.seat.radius || el.radius,
 				floor: action.seat.floor || el.floor,
-				assignedTo: Object.assign({}, action.seat.seat ? action.seat.assignedTo : el.assignedTo),
+				assignedTo: Object.assign({}, action.seat.assignedTo ? action.seat.assignedTo : el.assignedTo),
 				fillStyle: action.seat.fillStyle || state.fillStyle
 			};
 			var result = [...state.slice(0, i), new Seat(newSeatOpt), ...state.slice(i+1)];

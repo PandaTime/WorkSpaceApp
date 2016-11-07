@@ -1,5 +1,4 @@
 import React from 'react';
-import classNames from 'classnames';
 
 class ConfirmCheck extends React.Component {
     constructor(props){

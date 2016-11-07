@@ -3,6 +3,7 @@ import ajaxCallsInProgress from './ajaxStatusReducer';
 import {arrSeatsReducer, selectSeatReducer} from './seatsReducer';
 import {arrUsersReducer, selectUserReducer} from './usersReducer';
 import {changeShownReducer} from './blocksReducer';
+import {dataSourceReducer, authericationReducer} from './adminReducer';
 
 const rootReducer = combineReducers({
 	arrSeatsReducer,
@@ -10,6 +11,8 @@ const rootReducer = combineReducers({
 	arrUsersReducer,
 	selectUserReducer,
 	changeShownReducer,
+	dataSourceReducer,
+	authericationReducer,
     ajaxCallsInProgress
 });
 
