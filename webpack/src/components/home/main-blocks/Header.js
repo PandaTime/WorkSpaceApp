@@ -54,7 +54,8 @@ class Header extends React.Component{
 	}
     toggleUserForm(hideNewUser){ // т.к. дизейбл не исключает возможности нажатия, а я не хочу создавать 2 функции
         if(!hideNewUser && this.state.showNewUserBox){
-            this.onClick(3);
+            this.setState({showNewUserBox: false});
+			this.onClick(3);
             return;
         }
         this.setState({showNewUserBox: hideNewUser ? false : true,

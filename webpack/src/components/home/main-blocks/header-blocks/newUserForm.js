@@ -12,13 +12,17 @@ class NewUserForm extends React.Component{
         this.addUser = this.addUser.bind(this);
         this.handleFirstNameChange = this.handleFirstNameChange.bind(this);
         this.handleSurNameChange = this.handleSurNameChange.bind(this);
-    }
+		this.closeForm = this.closeForm.bind(this);
+	}
     handleFirstNameChange(e){
         this.setState({firstName: e.target.value});
     }
     handleSurNameChange(e){
         this.setState({surName: e.target.value});
     }
+	closeForm(e){
+		this.props.toggleUserForm(false);
+	}
     addUser(e){
         e.preventDefault();
         this.props.toggleUserForm(true);
@@ -33,7 +37,7 @@ class NewUserForm extends React.Component{
         return (
             <div className="container">
 				<div className="new-user-container">
-                    <div className="new-user-close-btn pointer-cursor">X</div>
+                    <div className="new-user-close-btn pointer-cursor" onClick={this.closeForm}>X</div>
 					<div className="avatar"></div>
 					<div className="form-box">
 						<form>
