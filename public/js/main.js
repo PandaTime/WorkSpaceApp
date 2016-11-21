@@ -78,7 +78,7 @@
 
 	__webpack_require__(770);
 
-	var _websocket = __webpack_require__(735);
+	var _websocket = __webpack_require__(736);
 
 	var _websocket2 = _interopRequireDefault(_websocket);
 
@@ -46967,7 +46967,7 @@
 
 	var _newUserForm2 = _interopRequireDefault(_newUserForm);
 
-	var _websocket = __webpack_require__(735);
+	var _websocket = __webpack_require__(736);
 
 	var _websocket2 = _interopRequireDefault(_websocket);
 
@@ -47381,7 +47381,7 @@
 
 	var _reactRedux = __webpack_require__(518);
 
-	var _usersActions = __webpack_require__(737);
+	var _usersActions = __webpack_require__(735);
 
 	var _seatsActions = __webpack_require__(733);
 
@@ -47495,8 +47495,43 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
+	exports.selectUser = selectUser;
+	exports.newUser = newUser;
+	exports.updateUserLocation = updateUserLocation;
+	exports.initUsers = initUsers;
 
-	var _dataHandler = __webpack_require__(736);
+	var _actionTypes = __webpack_require__(550);
+
+	var types = _interopRequireWildcard(_actionTypes);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function selectUser(user) {
+	    return { type: types.SELECT_USER, user: user };
+	}
+
+	function newUser(user) {
+	    return { type: types.NEW_USER, user: user };
+	}
+	function updateUserLocation(user) {
+	    return { type: types.UPDATE_USER_SEAT, user: user };
+	}
+
+	function initUsers(users) {
+	    return { type: types.INITIALIZE_USERS, users: users };
+	}
+
+/***/ },
+/* 736 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _dataHandler = __webpack_require__(737);
 
 	var _dataHandler2 = _interopRequireDefault(_dataHandler);
 
@@ -47606,7 +47641,7 @@
 	};
 
 /***/ },
-/* 736 */
+/* 737 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -47629,7 +47664,7 @@
 
 	var _seatsActions = __webpack_require__(733);
 
-	var _usersActions = __webpack_require__(737);
+	var _usersActions = __webpack_require__(735);
 
 	var _adminActions = __webpack_require__(738);
 
@@ -47773,41 +47808,6 @@
 	        seat[v] = _typeof(el[v]) == 'object' && !!el[v] ? Object.assign({}, el[v]) : el[v];
 	    });
 	    return seat;
-	}
-
-/***/ },
-/* 737 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.selectUser = selectUser;
-	exports.newUser = newUser;
-	exports.updateUserLocation = updateUserLocation;
-	exports.initUsers = initUsers;
-
-	var _actionTypes = __webpack_require__(550);
-
-	var types = _interopRequireWildcard(_actionTypes);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	function selectUser(user) {
-	    return { type: types.SELECT_USER, user: user };
-	}
-
-	function newUser(user) {
-	    return { type: types.NEW_USER, user: user };
-	}
-	function updateUserLocation(user) {
-	    return { type: types.UPDATE_USER_SEAT, user: user };
-	}
-
-	function initUsers(users) {
-	    return { type: types.INITIALIZE_USERS, users: users };
 	}
 
 /***/ },
@@ -50664,7 +50664,7 @@
 
 	var _canvasManipulation = __webpack_require__(752);
 
-	var _usersActions = __webpack_require__(737);
+	var _usersActions = __webpack_require__(735);
 
 	var _adminActions = __webpack_require__(738);
 
@@ -51156,7 +51156,7 @@
 
 	var _classnames2 = _interopRequireDefault(_classnames);
 
-	var _usersActions = __webpack_require__(737);
+	var _usersActions = __webpack_require__(735);
 
 	var _seatsActions = __webpack_require__(733);
 
@@ -51164,7 +51164,7 @@
 
 	var _confirmCheck2 = _interopRequireDefault(_confirmCheck);
 
-	var _dataHandler = __webpack_require__(736);
+	var _dataHandler = __webpack_require__(737);
 
 	var _dataHandler2 = _interopRequireDefault(_dataHandler);
 
@@ -51492,7 +51492,7 @@
 
 	var _seatsActions = __webpack_require__(733);
 
-	var _usersActions = __webpack_require__(737);
+	var _usersActions = __webpack_require__(735);
 
 	var _selectElement = __webpack_require__(754);
 
@@ -51508,7 +51508,7 @@
 
 	var _confirmCheck2 = _interopRequireDefault(_confirmCheck);
 
-	var _dataHandler = __webpack_require__(736);
+	var _dataHandler = __webpack_require__(737);
 
 	var _dataHandler2 = _interopRequireDefault(_dataHandler);
 
@@ -51853,7 +51853,7 @@
 
 	var _classnames2 = _interopRequireDefault(_classnames);
 
-	var _usersActions = __webpack_require__(737);
+	var _usersActions = __webpack_require__(735);
 
 	var _seatsActions = __webpack_require__(733);
 
@@ -51861,7 +51861,7 @@
 
 	var _confirmCheck2 = _interopRequireDefault(_confirmCheck);
 
-	var _dataHandler = __webpack_require__(736);
+	var _dataHandler = __webpack_require__(737);
 
 	var _dataHandler2 = _interopRequireDefault(_dataHandler);
 
@@ -52105,7 +52105,7 @@
 
 	var _showActions = __webpack_require__(756);
 
-	var _dataHandler = __webpack_require__(736);
+	var _dataHandler = __webpack_require__(737);
 
 	var _dataHandler2 = _interopRequireDefault(_dataHandler);
 

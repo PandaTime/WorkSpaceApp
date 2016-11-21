@@ -12,6 +12,8 @@ var websocket = require('websocket'), ws,
     idleTime = 30 * 1000; // сколько нужжно ожидать перед перезаписью
 var api = {};
 
+var count = 0;
+
 var autherizedID = require('../mongo/admin/authorization').autherID;
 var verification = require('../mongo/admin/verification');
 
@@ -76,24 +78,26 @@ function init() {
             } catch (ex) {
                 return;
             }
-
-            // login
+            // login and verification
             if (msg.type == 'LOGIN') {
-                let _id = autherizedID.indexOf(msg.token);
-                if (_id > -1) {
-                    connection.token = msg.token;
-                    autherizedID.splice(_id, 1);
-                }
-            }
-            // verification
-            verification.verifyOrdinaryUser(connection.token, connection, msg, processSocket);
+				if(msg.token){
+					verification.verifyOrdinaryUser(msg.token, connection, msg, processSocket);
+				}				
+            }else if(connection.userType){
+				processSocket(null, connection, msg);
+			}
+            
         });
         connection.on('close', (reasonCode, description) => {
             clients = clients.filter((v)=>v.id != connection.id);
             console.log('Disconnected ' + connection.id);
         });
     });
-    function processSocket(err, connection, msg){
+    function processSocket(err, connection, msg, userType){
+		if(userType){
+			connection.userType = userType;
+			console.log('userType', userType);
+		}
         if(err){
             connection.send(JSON.stringify({type: 'error', data: 'not authorized'}));
             return;
@@ -107,6 +111,7 @@ function init() {
             });
             clients.forEach((v)=>{
                 if(connection.id != v.id){
+					console.log('send', ++count);
                     v.send(dataSeat);
                 }
             });
@@ -124,6 +129,7 @@ function init() {
             });
         }else if(msg.type == "LOGOUT"){
             connection.token = '';
+			connection.userType = '';
         }
     }
     function copyObj(el){

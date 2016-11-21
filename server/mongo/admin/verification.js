@@ -14,7 +14,7 @@ api.verifyOrdinaryUser = function(token, connection, msg, cb){
     if(token){
         //verify secret and checks expiration time
         jwt.verify(token, config.secretKey, function(err, decoded){
-            return err ? cb(true, connection, msg) : cb(false, connection, msg);
+            return err ? cb(true, connection, msg) : cb(false, connection, msg, decoded._doc.admin);
         });
     } else
         return cb(true, connection, msg);
