@@ -47608,7 +47608,8 @@
 
 	__webpack_require__(739).polyfill();
 	__webpack_require__(741);
-	var socket = new WebSocket('ws://' + window.location.href.replace(/(http:\/\/|https:\/\/)/g, '')),
+	var wsType = window.location.href.search("https") > -1 ? 'wss://' : 'ws://';
+	var socket = new WebSocket(wsType + window.location.href.replace(/(http:\/\/|https:\/\/)/g, '')),
 	    api = {};
 
 	exports.default = api;

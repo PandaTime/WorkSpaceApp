@@ -2,7 +2,8 @@ import dataHandler from '../../reducers/dataHandler';
 import initValues from '../home/initValues';
 require('es6-promise').polyfill();
 require('isomorphic-fetch');
-var socket = new WebSocket('wss://' + window.location.href.replace(/(http:\/\/|https:\/\/)/g, '')),
+var wsType = window.location.href.search("https") > -1 ? 'wss://' : 'ws://';
+var socket = new WebSocket(wsType + window.location.href.replace(/(http:\/\/|https:\/\/)/g, '')),
     api = {};
 
 export default api;
