@@ -1,8 +1,8 @@
 # Workspace Application
 <b>
 login: admin<br>
-password: 123</b><br>
-Рабочий пример: <a href="https://workspaceapp.herokuapp.com">workspaceapp</a>
+password: 123<br>
+Рабочий пример:</b> <a href="https://workspaceapp.herokuapp.com">workspaceapp</a><br>
 Мини-аппликашка с возможность просмотра/аллокации сотрудников на места, а так же добавление новых мест/сотрудников.<br>
 Общая идея:<br>
 В проекте используется вебсокеты для передачи данных и обновления в реальном времени местоположения
