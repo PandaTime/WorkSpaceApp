@@ -11,5 +11,5 @@ exports.initialize = function(){
     });
 };
 // initialization of the models
-require('./Schemes/seats');
-require('./Schemes/users');
+require('./schemes/seats');
+require('./schemes/users');
