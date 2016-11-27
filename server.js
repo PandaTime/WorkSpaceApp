@@ -30,8 +30,8 @@ require('./server/routes/routes')(app, config);
 //app.listen(config.port,()=>{console.log(`Listening on port ${config.port}..`)});
 
 var server = http.createServer(app);
-
-server.listen(config.port,()=>{console.log(`Listening on port ${config.port}..`)});
+console.log('port', config.port);
+server.listen(config.port, ()=>{console.log(`Listening on port ${config.port}..`)});
 
 // initializing WebSocket server
 require('./server/ws/wsServer').initialize(server);

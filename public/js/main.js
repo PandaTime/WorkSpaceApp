@@ -33454,9 +33454,7 @@
 	  }
 
 	  Provider.prototype.render = function render() {
-	    var children = this.props.children;
-
-	    return _react.Children.only(children);
+	    return _react.Children.only(this.props.children);
 	  };
 
 	  return Provider;
@@ -33464,10 +33462,12 @@
 
 	exports["default"] = Provider;
 
+
 	if (process.env.NODE_ENV !== 'production') {
 	  Provider.prototype.componentWillReceiveProps = function (nextProps) {
 	    var store = this.store;
 	    var nextStore = nextProps.store;
+
 
 	    if (store !== nextStore) {
 	      warnAboutReceivingStore();
@@ -33521,8 +33521,9 @@
 	  }
 	  /* eslint-enable no-console */
 	  try {
-	    // This error was thrown as a convenience so that you can use this stack
-	    // to find the callsite that caused this warning to fire.
+	    // This error was thrown as a convenience so that if you enable
+	    // "break on all exceptions" in your console,
+	    // it would pause the execution at this line.
 	    throw new Error(message);
 	    /* eslint-disable no-empty */
 	  } catch (e) {}
@@ -33535,9 +33536,10 @@
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
 
+	exports.__esModule = true;
+
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-	exports.__esModule = true;
 	exports["default"] = connect;
 
 	var _react = __webpack_require__(298);
@@ -33606,12 +33608,12 @@
 	var nextVersion = 0;
 
 	function connect(mapStateToProps, mapDispatchToProps, mergeProps) {
-	  var options = arguments.length <= 3 || arguments[3] === undefined ? {} : arguments[3];
+	  var options = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
 
 	  var shouldSubscribe = Boolean(mapStateToProps);
 	  var mapState = mapStateToProps || defaultMapStateToProps;
 
-	  var mapDispatch = undefined;
+	  var mapDispatch = void 0;
 	  if (typeof mapDispatchToProps === 'function') {
 	    mapDispatch = mapDispatchToProps;
 	  } else if (!mapDispatchToProps) {
@@ -33621,10 +33623,10 @@
 	  }
 
 	  var finalMergeProps = mergeProps || defaultMergeProps;
-	  var _options$pure = options.pure;
-	  var pure = _options$pure === undefined ? true : _options$pure;
-	  var _options$withRef = options.withRef;
-	  var withRef = _options$withRef === undefined ? false : _options$withRef;
+	  var _options$pure = options.pure,
+	      pure = _options$pure === undefined ? true : _options$pure,
+	      _options$withRef = options.withRef,
+	      withRef = _options$withRef === undefined ? false : _options$withRef;
 
 	  var checkMergedEquals = pure && finalMergeProps !== defaultMergeProps;
 
@@ -33843,11 +33845,12 @@
 	      };
 
 	      Connect.prototype.render = function render() {
-	        var haveOwnPropsChanged = this.haveOwnPropsChanged;
-	        var hasStoreStateChanged = this.hasStoreStateChanged;
-	        var haveStatePropsBeenPrecalculated = this.haveStatePropsBeenPrecalculated;
-	        var statePropsPrecalculationError = this.statePropsPrecalculationError;
-	        var renderedElement = this.renderedElement;
+	        var haveOwnPropsChanged = this.haveOwnPropsChanged,
+	            hasStoreStateChanged = this.hasStoreStateChanged,
+	            haveStatePropsBeenPrecalculated = this.haveStatePropsBeenPrecalculated,
+	            statePropsPrecalculationError = this.statePropsPrecalculationError,
+	            renderedElement = this.renderedElement;
+
 
 	        this.haveOwnPropsChanged = false;
 	        this.hasStoreStateChanged = false;
@@ -35811,7 +35814,6 @@
 	}
 
 	function relay(type, state, action, nextActionId) {
-	  if ((0, _filters.isFiltered)(action, filters)) return;
 	  var message = {
 	    type: type,
 	    id: socket.id,
@@ -35881,7 +35883,11 @@
 
 	function init(options) {
 	  instanceName = options.name;
-	  if (options.filters) {
+	  if (options.actionsBlacklist) {
+	    filters = { blacklist: options.actionsBlacklist };
+	  } else if (options.actionsWhitelist) {
+	    filters = { whitelist: options.actionsWhitelist };
+	  } else if (options.filters) {
 	    filters = options.filters;
 	  }
 	  if (options.port) {
@@ -35977,6 +35983,7 @@
 	  if (lastAction === 'PERFORM_ACTION') {
 	    var nextActionId = liftedState.nextActionId;
 	    var liftedAction = liftedState.actionsById[nextActionId - 1];
+	    if ((0, _filters.isFiltered)(liftedAction.action, filters)) return;
 	    relay('ACTION', state, liftedAction, nextActionId);
 	    if (!isExcess && maxAge) isExcess = liftedState.stagedActionIds.length >= maxAge;
 	  } else {
@@ -36098,7 +36105,8 @@
 	      'function': options,
 	      'regex': options,
 	      'undefined': options,
-	      'error': options
+	      'error': options,
+	      'symbol': options
 	    }
 	  }
 
@@ -36133,19 +36141,40 @@
 	var pathGetter = __webpack_require__(564);
 	var utils = __webpack_require__(565);
 
+	var Map = typeof WeakMap !== 'undefined'?
+	  WeakMap:
+	  function() {
+	    var keys = [];
+	    var values = [];
+	    return {
+	      set: function(key, value) {
+	        keys.push(key);
+	        values.push(value);
+	      },
+	      get: function(key) {
+	        for (var i = 0; i < keys.length; i++) {
+	          if (keys[i] === key) {
+	            return values[i];
+	          }
+	        }
+	      }
+	    }
+	  };
+
 	// Based on https://github.com/douglascrockford/JSON-js/blob/master/cycle.js
 
 	exports.decycle = function decycle(object, options, replacer) {
 	  'use strict';
 
-	  var objects = [],   // Keep a reference to each unique object or array
-	      paths = [];     // Keep the path to each unique object or array
+	  var map = new Map()
+
+	  var hasCircular = Object.prototype.hasOwnProperty.call(options, 'circular');
 
 	  return (function derez(_value, path, key) {
 
 	    // The derez recurses through the object, producing the deep copy.
 
-	    var i,          // The loop counter
+	    var i,        // The loop counter
 	      name,       // Property name
 	      nu;         // The new object or array
 
@@ -36169,9 +36198,13 @@
 	    if (options['error'] && value instanceof Error) {
 	      return {$jsan: 'e' + value.message}
 	    }
+	    if (options['symbol'] && typeof value === 'symbol') {
+	      // 'Symbol(foo)'.slice(7, -1) === 'foo'
+	      return {$jsan: 's' + value.toString().slice(7, -1)}
+	    }
 
 	    if (value && typeof value.toJSON === 'function') {
-	      value = value.toJSON();
+	      value = value.toJSON(key);
 	    }
 
 	    if (typeof value === 'object' && value !== null &&
@@ -36180,22 +36213,25 @@
 	      !(value instanceof Number)  &&
 	      !(value instanceof RegExp)  &&
 	      !(value instanceof String)  &&
+	      !(typeof value === 'symbol')  &&
 	      !(value instanceof Error)) {
 
 	        // If the value is an object or array, look to see if we have already
-	        // encountered it. If so, return a $ref/path object. This is a hard way,
-	        // linear search that will get slower as the number of unique objects grows.
+	        // encountered it. If so, return a $ref/path object.
 
-	      for (i = 0; i < objects.length; i += 1) {
-	          if (objects[i] === value) {
-	              return {$jsan: paths[i]};
+	      if (typeof value === 'object' && value !== null) {
+	        var foundPath = map.get(value);
+	        if (foundPath) {
+	          if (hasCircular && path.indexOf(foundPath) === 0) {
+	            return typeof options.circular === 'function'?
+	              options.circular(value, path, foundPath):
+	              options.circular;
 	          }
+	          return {$jsan: foundPath};
+	        }
+	        map.set(value, path);
 	      }
 
-	      // Otherwise, accumulate the unique value and its path.
-
-	      objects.push(value);
-	      paths.push(path);
 
 	      // If it is an array, replicate the array.
 
@@ -36349,6 +36385,8 @@
 	      var error = new Error(rest);
 	      error.stack = 'Stack is unavailable for jsan parsed errors';
 	      return error;
+	    case 's':
+	      return Symbol(rest);
 	    default:
 	      console.warn('unknown type', obj);
 	      return obj;
@@ -36376,7 +36414,7 @@
 	  return SCSocketCreator.destroy(options);
 	};
 
-	module.exports.version = '5.0.18';
+	module.exports.version = '5.1.0';
 
 
 /***/ },
@@ -40283,6 +40321,10 @@
 	  if (input == null) {
 	   return null;
 	  }
+	  // Leave ping or pong message as is
+	  if (input == '#1' || input == '#2') {
+	    return input;
+	  }
 	  var message = input.toString();
 
 	  try {
@@ -40301,6 +40343,10 @@
 	// See https://github.com/SocketCluster/socketcluster/blob/master/socketcluster-protocol.md
 	// for details about the SC protocol.
 	module.exports.encode = function (object) {
+	  // Leave ping or pong message as is
+	  if (object == '#1' || object == '#2') {
+	    return object;
+	  }
 	  return JSON.stringify(object, binaryToBase64Replacer);
 	};
 
@@ -40356,12 +40402,6 @@
 	SCTransport.prototype.uri = function () {
 	  var query = this.options.query || {};
 	  var schema = this.options.secure ? 'wss' : 'ws';
-	  var port = '';
-
-	  if (this.options.port && (('wss' == schema && this.options.port != 443)
-	    || ('ws' == schema && this.options.port != 80))) {
-	    port = ':' + this.options.port;
-	  }
 
 	  if (this.options.timestampRequests) {
 	    query[this.options.timestampParam] = (new Date()).getTime();
@@ -40373,7 +40413,20 @@
 	    query = '?' + query;
 	  }
 
-	  return schema + '://' + this.options.hostname + port + this.options.path + query;
+	  var host;
+	  if (this.options.host) {
+	    host = this.options.host;
+	  } else {
+	    var port = '';
+
+	    if (this.options.port && ((schema == 'wss' && this.options.port != 443)
+	      || (schema == 'ws' && this.options.port != 80))) {
+	      port = ':' + this.options.port;
+	    }
+	    host = this.options.hostname + port;
+	  }
+
+	  return schema + '://' + host + this.options.path + query;
 	};
 
 	SCTransport.prototype.open = function () {
@@ -40484,14 +40537,15 @@
 	SCTransport.prototype._onMessage = function (message) {
 	  SCEmitter.prototype.emit.call(this, 'event', 'message', message);
 
+	  var obj = this.decode(message);
+
 	  // If ping
-	  if (message == '#1') {
+	  if (obj == '#1') {
 	    this._resetPingTimeout();
 	    if (this.socket.readyState == this.socket.OPEN) {
-	      this.socket.send('#2');
+	      this.sendObject('#2');
 	    }
 	  } else {
-	    var obj = this.decode(message);
 	    var event = obj.event;
 
 	    if (event) {
@@ -41441,6 +41495,8 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {var SCSocket = __webpack_require__(567);
+	var scErrors = __webpack_require__(577);
+	var InvalidArgumentsError = scErrors.InvalidArgumentsError;
 
 	var _connections = {};
 
@@ -41463,7 +41519,13 @@
 	      }
 	    }
 	  }
-	  return protocolPrefix + options.hostname + ':' + options.port + options.path + queryString;
+	  var host;
+	  if (options.host) {
+	    host = options.host;
+	  } else {
+	    host = options.hostname + ':' + options.port;
+	  }
+	  return protocolPrefix + host + options.path + queryString;
 	}
 
 	function isUrlSecure() {
@@ -41479,6 +41541,13 @@
 	  var self = this;
 
 	  options = options || {};
+
+	  if (options.host && options.port) {
+	    throw new InvalidArgumentsError('The host option should already include the' +
+	      ' port number in the format hostname:port - Because of this, the host and port options' +
+	      ' cannot be specified together; use the hostname option instead');
+	  }
+
 	  var isSecureDefault = isUrlSecure();
 
 	  var opts = {
@@ -45143,7 +45212,7 @@
 	/** Used to access faster Node.js helpers. */
 	var nodeUtil = (function() {
 	  try {
-	    return freeProcess && freeProcess.binding('util');
+	    return freeProcess && freeProcess.binding && freeProcess.binding('util');
 	  } catch (e) {}
 	}());
 
@@ -45295,9 +45364,9 @@
 	var Stack = __webpack_require__(690),
 	    baseIsEqual = __webpack_require__(696);
 
-	/** Used to compose bitmasks for comparison styles. */
-	var UNORDERED_COMPARE_FLAG = 1,
-	    PARTIAL_COMPARE_FLAG = 2;
+	/** Used to compose bitmasks for value comparisons. */
+	var COMPARE_PARTIAL_FLAG = 1,
+	    COMPARE_UNORDERED_FLAG = 2;
 
 	/**
 	 * The base implementation of `_.isMatch` without support for iteratee shorthands.
@@ -45343,7 +45412,7 @@
 	        var result = customizer(objValue, srcValue, key, object, source, stack);
 	      }
 	      if (!(result === undefined
-	            ? baseIsEqual(srcValue, objValue, customizer, UNORDERED_COMPARE_FLAG | PARTIAL_COMPARE_FLAG, stack)
+	            ? baseIsEqual(srcValue, objValue, COMPARE_PARTIAL_FLAG | COMPARE_UNORDERED_FLAG, customizer, stack)
 	            : result
 	          )) {
 	        return false;
@@ -45529,22 +45598,21 @@
 	 * @private
 	 * @param {*} value The value to compare.
 	 * @param {*} other The other value to compare.
+	 * @param {boolean} bitmask The bitmask flags.
+	 *  1 - Unordered comparison
+	 *  2 - Partial comparison
 	 * @param {Function} [customizer] The function to customize comparisons.
-	 * @param {boolean} [bitmask] The bitmask of comparison flags.
-	 *  The bitmask may be composed of the following flags:
-	 *     1 - Unordered comparison
-	 *     2 - Partial comparison
 	 * @param {Object} [stack] Tracks traversed `value` and `other` objects.
 	 * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
 	 */
-	function baseIsEqual(value, other, customizer, bitmask, stack) {
+	function baseIsEqual(value, other, bitmask, customizer, stack) {
 	  if (value === other) {
 	    return true;
 	  }
 	  if (value == null || other == null || (!isObject(value) && !isObjectLike(other))) {
 	    return value !== value && other !== other;
 	  }
-	  return baseIsEqualDeep(value, other, baseIsEqual, customizer, bitmask, stack);
+	  return baseIsEqualDeep(value, other, bitmask, customizer, baseIsEqual, stack);
 	}
 
 	module.exports = baseIsEqual;
@@ -45563,8 +45631,8 @@
 	    isBuffer = __webpack_require__(678),
 	    isTypedArray = __webpack_require__(681);
 
-	/** Used to compose bitmasks for comparison styles. */
-	var PARTIAL_COMPARE_FLAG = 2;
+	/** Used to compose bitmasks for value comparisons. */
+	var COMPARE_PARTIAL_FLAG = 1;
 
 	/** `Object#toString` result references. */
 	var argsTag = '[object Arguments]',
@@ -45585,14 +45653,13 @@
 	 * @private
 	 * @param {Object} object The object to compare.
 	 * @param {Object} other The other object to compare.
+	 * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
+	 * @param {Function} customizer The function to customize comparisons.
 	 * @param {Function} equalFunc The function to determine equivalents of values.
-	 * @param {Function} [customizer] The function to customize comparisons.
-	 * @param {number} [bitmask] The bitmask of comparison flags. See `baseIsEqual`
-	 *  for more details.
 	 * @param {Object} [stack] Tracks traversed `object` and `other` objects.
 	 * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
 	 */
-	function baseIsEqualDeep(object, other, equalFunc, customizer, bitmask, stack) {
+	function baseIsEqualDeep(object, other, bitmask, customizer, equalFunc, stack) {
 	  var objIsArr = isArray(object),
 	      othIsArr = isArray(other),
 	      objTag = arrayTag,
@@ -45620,10 +45687,10 @@
 	  if (isSameTag && !objIsObj) {
 	    stack || (stack = new Stack);
 	    return (objIsArr || isTypedArray(object))
-	      ? equalArrays(object, other, equalFunc, customizer, bitmask, stack)
-	      : equalByTag(object, other, objTag, equalFunc, customizer, bitmask, stack);
+	      ? equalArrays(object, other, bitmask, customizer, equalFunc, stack)
+	      : equalByTag(object, other, objTag, bitmask, customizer, equalFunc, stack);
 	  }
-	  if (!(bitmask & PARTIAL_COMPARE_FLAG)) {
+	  if (!(bitmask & COMPARE_PARTIAL_FLAG)) {
 	    var objIsWrapped = objIsObj && hasOwnProperty.call(object, '__wrapped__'),
 	        othIsWrapped = othIsObj && hasOwnProperty.call(other, '__wrapped__');
 
@@ -45632,14 +45699,14 @@
 	          othUnwrapped = othIsWrapped ? other.value() : other;
 
 	      stack || (stack = new Stack);
-	      return equalFunc(objUnwrapped, othUnwrapped, customizer, bitmask, stack);
+	      return equalFunc(objUnwrapped, othUnwrapped, bitmask, customizer, stack);
 	    }
 	  }
 	  if (!isSameTag) {
 	    return false;
 	  }
 	  stack || (stack = new Stack);
-	  return equalObjects(object, other, equalFunc, customizer, bitmask, stack);
+	  return equalObjects(object, other, bitmask, customizer, equalFunc, stack);
 	}
 
 	module.exports = baseIsEqualDeep;
@@ -45653,9 +45720,9 @@
 	    arraySome = __webpack_require__(699),
 	    cacheHas = __webpack_require__(637);
 
-	/** Used to compose bitmasks for comparison styles. */
-	var UNORDERED_COMPARE_FLAG = 1,
-	    PARTIAL_COMPARE_FLAG = 2;
+	/** Used to compose bitmasks for value comparisons. */
+	var COMPARE_PARTIAL_FLAG = 1,
+	    COMPARE_UNORDERED_FLAG = 2;
 
 	/**
 	 * A specialized version of `baseIsEqualDeep` for arrays with support for
@@ -45664,15 +45731,14 @@
 	 * @private
 	 * @param {Array} array The array to compare.
 	 * @param {Array} other The other array to compare.
-	 * @param {Function} equalFunc The function to determine equivalents of values.
+	 * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
 	 * @param {Function} customizer The function to customize comparisons.
-	 * @param {number} bitmask The bitmask of comparison flags. See `baseIsEqual`
-	 *  for more details.
+	 * @param {Function} equalFunc The function to determine equivalents of values.
 	 * @param {Object} stack Tracks traversed `array` and `other` objects.
 	 * @returns {boolean} Returns `true` if the arrays are equivalent, else `false`.
 	 */
-	function equalArrays(array, other, equalFunc, customizer, bitmask, stack) {
-	  var isPartial = bitmask & PARTIAL_COMPARE_FLAG,
+	function equalArrays(array, other, bitmask, customizer, equalFunc, stack) {
+	  var isPartial = bitmask & COMPARE_PARTIAL_FLAG,
 	      arrLength = array.length,
 	      othLength = other.length;
 
@@ -45686,7 +45752,7 @@
 	  }
 	  var index = -1,
 	      result = true,
-	      seen = (bitmask & UNORDERED_COMPARE_FLAG) ? new SetCache : undefined;
+	      seen = (bitmask & COMPARE_UNORDERED_FLAG) ? new SetCache : undefined;
 
 	  stack.set(array, other);
 	  stack.set(other, array);
@@ -45712,7 +45778,7 @@
 	    if (seen) {
 	      if (!arraySome(other, function(othValue, othIndex) {
 	            if (!cacheHas(seen, othIndex) &&
-	                (arrValue === othValue || equalFunc(arrValue, othValue, customizer, bitmask, stack))) {
+	                (arrValue === othValue || equalFunc(arrValue, othValue, bitmask, customizer, stack))) {
 	              return seen.push(othIndex);
 	            }
 	          })) {
@@ -45721,7 +45787,7 @@
 	      }
 	    } else if (!(
 	          arrValue === othValue ||
-	            equalFunc(arrValue, othValue, customizer, bitmask, stack)
+	            equalFunc(arrValue, othValue, bitmask, customizer, stack)
 	        )) {
 	      result = false;
 	      break;
@@ -45775,9 +45841,9 @@
 	    mapToArray = __webpack_require__(702),
 	    setToArray = __webpack_require__(661);
 
-	/** Used to compose bitmasks for comparison styles. */
-	var UNORDERED_COMPARE_FLAG = 1,
-	    PARTIAL_COMPARE_FLAG = 2;
+	/** Used to compose bitmasks for value comparisons. */
+	var COMPARE_PARTIAL_FLAG = 1,
+	    COMPARE_UNORDERED_FLAG = 2;
 
 	/** `Object#toString` result references. */
 	var boolTag = '[object Boolean]',
@@ -45808,14 +45874,13 @@
 	 * @param {Object} object The object to compare.
 	 * @param {Object} other The other object to compare.
 	 * @param {string} tag The `toStringTag` of the objects to compare.
-	 * @param {Function} equalFunc The function to determine equivalents of values.
+	 * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
 	 * @param {Function} customizer The function to customize comparisons.
-	 * @param {number} bitmask The bitmask of comparison flags. See `baseIsEqual`
-	 *  for more details.
+	 * @param {Function} equalFunc The function to determine equivalents of values.
 	 * @param {Object} stack Tracks traversed `object` and `other` objects.
 	 * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
 	 */
-	function equalByTag(object, other, tag, equalFunc, customizer, bitmask, stack) {
+	function equalByTag(object, other, tag, bitmask, customizer, equalFunc, stack) {
 	  switch (tag) {
 	    case dataViewTag:
 	      if ((object.byteLength != other.byteLength) ||
@@ -45853,7 +45918,7 @@
 	      var convert = mapToArray;
 
 	    case setTag:
-	      var isPartial = bitmask & PARTIAL_COMPARE_FLAG;
+	      var isPartial = bitmask & COMPARE_PARTIAL_FLAG;
 	      convert || (convert = setToArray);
 
 	      if (object.size != other.size && !isPartial) {
@@ -45864,11 +45929,11 @@
 	      if (stacked) {
 	        return stacked == other;
 	      }
-	      bitmask |= UNORDERED_COMPARE_FLAG;
+	      bitmask |= COMPARE_UNORDERED_FLAG;
 
 	      // Recursively compare objects (susceptible to call stack limits).
 	      stack.set(object, other);
-	      var result = equalArrays(convert(object), convert(other), equalFunc, customizer, bitmask, stack);
+	      var result = equalArrays(convert(object), convert(other), bitmask, customizer, equalFunc, stack);
 	      stack['delete'](object);
 	      return result;
 
@@ -45925,8 +45990,8 @@
 
 	var keys = __webpack_require__(675);
 
-	/** Used to compose bitmasks for comparison styles. */
-	var PARTIAL_COMPARE_FLAG = 2;
+	/** Used to compose bitmasks for value comparisons. */
+	var COMPARE_PARTIAL_FLAG = 1;
 
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -45941,15 +46006,14 @@
 	 * @private
 	 * @param {Object} object The object to compare.
 	 * @param {Object} other The other object to compare.
-	 * @param {Function} equalFunc The function to determine equivalents of values.
+	 * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
 	 * @param {Function} customizer The function to customize comparisons.
-	 * @param {number} bitmask The bitmask of comparison flags. See `baseIsEqual`
-	 *  for more details.
+	 * @param {Function} equalFunc The function to determine equivalents of values.
 	 * @param {Object} stack Tracks traversed `object` and `other` objects.
 	 * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
 	 */
-	function equalObjects(object, other, equalFunc, customizer, bitmask, stack) {
-	  var isPartial = bitmask & PARTIAL_COMPARE_FLAG,
+	function equalObjects(object, other, bitmask, customizer, equalFunc, stack) {
+	  var isPartial = bitmask & COMPARE_PARTIAL_FLAG,
 	      objProps = keys(object),
 	      objLength = objProps.length,
 	      othProps = keys(other),
@@ -45987,7 +46051,7 @@
 	    }
 	    // Recursively compare objects (susceptible to call stack limits).
 	    if (!(compared === undefined
-	          ? (objValue === othValue || equalFunc(objValue, othValue, customizer, bitmask, stack))
+	          ? (objValue === othValue || equalFunc(objValue, othValue, bitmask, customizer, stack))
 	          : compared
 	        )) {
 	      result = false;
@@ -46202,14 +46266,14 @@
 	var baseIsEqual = __webpack_require__(696),
 	    get = __webpack_require__(712),
 	    hasIn = __webpack_require__(723),
-	    isKey = __webpack_require__(721),
+	    isKey = __webpack_require__(715),
 	    isStrictComparable = __webpack_require__(709),
 	    matchesStrictComparable = __webpack_require__(710),
 	    toKey = __webpack_require__(722);
 
-	/** Used to compose bitmasks for comparison styles. */
-	var UNORDERED_COMPARE_FLAG = 1,
-	    PARTIAL_COMPARE_FLAG = 2;
+	/** Used to compose bitmasks for value comparisons. */
+	var COMPARE_PARTIAL_FLAG = 1,
+	    COMPARE_UNORDERED_FLAG = 2;
 
 	/**
 	 * The base implementation of `_.matchesProperty` which doesn't clone `srcValue`.
@@ -46227,7 +46291,7 @@
 	    var objValue = get(object, path);
 	    return (objValue === undefined && objValue === srcValue)
 	      ? hasIn(object, path)
-	      : baseIsEqual(srcValue, objValue, undefined, UNORDERED_COMPARE_FLAG | PARTIAL_COMPARE_FLAG);
+	      : baseIsEqual(srcValue, objValue, COMPARE_PARTIAL_FLAG | COMPARE_UNORDERED_FLAG);
 	  };
 	}
 
@@ -46278,7 +46342,6 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var castPath = __webpack_require__(714),
-	    isKey = __webpack_require__(721),
 	    toKey = __webpack_require__(722);
 
 	/**
@@ -46290,7 +46353,7 @@
 	 * @returns {*} Returns the resolved value.
 	 */
 	function baseGet(object, path) {
-	  path = isKey(path, object) ? [path] : castPath(path);
+	  path = castPath(path, object);
 
 	  var index = 0,
 	      length = path.length;
@@ -46309,17 +46372,23 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var isArray = __webpack_require__(643),
-	    stringToPath = __webpack_require__(715);
+	    isKey = __webpack_require__(715),
+	    stringToPath = __webpack_require__(717),
+	    toString = __webpack_require__(720);
 
 	/**
 	 * Casts `value` to a path array if it's not one.
 	 *
 	 * @private
 	 * @param {*} value The value to inspect.
+	 * @param {Object} [object] The object to query keys on.
 	 * @returns {Array} Returns the cast property path array.
 	 */
-	function castPath(value) {
-	  return isArray(value) ? value : stringToPath(value);
+	function castPath(value, object) {
+	  if (isArray(value)) {
+	    return value;
+	  }
+	  return isKey(value, object) ? [value] : stringToPath(toString(value));
 	}
 
 	module.exports = castPath;
@@ -46329,8 +46398,77 @@
 /* 715 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var memoizeCapped = __webpack_require__(716),
-	    toString = __webpack_require__(718);
+	var isArray = __webpack_require__(643),
+	    isSymbol = __webpack_require__(716);
+
+	/** Used to match property names within property paths. */
+	var reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/,
+	    reIsPlainProp = /^\w*$/;
+
+	/**
+	 * Checks if `value` is a property name and not a property path.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @param {Object} [object] The object to query keys on.
+	 * @returns {boolean} Returns `true` if `value` is a property name, else `false`.
+	 */
+	function isKey(value, object) {
+	  if (isArray(value)) {
+	    return false;
+	  }
+	  var type = typeof value;
+	  if (type == 'number' || type == 'symbol' || type == 'boolean' ||
+	      value == null || isSymbol(value)) {
+	    return true;
+	  }
+	  return reIsPlainProp.test(value) || !reIsDeepProp.test(value) ||
+	    (object != null && value in Object(object));
+	}
+
+	module.exports = isKey;
+
+
+/***/ },
+/* 716 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseGetTag = __webpack_require__(528),
+	    isObjectLike = __webpack_require__(536);
+
+	/** `Object#toString` result references. */
+	var symbolTag = '[object Symbol]';
+
+	/**
+	 * Checks if `value` is classified as a `Symbol` primitive or object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.0.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a symbol, else `false`.
+	 * @example
+	 *
+	 * _.isSymbol(Symbol.iterator);
+	 * // => true
+	 *
+	 * _.isSymbol('abc');
+	 * // => false
+	 */
+	function isSymbol(value) {
+	  return typeof value == 'symbol' ||
+	    (isObjectLike(value) && baseGetTag(value) == symbolTag);
+	}
+
+	module.exports = isSymbol;
+
+
+/***/ },
+/* 717 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var memoizeCapped = __webpack_require__(718);
 
 	/** Used to match property names within property paths. */
 	var reLeadingDot = /^\./,
@@ -46347,8 +46485,6 @@
 	 * @returns {Array} Returns the property path array.
 	 */
 	var stringToPath = memoizeCapped(function(string) {
-	  string = toString(string);
-
 	  var result = [];
 	  if (reLeadingDot.test(string)) {
 	    result.push('');
@@ -46363,10 +46499,10 @@
 
 
 /***/ },
-/* 716 */
+/* 718 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var memoize = __webpack_require__(717);
+	var memoize = __webpack_require__(719);
 
 	/** Used as the maximum memoize cache size. */
 	var MAX_MEMOIZE_SIZE = 500;
@@ -46395,7 +46531,7 @@
 
 
 /***/ },
-/* 717 */
+/* 719 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var MapCache = __webpack_require__(595);
@@ -46474,10 +46610,10 @@
 
 
 /***/ },
-/* 718 */
+/* 720 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseToString = __webpack_require__(719);
+	var baseToString = __webpack_require__(721);
 
 	/**
 	 * Converts `value` to a string. An empty string is returned for `null`
@@ -46508,13 +46644,13 @@
 
 
 /***/ },
-/* 719 */
+/* 721 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Symbol = __webpack_require__(529),
 	    arrayMap = __webpack_require__(635),
 	    isArray = __webpack_require__(643),
-	    isSymbol = __webpack_require__(720);
+	    isSymbol = __webpack_require__(716);
 
 	/** Used as references for various `Number` constants. */
 	var INFINITY = 1 / 0;
@@ -46551,80 +46687,10 @@
 
 
 /***/ },
-/* 720 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var baseGetTag = __webpack_require__(528),
-	    isObjectLike = __webpack_require__(536);
-
-	/** `Object#toString` result references. */
-	var symbolTag = '[object Symbol]';
-
-	/**
-	 * Checks if `value` is classified as a `Symbol` primitive or object.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 4.0.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a symbol, else `false`.
-	 * @example
-	 *
-	 * _.isSymbol(Symbol.iterator);
-	 * // => true
-	 *
-	 * _.isSymbol('abc');
-	 * // => false
-	 */
-	function isSymbol(value) {
-	  return typeof value == 'symbol' ||
-	    (isObjectLike(value) && baseGetTag(value) == symbolTag);
-	}
-
-	module.exports = isSymbol;
-
-
-/***/ },
-/* 721 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var isArray = __webpack_require__(643),
-	    isSymbol = __webpack_require__(720);
-
-	/** Used to match property names within property paths. */
-	var reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/,
-	    reIsPlainProp = /^\w*$/;
-
-	/**
-	 * Checks if `value` is a property name and not a property path.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @param {Object} [object] The object to query keys on.
-	 * @returns {boolean} Returns `true` if `value` is a property name, else `false`.
-	 */
-	function isKey(value, object) {
-	  if (isArray(value)) {
-	    return false;
-	  }
-	  var type = typeof value;
-	  if (type == 'number' || type == 'symbol' || type == 'boolean' ||
-	      value == null || isSymbol(value)) {
-	    return true;
-	  }
-	  return reIsPlainProp.test(value) || !reIsDeepProp.test(value) ||
-	    (object != null && value in Object(object));
-	}
-
-	module.exports = isKey;
-
-
-/***/ },
 /* 722 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isSymbol = __webpack_require__(720);
+	var isSymbol = __webpack_require__(716);
 
 	/** Used as references for various `Number` constants. */
 	var INFINITY = 1 / 0;
@@ -46714,7 +46780,6 @@
 	    isArguments = __webpack_require__(641),
 	    isArray = __webpack_require__(643),
 	    isIndex = __webpack_require__(680),
-	    isKey = __webpack_require__(721),
 	    isLength = __webpack_require__(655),
 	    toKey = __webpack_require__(722);
 
@@ -46728,7 +46793,7 @@
 	 * @returns {boolean} Returns `true` if `path` exists, else `false`.
 	 */
 	function hasPath(object, path, hasFunc) {
-	  path = isKey(path, object) ? [path] : castPath(path);
+	  path = castPath(path, object);
 
 	  var index = -1,
 	      length = path.length,
@@ -46758,7 +46823,7 @@
 
 	var baseProperty = __webpack_require__(727),
 	    basePropertyDeep = __webpack_require__(728),
-	    isKey = __webpack_require__(721),
+	    isKey = __webpack_require__(715),
 	    toKey = __webpack_require__(722);
 
 	/**
@@ -49042,6 +49107,28 @@
 	    arrayBuffer: 'ArrayBuffer' in self
 	  }
 
+	  if (support.arrayBuffer) {
+	    var viewClasses = [
+	      '[object Int8Array]',
+	      '[object Uint8Array]',
+	      '[object Uint8ClampedArray]',
+	      '[object Int16Array]',
+	      '[object Uint16Array]',
+	      '[object Int32Array]',
+	      '[object Uint32Array]',
+	      '[object Float32Array]',
+	      '[object Float64Array]'
+	    ]
+
+	    var isDataView = function(obj) {
+	      return obj && DataView.prototype.isPrototypeOf(obj)
+	    }
+
+	    var isArrayBufferView = ArrayBuffer.isView || function(obj) {
+	      return obj && viewClasses.indexOf(Object.prototype.toString.call(obj)) > -1
+	    }
+	  }
+
 	  function normalizeName(name) {
 	    if (typeof name !== 'string') {
 	      name = String(name)
@@ -49095,12 +49182,8 @@
 	  Headers.prototype.append = function(name, value) {
 	    name = normalizeName(name)
 	    value = normalizeValue(value)
-	    var list = this.map[name]
-	    if (!list) {
-	      list = []
-	      this.map[name] = list
-	    }
-	    list.push(value)
+	    var oldValue = this.map[name]
+	    this.map[name] = oldValue ? oldValue+','+value : value
 	  }
 
 	  Headers.prototype['delete'] = function(name) {
@@ -49108,12 +49191,8 @@
 	  }
 
 	  Headers.prototype.get = function(name) {
-	    var values = this.map[normalizeName(name)]
-	    return values ? values[0] : null
-	  }
-
-	  Headers.prototype.getAll = function(name) {
-	    return this.map[normalizeName(name)] || []
+	    name = normalizeName(name)
+	    return this.has(name) ? this.map[name] : null
 	  }
 
 	  Headers.prototype.has = function(name) {
@@ -49121,15 +49200,15 @@
 	  }
 
 	  Headers.prototype.set = function(name, value) {
-	    this.map[normalizeName(name)] = [normalizeValue(value)]
+	    this.map[normalizeName(name)] = normalizeValue(value)
 	  }
 
 	  Headers.prototype.forEach = function(callback, thisArg) {
-	    Object.getOwnPropertyNames(this.map).forEach(function(name) {
-	      this.map[name].forEach(function(value) {
-	        callback.call(thisArg, value, name, this)
-	      }, this)
-	    }, this)
+	    for (var name in this.map) {
+	      if (this.map.hasOwnProperty(name)) {
+	        callback.call(thisArg, this.map[name], name, this)
+	      }
+	    }
 	  }
 
 	  Headers.prototype.keys = function() {
@@ -49174,14 +49253,36 @@
 
 	  function readBlobAsArrayBuffer(blob) {
 	    var reader = new FileReader()
+	    var promise = fileReaderReady(reader)
 	    reader.readAsArrayBuffer(blob)
-	    return fileReaderReady(reader)
+	    return promise
 	  }
 
 	  function readBlobAsText(blob) {
 	    var reader = new FileReader()
+	    var promise = fileReaderReady(reader)
 	    reader.readAsText(blob)
-	    return fileReaderReady(reader)
+	    return promise
+	  }
+
+	  function readArrayBufferAsText(buf) {
+	    var view = new Uint8Array(buf)
+	    var chars = new Array(view.length)
+
+	    for (var i = 0; i < view.length; i++) {
+	      chars[i] = String.fromCharCode(view[i])
+	    }
+	    return chars.join('')
+	  }
+
+	  function bufferClone(buf) {
+	    if (buf.slice) {
+	      return buf.slice(0)
+	    } else {
+	      var view = new Uint8Array(buf.byteLength)
+	      view.set(new Uint8Array(buf))
+	      return view.buffer
+	    }
 	  }
 
 	  function Body() {
@@ -49189,7 +49290,9 @@
 
 	    this._initBody = function(body) {
 	      this._bodyInit = body
-	      if (typeof body === 'string') {
+	      if (!body) {
+	        this._bodyText = ''
+	      } else if (typeof body === 'string') {
 	        this._bodyText = body
 	      } else if (support.blob && Blob.prototype.isPrototypeOf(body)) {
 	        this._bodyBlob = body
@@ -49197,11 +49300,12 @@
 	        this._bodyFormData = body
 	      } else if (support.searchParams && URLSearchParams.prototype.isPrototypeOf(body)) {
 	        this._bodyText = body.toString()
-	      } else if (!body) {
-	        this._bodyText = ''
-	      } else if (support.arrayBuffer && ArrayBuffer.prototype.isPrototypeOf(body)) {
-	        // Only support ArrayBuffers for POST method.
-	        // Receiving ArrayBuffers happens via Blobs, instead.
+	      } else if (support.arrayBuffer && support.blob && isDataView(body)) {
+	        this._bodyArrayBuffer = bufferClone(body.buffer)
+	        // IE 10-11 can't handle a DataView body.
+	        this._bodyInit = new Blob([this._bodyArrayBuffer])
+	      } else if (support.arrayBuffer && (ArrayBuffer.prototype.isPrototypeOf(body) || isArrayBufferView(body))) {
+	        this._bodyArrayBuffer = bufferClone(body)
 	      } else {
 	        throw new Error('unsupported BodyInit type')
 	      }
@@ -49226,6 +49330,8 @@
 
 	        if (this._bodyBlob) {
 	          return Promise.resolve(this._bodyBlob)
+	        } else if (this._bodyArrayBuffer) {
+	          return Promise.resolve(new Blob([this._bodyArrayBuffer]))
 	        } else if (this._bodyFormData) {
 	          throw new Error('could not read FormData body as blob')
 	        } else {
@@ -49234,27 +49340,28 @@
 	      }
 
 	      this.arrayBuffer = function() {
-	        return this.blob().then(readBlobAsArrayBuffer)
-	      }
-
-	      this.text = function() {
-	        var rejected = consumed(this)
-	        if (rejected) {
-	          return rejected
-	        }
-
-	        if (this._bodyBlob) {
-	          return readBlobAsText(this._bodyBlob)
-	        } else if (this._bodyFormData) {
-	          throw new Error('could not read FormData body as text')
+	        if (this._bodyArrayBuffer) {
+	          return consumed(this) || Promise.resolve(this._bodyArrayBuffer)
 	        } else {
-	          return Promise.resolve(this._bodyText)
+	          return this.blob().then(readBlobAsArrayBuffer)
 	        }
 	      }
-	    } else {
-	      this.text = function() {
-	        var rejected = consumed(this)
-	        return rejected ? rejected : Promise.resolve(this._bodyText)
+	    }
+
+	    this.text = function() {
+	      var rejected = consumed(this)
+	      if (rejected) {
+	        return rejected
+	      }
+
+	      if (this._bodyBlob) {
+	        return readBlobAsText(this._bodyBlob)
+	      } else if (this._bodyArrayBuffer) {
+	        return Promise.resolve(readArrayBufferAsText(this._bodyArrayBuffer))
+	      } else if (this._bodyFormData) {
+	        throw new Error('could not read FormData body as text')
+	      } else {
+	        return Promise.resolve(this._bodyText)
 	      }
 	    }
 
@@ -49282,7 +49389,10 @@
 	  function Request(input, options) {
 	    options = options || {}
 	    var body = options.body
-	    if (Request.prototype.isPrototypeOf(input)) {
+
+	    if (typeof input === 'string') {
+	      this.url = input
+	    } else {
 	      if (input.bodyUsed) {
 	        throw new TypeError('Already read')
 	      }
@@ -49293,12 +49403,10 @@
 	      }
 	      this.method = input.method
 	      this.mode = input.mode
-	      if (!body) {
+	      if (!body && input._bodyInit != null) {
 	        body = input._bodyInit
 	        input.bodyUsed = true
 	      }
-	    } else {
-	      this.url = input
 	    }
 
 	    this.credentials = options.credentials || this.credentials || 'omit'
@@ -49316,7 +49424,7 @@
 	  }
 
 	  Request.prototype.clone = function() {
-	    return new Request(this)
+	    return new Request(this, { body: this._bodyInit })
 	  }
 
 	  function decode(body) {
@@ -49332,16 +49440,17 @@
 	    return form
 	  }
 
-	  function headers(xhr) {
-	    var head = new Headers()
-	    var pairs = (xhr.getAllResponseHeaders() || '').trim().split('\n')
-	    pairs.forEach(function(header) {
-	      var split = header.trim().split(':')
-	      var key = split.shift().trim()
-	      var value = split.join(':').trim()
-	      head.append(key, value)
+	  function parseHeaders(rawHeaders) {
+	    var headers = new Headers()
+	    rawHeaders.split('\r\n').forEach(function(line) {
+	      var parts = line.split(':')
+	      var key = parts.shift().trim()
+	      if (key) {
+	        var value = parts.join(':').trim()
+	        headers.append(key, value)
+	      }
 	    })
-	    return head
+	    return headers
 	  }
 
 	  Body.call(Request.prototype)
@@ -49352,10 +49461,10 @@
 	    }
 
 	    this.type = 'default'
-	    this.status = options.status
+	    this.status = 'status' in options ? options.status : 200
 	    this.ok = this.status >= 200 && this.status < 300
-	    this.statusText = options.statusText
-	    this.headers = options.headers instanceof Headers ? options.headers : new Headers(options.headers)
+	    this.statusText = 'statusText' in options ? options.statusText : 'OK'
+	    this.headers = new Headers(options.headers)
 	    this.url = options.url || ''
 	    this._initBody(bodyInit)
 	  }
@@ -49393,35 +49502,16 @@
 
 	  self.fetch = function(input, init) {
 	    return new Promise(function(resolve, reject) {
-	      var request
-	      if (Request.prototype.isPrototypeOf(input) && !init) {
-	        request = input
-	      } else {
-	        request = new Request(input, init)
-	      }
-
+	      var request = new Request(input, init)
 	      var xhr = new XMLHttpRequest()
-
-	      function responseURL() {
-	        if ('responseURL' in xhr) {
-	          return xhr.responseURL
-	        }
-
-	        // Avoid security warnings on getResponseHeader when not allowed by CORS
-	        if (/^X-Request-URL:/m.test(xhr.getAllResponseHeaders())) {
-	          return xhr.getResponseHeader('X-Request-URL')
-	        }
-
-	        return
-	      }
 
 	      xhr.onload = function() {
 	        var options = {
 	          status: xhr.status,
 	          statusText: xhr.statusText,
-	          headers: headers(xhr),
-	          url: responseURL()
+	          headers: parseHeaders(xhr.getAllResponseHeaders() || '')
 	        }
+	        options.url = 'responseURL' in xhr ? xhr.responseURL : options.headers.get('X-Request-URL')
 	        var body = 'response' in xhr ? xhr.response : xhr.responseText
 	        resolve(new Response(body, options))
 	      }
